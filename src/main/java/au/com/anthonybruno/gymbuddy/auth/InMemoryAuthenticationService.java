@@ -8,7 +8,7 @@ public class InMemoryAuthenticationService implements AuthenticationService {
 
     private static final Map<String, UserDetails> userMap = new HashMap<>();
     static {
-        userMap.put("user", new UserDetails("user", "abc"));
+        userMap.put("user", new UserDetails(1, "user", "abc"));
     }
 
     @Override
