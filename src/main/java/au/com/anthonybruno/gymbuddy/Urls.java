@@ -2,7 +2,9 @@ package au.com.anthonybruno.gymbuddy;
 
 import au.com.anthonybruno.gymbuddy.auth.AuthenticationController;
 import au.com.anthonybruno.gymbuddy.auth.InMemoryAuthenticationService;
+import au.com.anthonybruno.gymbuddy.user.InMemoryUserService;
 import au.com.anthonybruno.gymbuddy.user.UserController;
+import au.com.anthonybruno.gymbuddy.workout.InMemoryWorkoutService;
 import au.com.anthonybruno.gymbuddy.workout.WorkoutController;
 import io.javalin.Javalin;
 
@@ -13,8 +15,8 @@ public class Urls {
     private final Javalin app;
 
     private final AuthenticationController authenticationController = new AuthenticationController(new InMemoryAuthenticationService());
-    private final UserController userController = new UserController();
-    private final WorkoutController workoutController = new WorkoutController();
+    private final UserController userController = new UserController(new InMemoryUserService());
+    private final WorkoutController workoutController = new WorkoutController(new InMemoryWorkoutService());
 
     public Urls(Javalin app) {
         this.app = app;
