@@ -1,4 +1,4 @@
-package au.com.anthonybruno.gymbuddy.json;
+package au.com.anthonybruno.gymbuddy.util.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

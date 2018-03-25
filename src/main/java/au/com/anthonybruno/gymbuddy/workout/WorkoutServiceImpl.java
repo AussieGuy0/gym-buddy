@@ -2,7 +2,7 @@ package au.com.anthonybruno.gymbuddy.workout;
 
 import java.util.List;
 
-public class InMemoryWorkoutService implements WorkoutService {
+public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public List<Workout> getWorkouts(long userId) {

@@ -9,6 +9,10 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+    public AuthenticationController() {
+        this(new InMemoryAuthenticationService());
+    }
+
     public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
@@ -21,17 +25,30 @@ public class AuthenticationController {
         UserDetails userDetails = this.authenticationService.login(credentials.getUsername(), credentials.getPassword())
                 .orElseThrow(() -> new IllegalStateException("Incorrect details"));
 
-        context.sessionAttribute(AUTH_ATTR_KEY, userDetails);
+        setSession(context, userDetails);
         context.status(200);
     }
 
     public void logout(Context context) {
-        context.sessionAttribute(AUTH_ATTR_KEY, null);
+        setSession(context, null);
         context.status(200);
     }
 
     public void logCheck(Context context) {
-        context.json(context.sessionAttribute(AUTH_ATTR_KEY));
+        UserDetails sessionDetails = getSession(context);
+        if (sessionDetails == null) {
+            context.status(401);
+        } else {
+            context.json(getSession(context));
+        }
+    }
+
+    private void setSession(Context context, UserDetails userDetails) {
+        context.sessionAttribute(AUTH_ATTR_KEY, userDetails);
+    }
+
+    private UserDetails getSession(Context context) {
+        return context.sessionAttribute(AUTH_ATTR_KEY);
     }
 
 }

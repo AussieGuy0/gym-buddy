@@ -1,13 +1,17 @@
 package au.com.anthonybruno.gymbuddy.user;
 
 import au.com.anthonybruno.gymbuddy.auth.UserDetails;
-import au.com.anthonybruno.gymbuddy.json.Json;
+import au.com.anthonybruno.gymbuddy.util.json.Json;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.javalin.Context;
 
 public class UserController {
 
     private final UserService userService;
+
+    public UserController() {
+        this(new UserServiceImpl());
+    }
 
     public UserController(UserService userService) {
         this.userService = userService;

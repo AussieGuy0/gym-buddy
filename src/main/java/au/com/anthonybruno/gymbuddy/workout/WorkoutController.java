@@ -1,6 +1,6 @@
 package au.com.anthonybruno.gymbuddy.workout;
 
-import au.com.anthonybruno.gymbuddy.json.Json;
+import au.com.anthonybruno.gymbuddy.util.json.Json;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.javalin.Context;
 
@@ -9,6 +9,10 @@ import java.util.List;
 public class WorkoutController {
 
     private final WorkoutService workoutService;
+
+    public WorkoutController() {
+        this(new WorkoutServiceImpl());
+    }
 
     public WorkoutController(WorkoutService workoutService) {
         this.workoutService = workoutService;

@@ -2,7 +2,7 @@ package au.com.anthonybruno.gymbuddy.user;
 
 import au.com.anthonybruno.gymbuddy.auth.UserDetails;
 
-public class InMemoryUserService implements UserService {
+public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails addUser(String username, String password, String email) {
