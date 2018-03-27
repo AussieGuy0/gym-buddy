@@ -5,6 +5,7 @@ A web based application to track workouts
 - Be able to enter workouts completed
 - See past history of workouts 
 - User sign up/authentication/etc.
+- Use minimal frameworks on both backend and frontend (no Spring here!)
 
 ## API
 
