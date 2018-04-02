@@ -1,14 +1,14 @@
 
 CREATE TABLE users (
-  id LONG AUTO_INCREMENT,
-  username VARCHAR(24) NOT NULL,
-  password BINARY(60) NOT NULL,
-  email VARCHAR(150) NOT NULL
+  id SERIAL UNIQUE,
+  username VARCHAR(24) NOT NULL UNIQUE,
+  password BYTEA NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE
 );
 
 CREATE TABLE workouts (
-  id LONG AUTO_INCREMENT,
-  user_id LONG NOT NULL,
+  id SERIAL UNIQUE,
+  user_id INTEGER NOT NULL,
   title VARCHAR(100) NOT NULL,
   description VARCHAR(1024),
   date_start TIMESTAMP NOT NULL,

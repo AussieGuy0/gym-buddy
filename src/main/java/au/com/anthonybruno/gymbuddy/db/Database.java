@@ -1,9 +1,14 @@
 package au.com.anthonybruno.gymbuddy.db;
 
+import au.com.anthonybruno.gymbuddy.util.FileUtils;
+
 import javax.naming.InitialContext;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Database {
 
@@ -18,7 +23,6 @@ public class Database {
     }
 
     private Connection getConnection() throws SQLException {
-        Connection connection;
         return DriverManager.getConnection(url, username, password);
     }
 
