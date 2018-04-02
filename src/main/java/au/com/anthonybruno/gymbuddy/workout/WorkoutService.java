@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface WorkoutService {
 
-    List<Workout> getWorkouts(long userId);
+    List<Workout> getWorkouts(int userId);
 
-    Workout addWorkout(long userId, Workout workout);
+    Workout addWorkout(int userId, Workout workout);
 }

@@ -1,14 +1,7 @@
 package au.com.anthonybruno.gymbuddy.db;
 
-import au.com.anthonybruno.gymbuddy.util.FileUtils;
-
-import javax.naming.InitialContext;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.List;
+import java.sql.*;
+import java.util.function.Consumer;
 
 public class Database {
 
@@ -20,6 +13,15 @@ public class Database {
         this.username = username;
         this.password = password;
         this.url = url;
+    }
+
+
+    public ResultSet executeQuery(String sql, Consumer<PreparedStatement> prepareStatement) throws SQLException {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            prepareStatement.accept(statement);
+            return statement.executeQuery();
+        }
     }
 
     private Connection getConnection() throws SQLException {

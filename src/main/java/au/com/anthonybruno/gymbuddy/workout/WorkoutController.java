@@ -20,19 +20,18 @@ public class WorkoutController {
 
 
     public void addWorkout(Context context) {
-        long userId = getUserIdFromRequest(context);
-        ObjectNode objectNode = new Json(context.body()).asObject();
-        Workout workout = new Workout(null, null, null, null); //TODO: Fill in details
+        int userId = getUserIdFromRequest(context);
+        Workout workout = Json.intoClass(context.body(), Workout.class);
         workoutService.addWorkout(userId, workout);
     }
 
     public void getWorkouts(Context context) {
-        long userId = getUserIdFromRequest(context);
+        int userId = getUserIdFromRequest(context);
         List<Workout> workouts = workoutService.getWorkouts(userId);
         context.json(workouts);
     }
 
-    private long getUserIdFromRequest(Context context) {
-        return Long.parseLong(context.param("userId"));
+    private int getUserIdFromRequest(Context context) {
+        return Integer.parseInt(context.param("userId"));
     }
 }

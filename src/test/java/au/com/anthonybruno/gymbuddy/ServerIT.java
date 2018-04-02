@@ -5,6 +5,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.post;
 
 public class ServerIT {
 
@@ -25,5 +27,16 @@ public class ServerIT {
     @Test
     public void homepage() {
         get(url).then().statusCode(200);
+    }
+
+    @Test
+    public void signIn() {
+        given()
+                .contentType("application/json")
+                .body("{\"username\": \"user\", \"password\": \"password\"}")
+                .when()
+                .post(url + "/auth/login")
+                .then()
+                .statusCode(200);
     }
 }

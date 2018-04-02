@@ -1,5 +1,6 @@
 package au.com.anthonybruno.gymbuddy.auth;
 
+import au.com.anthonybruno.gymbuddy.util.json.Json;
 import io.javalin.BasicAuthCredentials;
 import io.javalin.Context;
 
@@ -18,9 +19,9 @@ public class AuthenticationController {
     }
 
     public void login(Context context) {
-        BasicAuthCredentials credentials = context.basicAuthCredentials();
+        UserCredentials credentials = Json.intoClass(context.body(), UserCredentials.class);
         if (credentials == null) {
-            throw new IllegalStateException("Need username and password in auth header");
+            throw new IllegalStateException("Need username and password");
         }
         UserDetails userDetails = this.authenticationService.login(credentials.getUsername(), credentials.getPassword())
                 .orElseThrow(() -> new IllegalStateException("Incorrect details"));

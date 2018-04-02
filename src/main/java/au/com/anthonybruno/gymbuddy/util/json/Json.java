@@ -28,4 +28,13 @@ public class Json {
     public ArrayNode asArray() {
         return (ArrayNode) jsonNode;
     }
+
+    public static <T> T intoClass(String json, Class<T> c) {
+        try {
+            return objectMapper.readValue(json, c);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
