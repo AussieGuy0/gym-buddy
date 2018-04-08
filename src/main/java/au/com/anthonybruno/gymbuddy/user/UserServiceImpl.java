@@ -4,9 +4,12 @@ import au.com.anthonybruno.gymbuddy.auth.UserDetails;
 
 public class UserServiceImpl implements UserService {
 
+    UserRepository userRepository = new UserRepository();
+
     @Override
     public UserDetails addUser(String username, String password, String email) {
-        return null;
+        userRepository.addUser(username, password, email);
+        return new UserDetails(0, username, email);
     }
 
     @Override

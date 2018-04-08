@@ -11,7 +11,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     public AuthenticationController() {
-        this(new InMemoryAuthenticationService());
+        this(new DbAuthenticationService());
     }
 
     public AuthenticationController(AuthenticationService authenticationService) {
