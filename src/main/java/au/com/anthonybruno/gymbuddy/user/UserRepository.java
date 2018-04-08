@@ -1,7 +1,6 @@
 package au.com.anthonybruno.gymbuddy.user;
 
-import au.com.anthonybruno.gymbuddy.auth.InternalUserDetails;
-import au.com.anthonybruno.gymbuddy.auth.UserCredentials;
+import au.com.anthonybruno.gymbuddy.user.model.InternalUserDetails;
 import au.com.anthonybruno.gymbuddy.auth.password.BcryptPasswordHasher;
 import au.com.anthonybruno.gymbuddy.auth.password.PasswordHasher;
 import au.com.anthonybruno.gymbuddy.common.Repository;

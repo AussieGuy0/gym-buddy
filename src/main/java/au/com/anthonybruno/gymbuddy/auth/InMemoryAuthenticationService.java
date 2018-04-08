@@ -1,5 +1,7 @@
 package au.com.anthonybruno.gymbuddy.auth;
 
+import au.com.anthonybruno.gymbuddy.user.model.UserDetails;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

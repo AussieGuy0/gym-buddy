@@ -1,6 +1,6 @@
 package au.com.anthonybruno.gymbuddy.user;
 
-import au.com.anthonybruno.gymbuddy.auth.UserDetails;
+import au.com.anthonybruno.gymbuddy.user.model.UserDetails;
 
 public interface UserService {
 

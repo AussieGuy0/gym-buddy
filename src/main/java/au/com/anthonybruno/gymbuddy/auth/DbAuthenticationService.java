@@ -1,11 +1,10 @@
 package au.com.anthonybruno.gymbuddy.auth;
 
-import au.com.anthonybruno.gymbuddy.Server;
 import au.com.anthonybruno.gymbuddy.auth.password.BcryptPasswordHasher;
 import au.com.anthonybruno.gymbuddy.auth.password.PasswordHasher;
-import au.com.anthonybruno.gymbuddy.db.Database;
 import au.com.anthonybruno.gymbuddy.user.UserRepository;
-import org.mindrot.jbcrypt.BCrypt;
+import au.com.anthonybruno.gymbuddy.user.model.InternalUserDetails;
+import au.com.anthonybruno.gymbuddy.user.model.UserDetails;
 
 import java.util.Optional;
 

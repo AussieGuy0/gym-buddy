@@ -1,7 +1,7 @@
 package au.com.anthonybruno.gymbuddy.auth;
 
+import au.com.anthonybruno.gymbuddy.user.model.UserDetails;
 import au.com.anthonybruno.gymbuddy.util.json.Json;
-import io.javalin.BasicAuthCredentials;
 import io.javalin.Context;
 
 public class AuthenticationController {

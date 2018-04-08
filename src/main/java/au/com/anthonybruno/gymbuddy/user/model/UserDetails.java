@@ -1,4 +1,4 @@
-package au.com.anthonybruno.gymbuddy.auth;
+package au.com.anthonybruno.gymbuddy.user.model;
 
 public class UserDetails {
 
