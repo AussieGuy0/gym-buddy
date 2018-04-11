@@ -28,6 +28,7 @@ public class AuthenticationController {
 
         setSession(context, userDetails);
         context.status(200);
+        context.json(userDetails);
     }
 
     public void logout(Context context) {

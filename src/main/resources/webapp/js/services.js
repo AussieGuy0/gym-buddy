@@ -1,9 +1,20 @@
 
-function login(username, password) {
-    post("/auth/login", {username: username, password: password})
-        .then(res => {
-            return res.json();
-        })
+class Services {
+
+    login(username, password) {
+        return post("/auth/login", {username: username, password: password})
+            .then(res => {
+                return res.json();
+            })
+    }
+
+    register(username, password, email) {
+        return post("/api/v1/user", {username: username, password: password, email: email})
+            .then(res => {
+                return res.json();
+            })
+    }
+
 }
 
 function post(url, data) {

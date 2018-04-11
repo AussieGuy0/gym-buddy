@@ -1,5 +1,7 @@
 package au.com.anthonybruno.gymbuddy.user.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserDetails {
 
     private final long id;

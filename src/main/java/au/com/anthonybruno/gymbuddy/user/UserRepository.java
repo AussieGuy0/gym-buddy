@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class UserRepository extends Repository {
 
-    PasswordHasher passwordHasher = new BcryptPasswordHasher();
+    private PasswordHasher passwordHasher = new BcryptPasswordHasher();
 
     public UserRepository() {
         super("users");
@@ -21,7 +21,7 @@ public class UserRepository extends Repository {
 
     public void addUser(String username, String password, String email) {
         try (Connection conn = db.getConnection();
-             PreparedStatement statement = conn.prepareStatement("INSERT INTO " + tableName + " VALUES (?,?,?)")) {
+             PreparedStatement statement = conn.prepareStatement("INSERT INTO " + tableName + "(username, password, email) VALUES (?,?,?)")) {
             statement.setString(1, username);
             statement.setString(2, passwordHasher.hashPassword(password));
             statement.setString(3, email);
