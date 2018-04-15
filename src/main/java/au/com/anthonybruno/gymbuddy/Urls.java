@@ -24,7 +24,7 @@ public class Urls {
             path("/auth",() -> {
                 post("/login", authenticationController::login);
                 post("/logout", authenticationController::logout);
-                post("/logCheck", authenticationController::logCheck);
+                post("/logcheck", authenticationController::logCheck);
             });
             path("api/v1", () -> {
                 path("/user", () -> {
@@ -36,7 +36,7 @@ public class Urls {
                         delete(userController::deleteUser);
                         path("/workout", () -> {
                             post(workoutController::addWorkout);
-                            post(workoutController::getWorkouts);
+                            get(workoutController::getWorkouts);
                         });
                     });
                 });

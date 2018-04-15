@@ -34,8 +34,8 @@
                 <li v-if="!credentials.loggedIn" class="nav-item">
                     <router-link class="nav-link" to="register">Register</router-link>
                 </li>
-                <li v-if="credentials.loggedIn">
-                    Hello {{credentials.username}}!
+                <li v-if="credentials.loggedIn" class="nav-item" v-on:click="logout">
+                    <span class="nav-link">Log Out</span>
                 </li>
             </ul>
         </div>

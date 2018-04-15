@@ -32,13 +32,13 @@ public class AuthenticationController {
     }
 
     public void logout(Context context) {
-        setSession(context, null);
+        setSession(context, UserDetails.NOOP);
         context.status(200);
     }
 
     public void logCheck(Context context) {
         UserDetails sessionDetails = getSession(context);
-        if (sessionDetails == null) {
+        if (sessionDetails == null || sessionDetails == UserDetails.NOOP) {
             context.status(401);
         } else {
             context.json(getSession(context));

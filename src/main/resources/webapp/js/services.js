@@ -8,6 +8,17 @@ class Services {
             })
     }
 
+    logcheck() {
+        return post("/auth/logcheck")
+            .then(res => {
+                return res.json()
+            })
+    }
+
+    logout() {
+        return post("/auth/logout")
+    }
+
     register(username, password, email) {
         return post("/api/v1/user", {username: username, password: password, email: email})
             .then(res => {
@@ -15,6 +26,20 @@ class Services {
             })
     }
 
+    getWorkouts(userId) {
+        return get('/api/v1/user/' + userId + '/workout')
+            .then(res => {
+                return res.json();
+            })
+    }
+
+}
+
+function get(url) {
+    return fetch(url, {
+        method: 'GET',
+        credentials: 'include'
+    })
 }
 
 function post(url, data) {
@@ -22,6 +47,7 @@ function post(url, data) {
     return fetch(url, {
         method: 'POST',
         body: JSON.stringify(data),
-        headers: headers
+        headers: headers,
+        credentials: 'include'
     })
 }
