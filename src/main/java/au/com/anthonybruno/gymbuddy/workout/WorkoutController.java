@@ -22,7 +22,8 @@ public class WorkoutController {
     public void addWorkout(Context context) {
         int userId = getUserIdFromRequest(context);
         Workout workout = Json.intoClass(context.body(), Workout.class);
-        workoutService.addWorkout(userId, workout);
+        Workout savedWorkout = workoutService.addWorkout(userId, workout);
+        context.json(savedWorkout);
     }
 
     public void getWorkouts(Context context) {

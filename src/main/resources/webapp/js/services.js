@@ -33,6 +33,13 @@ class Services {
             })
     }
 
+    addWorkout(userId, title, description, date) {
+        return post('/api/v1/user/' + userId + '/workout', {title: title, description: description, date: date})
+            .then(res => {
+                return res.json();
+            })
+    }
+
 }
 
 function get(url) {

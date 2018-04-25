@@ -1,20 +1,22 @@
 package au.com.anthonybruno.gymbuddy.workout;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.Duration;
 import java.util.Date;
 
 public class Workout {
 
     private final int id;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private final Date date;
-    private final Duration duration;
     private final String title;
     private final String description;
 
-    public Workout(int id, Date date, Duration duration, String title, String description) {
+    public Workout(@JsonProperty("id") int id, @JsonProperty("date") Date date, @JsonProperty("title") String title, @JsonProperty("description") String description) {
         this.id = id;
         this.date = date;
-        this.duration = duration;
         this.title = title;
         this.description = description;
     }
@@ -25,10 +27,6 @@ public class Workout {
 
     public Date getDate() {
         return date;
-    }
-
-    public Duration getDuration() {
-        return duration;
     }
 
     public String getTitle() {

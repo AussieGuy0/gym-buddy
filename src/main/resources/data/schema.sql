@@ -11,8 +11,7 @@ CREATE TABLE workouts (
   user_id INTEGER NOT NULL,
   title VARCHAR(100) NOT NULL,
   description VARCHAR(1024),
-  date_start TIMESTAMP NOT NULL,
-  date_end TIMESTAMP NOT NULL,
+  date TIMESTAMP NOT NULL,
   PRIMARY KEY(id),
   FOREIGN KEY(user_id) REFERENCES users(id)
 );

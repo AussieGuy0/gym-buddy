@@ -25,8 +25,7 @@ public class WorkoutRepository extends Repository {
             results = statement.executeQuery();
             while (results.next()) {
                 Workout workout = new Workout(results.getInt("id"),
-                        results.getDate("date_start"),
-                        null,
+                        results.getDate("date"),
                         results.getString("title"),
                         results.getString("description"));
                 workouts.add(workout);
@@ -42,13 +41,12 @@ public class WorkoutRepository extends Repository {
 
     public Workout addWorkout(int userId, Workout workout) {
         try (Connection conn = db.getConnection();
-             PreparedStatement statement = conn.prepareStatement("INSERT INTO " + tableName + " VALUES (?,?,?,?,?)")) {
+             PreparedStatement statement = conn.prepareStatement("INSERT INTO " + tableName + "(user_id, title, description, date) VALUES (?,?,?,?) RETURNING id")) {
             statement.setInt(1, userId);
             statement.setString(2, workout.getTitle());
             statement.setString(3, workout.getDescription());
             statement.setDate(4, new Date(workout.getDate().getTime()));
-            statement.setDate(5, new Date(workout.getDate().getTime() + workout.getDuration().toMillis()));
-            statement.executeUpdate();
+            statement.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

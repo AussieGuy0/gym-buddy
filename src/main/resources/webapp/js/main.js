@@ -8,9 +8,9 @@ const services = new Services();
 
 services.logcheck()
     .then(json => {
-        credentials.loggedIn = true;
-        credentials.id = json.id;
-        credentials.username =  json.username;
+        app.credentials.loggedIn = true;
+        app.credentials.id = json.id;
+        app.credentials.username =  json.username;
     })
 
 const Workouts = {
@@ -28,20 +28,36 @@ const Workouts = {
                     Add Workout
                     </div>
                     <div class="card-body">
-                        <label>Title: <input type="text"/></label>
-                        <label>Description: <input type="text"/></label>
-                        <label>Date: <input type="date"/></label>
-                        <label>Duration: <input type="text"/></label>
+                        <label>Title: <input v-model="newWorkout.title" type="text"/></label>
+                        <label>Date: <input v-model="newWorkout.date" type="date"/></label>
+                        <label>Description: <textarea v-model="newWorkout.description"> </textarea></label>
+                        <button class="btn btn-primary" v-on:click="addWorkout">
+                        Add Workout 
+                        </button>
                     </div>
                 </div> 
             </div>
         </div>
         <div class="row">
+           <h2>All Workouts</h2>
+        </div>
+        <div class="row">
             <div class="col">
                 <table class="table">
+                      <tr>
+                         <th>Date</th> 
+                         <th>Title</th> 
+                         <th>Description</th> 
+                      </tr>
                       <tr v-for="workout in workouts">
                          <td>
-                            {{workout}} 
+                            {{workout.date}} 
+                         </td> 
+                         <td>
+                            {{workout.title}} 
+                         </td> 
+                         <td>
+                            {{workout.description}} 
                          </td> 
                       </tr>  
                 </table>
@@ -51,14 +67,24 @@ const Workouts = {
     `,
     data () {
         return {
-            workouts: []
+            workouts: [],
+            newWorkout: {
+
+            }
         }
     },
     methods: {
        getWorkouts() {
-           services.getWorkouts(credentials.id)
+           services.getWorkouts(app.credentials.id)
                .then(workouts => this.workouts = workouts)
-       }
+       },
+        addWorkout() {
+           services.addWorkout(app.credentials.id, this.newWorkout.title, this.newWorkout.description, this.newWorkout.date)
+               .then(json => {
+                   this.newWorkout = {};
+                   this.workouts.push(json)
+               })
+        }
     },
     created() {
         this.getWorkouts()
