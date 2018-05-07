@@ -28,12 +28,24 @@ const Workouts = {
                     Add Workout
                     </div>
                     <div class="card-body">
-                        <label>Title: <input v-model="newWorkout.title" type="text"/></label>
-                        <label>Date: <input v-model="newWorkout.date" type="date"/></label>
-                        <label>Description: <textarea v-model="newWorkout.description"> </textarea></label>
-                        <button class="btn btn-primary" v-on:click="addWorkout">
-                        Add Workout 
-                        </button>
+                        <div class="row">
+                            <div class="col">
+                                <label>Title: <input v-model="newWorkout.title" type="text"/></label>
+                            </div>
+                            <div class="col">
+                                <label>Date: <input v-model="newWorkout.date" type="date"/></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>Description: <textarea v-model="newWorkout.description"> </textarea></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary" v-on:click="addWorkout"> Add Workout </button>
+                            </div>
+                        </div>
                     </div>
                 </div> 
             </div>
@@ -175,6 +187,7 @@ const Register = {
         register() {
             services.register(this.username, this.password, this.email)
                 .then(json => {
+                    console.log(json);
                     this.registered = true;
                 })
         }

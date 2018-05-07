@@ -1,6 +1,8 @@
 package au.com.anthonybruno.gymbuddy.user;
 
+import au.com.anthonybruno.gymbuddy.exception.BadRequestException;
 import au.com.anthonybruno.gymbuddy.user.model.UserDetails;
+import au.com.anthonybruno.gymbuddy.user.model.UserRego;
 import au.com.anthonybruno.gymbuddy.util.json.Json;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.javalin.Context;
@@ -18,12 +20,17 @@ public class UserController {
     }
 
     public void addUser(Context context) {
-        Json json = new Json(context.body());
-        ObjectNode objectNode = json.asObject();
-        String username = objectNode.get("username").asText();
-        String password = objectNode.get("password").asText();
-        String email = objectNode.get("email").asText();
-        userService.addUser(username, password, email);
+        UserRego rego = Json.intoClass(context.body(), UserRego.class);
+        String password = rego.getPassword();
+        if (password.length() < 8) {
+            throw new BadRequestException("Password must be at least 8 characters long");
+        }
+
+        String email = rego.getEmail();
+        if (!email.contains("@")) {
+            throw new BadRequestException("Email (" + email + ") not a email format");
+        }
+        userService.addUser(rego.getUsername(), password, email);
 
     }
 

@@ -1,8 +1,11 @@
 package au.com.anthonybruno.gymbuddy;
 
 import au.com.anthonybruno.gymbuddy.auth.AuthenticationController;
+import au.com.anthonybruno.gymbuddy.exception.HttpException;
 import au.com.anthonybruno.gymbuddy.user.UserController;
 import au.com.anthonybruno.gymbuddy.workout.WorkoutController;
+import io.javalin.Context;
+import io.javalin.ExceptionHandler;
 import io.javalin.Javalin;
 
 import static io.javalin.ApiBuilder.*;
@@ -41,6 +44,10 @@ public class Urls {
                     });
                 });
             });
+        });
+        app.exception(HttpException.class, (exception, ctx) -> {
+            ctx.status(exception.getStatusCode());
+            ctx.json(exception);
         });
     }
 

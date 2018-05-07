@@ -56,5 +56,10 @@ function post(url, data) {
         body: JSON.stringify(data),
         headers: headers,
         credentials: 'include'
+    }).then((res) => {
+        if (res.ok) {
+            return res;
+        }
+        throw new Error(res);
     })
 }

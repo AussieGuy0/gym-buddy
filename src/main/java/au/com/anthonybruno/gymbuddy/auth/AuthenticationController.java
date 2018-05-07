@@ -1,12 +1,16 @@
 package au.com.anthonybruno.gymbuddy.auth;
 
+import au.com.anthonybruno.gymbuddy.exception.BadRequestException;
 import au.com.anthonybruno.gymbuddy.user.model.UserDetails;
 import au.com.anthonybruno.gymbuddy.util.json.Json;
 import io.javalin.Context;
+import org.omg.CORBA.BAD_CONTEXT;
+
+import static au.com.anthonybruno.gymbuddy.auth.SessionUtils.getSession;
+import static au.com.anthonybruno.gymbuddy.auth.SessionUtils.setSession;
 
 public class AuthenticationController {
 
-    public static String AUTH_ATTR_KEY = "auth";
 
     private final AuthenticationService authenticationService;
 
@@ -24,7 +28,7 @@ public class AuthenticationController {
             throw new IllegalStateException("Need username and password");
         }
         UserDetails userDetails = this.authenticationService.login(credentials.getUsername(), credentials.getPassword())
-                .orElseThrow(() -> new IllegalStateException("Incorrect details"));
+                .orElseThrow(() -> new BadRequestException("Incorrect details"));
 
         setSession(context, userDetails);
         context.status(200);
@@ -45,12 +49,5 @@ public class AuthenticationController {
         }
     }
 
-    private void setSession(Context context, UserDetails userDetails) {
-        context.sessionAttribute(AUTH_ATTR_KEY, userDetails);
-    }
-
-    private UserDetails getSession(Context context) {
-        return context.sessionAttribute(AUTH_ATTR_KEY);
-    }
 
 }
