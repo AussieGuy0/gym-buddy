@@ -64,8 +64,6 @@
 </template>
 
 <script>
-  // import axios from 'axios'
-
   import Services from './services'
   import {session as credentials} from '../session'
 
@@ -74,7 +72,8 @@
     data () {
       return {
         workouts: [],
-        newWorkout: {}
+        newWorkout: {},
+        credentials: credentials
       }
     },
     methods: {
@@ -91,7 +90,7 @@
       }
     },
     created () {
-      Services.getWorkouts()
+      this.getWorkouts()
     }
   }
 

@@ -1,5 +1,6 @@
 package au.com.anthonybruno.gymbuddy.workout;
 
+import au.com.anthonybruno.gymbuddy.exception.HttpException;
 import au.com.anthonybruno.gymbuddy.exception.UnauthorisedException;
 import au.com.anthonybruno.gymbuddy.user.model.UserDetails;
 import au.com.anthonybruno.gymbuddy.util.json.Json;
@@ -46,6 +47,14 @@ public class WorkoutController {
     }
 
     private int getUserIdFromRequest(Context context) {
-        return Integer.parseInt(context.param("userId"));
+        String userId = context.param("userId");
+        if (userId == null) {
+            throw new HttpException(400, "Need userId in path");
+        }
+        try {
+            return Integer.parseInt(userId);
+        } catch (NumberFormatException e) {
+            throw new HttpException(400, "userId provided is not a number!");
+        }
     }
 }

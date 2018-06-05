@@ -28,7 +28,8 @@
     data () {
       return {
         username: '',
-        password: ''
+        password: '',
+        credentials: credentials
       }
     },
     methods: {
