@@ -30,14 +30,14 @@ public class Urls {
                 post("/logcheck", authenticationController::logCheck);
             });
             path("api/v1", () -> {
-                path("/user", () -> {
+                path("/users", () -> {
                     post(userController::addUser);
                     path("/:userId", () -> {
                         get(userController::getUser);
                         put(userController::editUser);
                         post(userController::addUser);
                         delete(userController::deleteUser);
-                        path("/workout", () -> {
+                        path("/workouts", () -> {
                             post(workoutController::addWorkout);
                             get(workoutController::getWorkouts);
                         });

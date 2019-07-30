@@ -1,6 +1,20 @@
-class Api {
+export interface UserDetails {
+  userId: number,
+  username: string,
+  password: string
+}
 
-  static login (username: string, password: string): Promise<any> {
+
+export interface Workout {
+  date: string,
+  title: string,
+  description: string
+}
+
+
+export class Api {
+
+  static login (username: string, password: string): Promise<UserDetails> { //TODO: Look for a way to 'verify' against interface
     return post('/auth/login', {username: username, password: password})
       .then(res => {
         return res.json()
@@ -19,21 +33,21 @@ class Api {
   }
 
   static register (username: string, password: string, email: string): Promise<any> {
-    return post('/api/v1/user', {username: username, password: password, email: email})
+    return post('/api/v1/users', {username: username, password: password, email: email})
       .then(res => {
         return res.json()
       })
   }
 
-  static getWorkouts (userId: number): Promise<any> {
-    return get('/api/v1/user/' + userId + '/workout')
+  static getWorkouts (userId: number): Promise<Workout> {
+    return get(`/api/v1/users/${userId}/workouts`)
       .then(res => {
         return res.json()
       })
   }
 
   static addWorkout (userId: number, title: string, description: string, date: Date): Promise<any> {
-    return post('/api/v1/user/' + userId + '/workout', {title: title, description: description, date: date})
+    return post(`/api/v1/user/${userId}/workouts`, {title: title, description: description, date: date})
       .then(res => {
         return res.json()
       })
@@ -63,4 +77,4 @@ function post (url: string, data?: object): Promise<Response> {
   })
 }
 
-export default Api
+
