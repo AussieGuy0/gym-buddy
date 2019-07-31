@@ -1,15 +1,16 @@
 import React, {useState} from "react";
 import {Api} from "../services/Api";
 
-const Login: React.FC = () => {
+const Login: React.FC<any> = ({handleSuccessfulLogin}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    function handleLogin () {
+    function handleLogin (evt: React.MouseEvent) {
+        evt.preventDefault()
         Api.login(username, password)
             .then((userDetails) => {
-                //TODO: Save login details somewhere!
+                handleSuccessfulLogin(userDetails)
             }).catch((err) => {
-                //TODO: Handle error messasge somewhere
+                //TODO: Handle error message somewhere
                 console.warn(err)
         })
     }

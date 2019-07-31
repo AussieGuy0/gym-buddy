@@ -13,6 +13,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Session} from "./Session";
+import {Api} from "./services/Api";
 
 
 interface NavigationLinkProps {
@@ -30,7 +31,14 @@ const NavigationLink: React.FC<NavigationLinkProps> = ({path, label}) => {
     )
 }
 
-const NavigationBar: React.FC<any> = ({session}) => {
+const NavigationBar: React.FC<any> = ({session, handleSuccessfulLogout}) => {
+    function logout() {
+        Api.logout()
+            .then(() => handleSuccessfulLogout())
+            .catch((err) => {
+                console.warn(err)
+            })
+    }
     return (
         <Navbar bg="light" expand="sm">
             <div className="container">
@@ -38,10 +46,10 @@ const NavigationBar: React.FC<any> = ({session}) => {
                 <NavbarToggle aria-controls="basic-navbar-nav"/>
                 <NavbarCollapse id="basic-navbar-nav">
                     <Nav className="ml-auto">
-                        {session.loggedIn && (<NavigationLink path="/workouts" label="Workouts" />)}
-                        <NavigationLink path="/login" label="Login" />
-                        <NavigationLink path="/register" label="Register" />
-                        {session.loggedIn && (<NavigationLink path="/logout" label="Logout" />)}
+                        {session.id !== null && (<NavigationLink path="/workouts" label="Workouts" />)}
+                        {session.id !== null && (<NavLink onClick={logout}>Logout</NavLink>)}
+                        {session.id === null && (<NavigationLink path="/login" label="Login" />)}
+                        {session.id === null && (<NavigationLink path="/register" label="Register" />)}
                     </Nav>
                 </NavbarCollapse>
             </div>
@@ -51,16 +59,21 @@ const NavigationBar: React.FC<any> = ({session}) => {
 }
 
 const App: React.FC = () => {
-    const [session, setSession] = useState<Session>({loggedIn: false})
+    const noSession: Session = {id: null}
+    const [session, setSession] = useState<Session>(noSession)
+    function handleSuccessfulLogin(session: Session): void {
+        setSession(session)
+    }
+    function handleSuccessfulLogout(): void {
+        setSession(noSession)
+    }
     return (
         <Router>
             <div>
-                <NavigationBar session={session}/>
-
+                <NavigationBar session={session} handleSuccessfulLogout={handleSuccessfulLogout}/>
                 <div className="container">
-
                    <Route path="/" exact component={Index}/>
-                   <Route path="/login/" component={Login}/>
+                   <Route path="/login/" render={() => (<Login handleSuccessfulLogin={handleSuccessfulLogin}/>)}/>
                    <Route path="/register" component={Register}/>
                    <Route path="/workouts" component={Workouts}/>
                </div>

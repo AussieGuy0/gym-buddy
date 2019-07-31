@@ -14,7 +14,6 @@ public class Database {
         this.url = url;
     }
 
-
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url, username, password);
     }

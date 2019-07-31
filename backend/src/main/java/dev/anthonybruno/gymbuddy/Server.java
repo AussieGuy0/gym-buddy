@@ -6,6 +6,8 @@ import io.javalin.Javalin;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public class Server {
@@ -15,6 +17,7 @@ public class Server {
     private final Javalin app = Javalin.create(config -> config.addStaticFiles("webapp"));
 
     public void start(int portNum) {
+        attemptDatabaseConnection();
         app.start(portNum);
         Urls urls = new Urls(app);
         urls.setupEndpoints();
@@ -22,6 +25,13 @@ public class Server {
 
     public void stop() {
         app.stop();
+    }
+
+    private void attemptDatabaseConnection() {
+        try (Connection connection = DATABASE.getConnection()) {
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not connect to database!", e);
+        }
     }
 
     private static Properties loadSettings(String location) {
