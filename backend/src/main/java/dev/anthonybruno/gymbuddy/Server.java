@@ -5,7 +5,6 @@ import dev.anthonybruno.gymbuddy.util.ClassPathFile;
 import io.javalin.Javalin;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -19,8 +18,8 @@ public class Server {
     public void start(int portNum) {
         attemptDatabaseConnection();
         app.start(portNum);
-        Urls urls = new Urls(app);
-        urls.setupEndpoints();
+        Routes routes = new Routes(app);
+        routes.setupEndpoints();
     }
 
     public void stop() {

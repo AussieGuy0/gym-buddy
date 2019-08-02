@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, {FormEvent, useState} from "react";
 import {Api} from "../services/Api";
 
 const Login: React.FC<any> = ({handleSuccessfulLogin}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    function handleLogin (evt: React.MouseEvent) {
+    function handleLogin (evt: FormEvent) {
         evt.preventDefault()
         Api.login(username, password)
             .then((userDetails) => {
@@ -18,7 +18,7 @@ const Login: React.FC<any> = ({handleSuccessfulLogin}) => {
     return (
         <div>
             <h1>Login</h1>
-            <form>
+            <form onSubmit={handleLogin}>
                 <label>
                     Username
                     <input type='text' value={username} onChange={(evt) => setUsername(evt.target.value)}/>
@@ -27,7 +27,7 @@ const Login: React.FC<any> = ({handleSuccessfulLogin}) => {
                     Password
                     <input type='password' value={password} onChange={(evt) => setPassword(evt.target.value)}/>
                 </label>
-                <button className='btn btn-primary' onClick={handleLogin}>
+                <button className='btn btn-primary'>
                     Login
                 </button>
             </form>

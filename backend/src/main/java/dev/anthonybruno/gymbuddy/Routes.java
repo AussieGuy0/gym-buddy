@@ -10,7 +10,7 @@ import io.javalin.Javalin;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 
-public class Urls {
+public class Routes {
 
     private final Javalin app;
 
@@ -18,7 +18,7 @@ public class Urls {
     private final UserController userController = new UserController();
     private final WorkoutController workoutController = new WorkoutController();
 
-    public Urls(Javalin app) {
+    public Routes(Javalin app) {
         this.app = app;
     }
 

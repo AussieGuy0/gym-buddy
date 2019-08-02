@@ -1,27 +1,29 @@
 import React, {useEffect, useState} from "react";
 import {Api, Workout} from "../services/Api";
+import {Session} from "../Session";
 
+export interface SessionProps {
+    session: Session
+}
 
-const Workouts: React.FC = () => {
+const Workouts: React.FC<SessionProps> = ({session}) => {
     const [workouts, setWorkouts] = useState<Array<Workout>>([])
-    const userId = 0; //TODO: Get userID from somewhere!
 
     useEffect(() => {
-        Api.getWorkouts(userId)
-            .then(() => {
-
+        const id = session.id
+        if (id == null) {
+            return
+        }
+        Api.getWorkouts(id)
+            .then((workouts) => {
+                setWorkouts(workouts);
             })
             .catch((err) => {
                 console.warn(err)
             })
 
-        setWorkouts([{
-            date: '01/01/2020',
-            title: 'Title',
-            description: 'Description'
-        }]);
 
-    }, [])
+    }, [session.id])
     return (
         <div>
             <div className="row">

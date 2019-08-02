@@ -58,7 +58,7 @@ const NavigationBar: React.FC<any> = ({session, handleSuccessfulLogout}) => {
     )
 }
 
-const App: React.FC = () => {
+const App: React.FC = (props) => {
     const noSession: Session = {id: null}
     const [session, setSession] = useState<Session>(noSession)
     function handleSuccessfulLogin(session: Session): void {
@@ -75,7 +75,7 @@ const App: React.FC = () => {
                    <Route path="/" exact component={Index}/>
                    <Route path="/login/" render={() => (<Login handleSuccessfulLogin={handleSuccessfulLogin}/>)}/>
                    <Route path="/register" component={Register}/>
-                   <Route path="/workouts" component={Workouts}/>
+                   <Route path="/workouts" render={() => (<Workouts session={session} />)}/>
                </div>
           </div>
       </Router>

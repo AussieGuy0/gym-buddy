@@ -1,3 +1,5 @@
+import {get, post} from "./Http";
+
 export interface UserDetails {
   userId: number,
   username: string,
@@ -39,7 +41,7 @@ export class Api {
       })
   }
 
-  static getWorkouts (userId: number): Promise<Workout> {
+  static getWorkouts (userId: number): Promise<Array<Workout>> {
     return get(`/api/v1/users/${userId}/workouts`)
       .then(res => {
         return res.json()
@@ -55,26 +57,5 @@ export class Api {
 
 }
 
-function get (url: string): Promise<Response> {
-  return fetch(url, {
-    method: 'GET',
-    credentials: 'include'
-  })
-}
-
-function post (url: string, data?: object): Promise<Response> {
-  const headers = new Headers({'Content-Type': 'application/json'})
-  return fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: headers,
-    credentials: 'include'
-  }).then((res) => {
-    if (res.ok) {
-      return res
-    }
-    throw new Error(`${res.status}`)
-  })
-}
 
 
