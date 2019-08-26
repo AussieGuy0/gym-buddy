@@ -1,8 +1,7 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Index from "./pages/Index";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import Workouts from "./pages/Workouts";
 import {Navbar, Nav, NavbarBrand} from "react-bootstrap"
 import NavbarCollapse from "react-bootstrap/NavbarCollapse";
