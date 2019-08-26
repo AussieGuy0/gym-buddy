@@ -19,25 +19,24 @@ public class UserRepository extends Repository {
         super("users");
     }
 
-    public void addUser(String username, String password, String email) {
+    public void addUser(String email, String password) {
         try (Connection conn = db.getConnection();
-             PreparedStatement statement = conn.prepareStatement("INSERT INTO " + tableName + "(username, password, email) VALUES (?,?,?)")) {
-            statement.setString(1, username);
+             PreparedStatement statement = conn.prepareStatement("INSERT INTO " + tableName + "(email, password) VALUES (?,?,?)")) {
+            statement.setString(1, email);
             statement.setString(2, passwordHasher.hashPassword(password));
-            statement.setString(3, email);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Optional<InternalUserDetails> getUserByUsername(String username) {
+    public Optional<InternalUserDetails> getUserByEmail(String email) {
         try (Connection conn = db.getConnection();
-             PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + tableName + " WHERE username=?")) {
-            statement.setString(1, username);
+             PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + tableName + " WHERE email=?")) {
+            statement.setString(1, email);
             try (ResultSet results = statement.executeQuery()) {
                 if (results.next()) {
-                    return Optional.of(new InternalUserDetails(results.getInt("id"), results.getString("username"), results.getString("password"), results.getString("email")));
+                    return Optional.of(new InternalUserDetails(results.getInt("id"), results.getString("password"), results.getString("email")));
                 }
                 return Optional.empty();
             }

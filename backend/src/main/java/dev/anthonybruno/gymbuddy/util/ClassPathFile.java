@@ -1,7 +1,9 @@
 package dev.anthonybruno.gymbuddy.util;
 
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 
 public class ClassPathFile {
 
@@ -27,6 +29,14 @@ public class ClassPathFile {
 
     public URL asUrl() {
         return getClassLoader().getResource(location);
+    }
+
+    public Path asPath() {
+        try {
+            return Path.of(asUrl().toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ClassLoader getClassLoader() {

@@ -16,8 +16,8 @@ export interface Workout {
 
 export class Api {
 
-  static login (username: string, password: string): Promise<UserDetails> { //TODO: Look for a way to 'verify' against interface
-    return post('/auth/login', {username: username, password: password})
+  static login (email: string, password: string): Promise<UserDetails> { //TODO: Look for a way to 'verify' against interface
+    return post('/auth/login', {email: email, password: password})
       .then(res => {
         return res.json()
       })
@@ -34,8 +34,8 @@ export class Api {
     return post('/auth/logout')
   }
 
-  static register (username: string, password: string, email: string): Promise<any> {
-    return post('/api/v1/users', {username: username, password: password, email: email})
+  static register (email: string, password: string): Promise<any> {
+    return post('/api/v1/users', {password: password, email: email})
       .then(res => {
         return res.json()
       })

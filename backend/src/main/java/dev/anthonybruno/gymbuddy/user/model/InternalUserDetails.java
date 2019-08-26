@@ -7,8 +7,8 @@ public class InternalUserDetails extends UserDetails {
     @JsonIgnore
     private final String password;
 
-    public InternalUserDetails(long id, String username, String password, String email) {
-        super(id, username, email);
+    public InternalUserDetails(long id, String password, String email) {
+        super(id, email);
         this.password = password;
     }
 

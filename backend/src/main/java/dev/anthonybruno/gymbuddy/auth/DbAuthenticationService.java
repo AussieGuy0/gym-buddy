@@ -14,14 +14,17 @@ public class DbAuthenticationService implements AuthenticationService {
     private final PasswordHasher passwordHasher = new BcryptPasswordHasher();
 
     @Override
-    public Optional<UserDetails> login(String username, String password) {
-        Optional<InternalUserDetails> userDetails = userRepository.getUserByUsername(username);
-        if (userDetails.isPresent()) {
-           String hashedPw = userDetails.get().getPassword();
-           if (passwordHasher.checkPassword(hashedPw, password)) {
-               return Optional.of(userDetails.get());
-           }
+    public Optional<UserDetails> login(String email, String password) {
+        Optional<InternalUserDetails> userDetails = userRepository.getUserByEmail(email);
+        if (userDetails.isEmpty()) {
+            return Optional.empty();
         }
+
+        String hashedPw = userDetails.get().getPassword();
+        if (passwordHasher.checkPassword(hashedPw, password)) {
+            return Optional.of(userDetails.get());
+        }
+
         return Optional.empty();
     }
 }

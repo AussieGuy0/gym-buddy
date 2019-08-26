@@ -42,14 +42,15 @@ const NavigationBar: React.FC<any> = ({session, handleSuccessfulLogout}) => {
     return (
         <Navbar bg="light" expand="sm">
             <div className="container">
-                <NavbarBrand>Gym Buddy</NavbarBrand>
+                <LinkContainer to='/'>
+                    <NavbarBrand>Gym Buddy</NavbarBrand>
+                </LinkContainer>
                 <NavbarToggle aria-controls="basic-navbar-nav"/>
                 <NavbarCollapse id="basic-navbar-nav">
                     <Nav className="ml-auto">
                         {session.id !== null && (<NavigationLink path="/workouts" label="Workouts" />)}
                         {session.id !== null && (<NavLink onClick={logout}>Logout</NavLink>)}
                         {session.id === null && (<NavigationLink path="/login" label="Login" />)}
-                        {session.id === null && (<NavigationLink path="/register" label="Register" />)}
                     </Nav>
                 </NavbarCollapse>
             </div>
@@ -74,7 +75,6 @@ const App: React.FC = (props) => {
                 <div className="container">
                    <Route path="/" exact component={Index}/>
                    <Route path="/login/" render={() => (<Login handleSuccessfulLogin={handleSuccessfulLogin}/>)}/>
-                   <Route path="/register" component={Register}/>
                    <Route path="/workouts" render={() => (<Workouts session={session} />)}/>
                </div>
           </div>

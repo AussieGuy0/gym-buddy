@@ -29,7 +29,7 @@ public class UserController {
         if (!email.contains("@")) {
             throw new BadRequestException("Email (" + email + ") not a email format");
         }
-        userService.addUser(rego.getUsername(), password, email);
+        userService.addUser(email, password);
 
     }
 

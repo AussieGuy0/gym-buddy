@@ -15,7 +15,7 @@ A web based application to track workouts
 POST
 ```json
 {
-  "username": "username here",
+  "email": "email here",
   "password": "password here"
 }
 ```

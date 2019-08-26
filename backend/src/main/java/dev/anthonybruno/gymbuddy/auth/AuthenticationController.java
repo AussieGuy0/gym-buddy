@@ -24,9 +24,9 @@ public class AuthenticationController {
     public void login(Context context) {
         UserCredentials credentials = Json.intoClass(context.body(), UserCredentials.class);
         if (credentials == null) {
-            throw new IllegalStateException("Need username and password");
+            throw new IllegalStateException("Need email and password");
         }
-        UserDetails userDetails = this.authenticationService.login(credentials.getUsername(), credentials.getPassword())
+        UserDetails userDetails = this.authenticationService.login(credentials.getEmail(), credentials.getPassword())
                 .orElseThrow(() -> new BadRequestException("Incorrect details"));
 
         setSession(context, userDetails);

@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface AuthenticationService {
 
-    Optional<UserDetails> login(String username, String password);
+    Optional<UserDetails> login(String email, String password);
 
 }

@@ -3,16 +3,18 @@ package dev.anthonybruno.gymbuddy;
 import dev.anthonybruno.gymbuddy.db.Database;
 import dev.anthonybruno.gymbuddy.util.ClassPathFile;
 import io.javalin.Javalin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class Server {
 
-    public static final Properties SETTINGS = loadSettings("settings.properties");
-    public static final Database DATABASE = new Database(SETTINGS.getProperty("db.username"), SETTINGS.getProperty("db.password"), SETTINGS.getProperty("db.url"));
+    public static final Config CONFIG = new Config(new ClassPathFile("settings.properties").asPath());
+    public static final Database DATABASE = new Database(CONFIG.getDbUsername(), CONFIG.getDbPassword(), CONFIG.getDbUrl());
+
+    private static final Logger log = LoggerFactory.getLogger(Server.class);
     private final Javalin app = Javalin.create(config -> config.addStaticFiles("webapp"));
 
     public void start(int portNum) {
@@ -20,6 +22,9 @@ public class Server {
         app.start(portNum);
         Routes routes = new Routes(app);
         routes.setupEndpoints();
+        app.after((context) -> {
+           log.info(context.method() + " " +  context.path() + " " + context.status());
+        });
     }
 
     public void stop() {
@@ -33,17 +38,4 @@ public class Server {
         }
     }
 
-    private static Properties loadSettings(String location) {
-        ClassPathFile propertiesFile = new ClassPathFile(location);
-        if (!propertiesFile.exists()) {
-            throw new IllegalStateException("No properties file in path " + location);
-        }
-        Properties properties = new Properties();
-        try {
-            properties.load(propertiesFile.asStream());
-        } catch (IOException e) {
-            throw new RuntimeException("Could not read settings files", e);
-        }
-        return properties;
-    }
 }

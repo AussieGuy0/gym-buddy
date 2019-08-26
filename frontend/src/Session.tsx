@@ -1,3 +1,3 @@
 export interface Session {
-   id: number | null, username?: string
+   id: number | null, email?: string
 }

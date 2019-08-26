@@ -47,7 +47,7 @@ public class Routes {
         });
         app.exception(HttpException.class, (exception, ctx) -> {
             ctx.status(exception.getStatusCode());
-            ctx.json(exception);
+            ctx.json(exception.serialise());
         });
     }
 

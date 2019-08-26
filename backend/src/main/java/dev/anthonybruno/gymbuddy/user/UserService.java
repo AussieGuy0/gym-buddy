@@ -4,7 +4,7 @@ import dev.anthonybruno.gymbuddy.user.model.UserDetails;
 
 public interface UserService {
 
-    UserDetails addUser(String username, String password, String email);
+    UserDetails addUser(String email, String password);
 
     UserDetails editUser(long userId, UserDetails newDetails);
 
