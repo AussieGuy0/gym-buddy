@@ -1,17 +1,17 @@
-package dev.anthonybruno.gymbuddy.auth;
+package dev.anthonybruno.gymbuddy.auth
 
-import dev.anthonybruno.gymbuddy.user.model.UserDetails;
-import io.javalin.http.Context;
+import dev.anthonybruno.gymbuddy.user.UserDetails
+import io.javalin.http.Context
 
-public class SessionUtils {
+object SessionUtils {
 
-    public static String AUTH_ATTR_KEY = "auth";
+    var AUTH_ATTR_KEY = "auth"
 
-    public static void setSession(Context context, UserDetails userDetails) {
-        context.sessionAttribute(AUTH_ATTR_KEY, userDetails);
+    fun setSession(context: Context, userDetails: UserDetails) {
+        context.sessionAttribute(AUTH_ATTR_KEY, userDetails)
     }
 
-    public static UserDetails getSession(Context context) {
-        return context.sessionAttribute(AUTH_ATTR_KEY);
+    fun getSession(context: Context): UserDetails? {
+        return context.sessionAttribute<UserDetails>(AUTH_ATTR_KEY)
     }
 }

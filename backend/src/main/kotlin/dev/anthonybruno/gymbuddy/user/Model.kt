@@ -1,22 +1,16 @@
-package dev.anthonybruno.gymbuddy.user.model;
+package dev.anthonybruno.gymbuddy.user
 
-public class UserDetails {
+import com.fasterxml.jackson.annotation.JsonIgnore
 
-    private final long id;
-    private final String email;
+open class UserDetails(val id: Long, val email: String?) {
+    companion object {
 
-    public static UserDetails NOOP = new UserDetails(0,  null);
-
-    public UserDetails(long id,String email) {
-        this.id = id;
-        this.email = email;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
+        var NOOP = UserDetails(0, null)
     }
 }
+
+
+class InternalUserDetails(id: Long, @field:JsonIgnore val password: String, email: String) : UserDetails(id, email)
+
+
+data class UserRego(val password: String, val email: String)

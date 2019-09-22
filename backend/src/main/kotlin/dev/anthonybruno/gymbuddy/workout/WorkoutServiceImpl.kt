@@ -1,18 +1,14 @@
-package dev.anthonybruno.gymbuddy.workout;
+package dev.anthonybruno.gymbuddy.workout
 
-import java.util.List;
+class WorkoutServiceImpl : WorkoutService {
 
-public class WorkoutServiceImpl implements WorkoutService {
+    private val workoutRepository = WorkoutRepository()
 
-    private final WorkoutRepository workoutRepository = new WorkoutRepository();
-
-    @Override
-    public List<Workout> getWorkouts(int userId) {
-        return workoutRepository.getWorkouts(userId);
+    override fun getWorkouts(userId: Int): List<Workout> {
+        return workoutRepository.getWorkouts(userId)
     }
 
-    @Override
-    public Workout addWorkout(int userId, Workout workout) {
-        return workoutRepository.addWorkout(userId, workout);
+    override fun addWorkout(userId: Int, workout: Workout): Workout {
+        return workoutRepository.addWorkout(userId, workout)
     }
 }

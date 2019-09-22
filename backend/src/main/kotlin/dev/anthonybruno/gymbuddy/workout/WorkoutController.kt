@@ -1,58 +1,47 @@
-package dev.anthonybruno.gymbuddy.workout;
+package dev.anthonybruno.gymbuddy.workout
 
-import dev.anthonybruno.gymbuddy.exception.HttpException;
-import dev.anthonybruno.gymbuddy.exception.UnauthorisedException;
-import dev.anthonybruno.gymbuddy.user.model.UserDetails;
-import dev.anthonybruno.gymbuddy.util.json.Json;
-import dev.anthonybruno.gymbuddy.auth.SessionUtils;
-import io.javalin.http.Context;
+import dev.anthonybruno.gymbuddy.exception.HttpException
+import dev.anthonybruno.gymbuddy.exception.UnauthorisedException
+import dev.anthonybruno.gymbuddy.user.UserDetails
+import dev.anthonybruno.gymbuddy.util.json.Json
+import dev.anthonybruno.gymbuddy.auth.SessionUtils
+import io.javalin.http.Context
 
-import java.util.List;
+class WorkoutController @JvmOverloads constructor(private val workoutService: WorkoutService = WorkoutServiceImpl()) {
 
-public class WorkoutController {
 
-    private final WorkoutService workoutService;
-
-    public WorkoutController() {
-        this(new WorkoutServiceImpl());
+    fun addWorkout(context: Context) {
+        val userId = getUserIdFromRequest(context)
+        checkUserIsAccessingOwnWorkouts(userId, context)
+        val workout = Json.intoClass(context.body(), Workout::class.java)
+        val savedWorkout = workoutService.addWorkout(userId, workout)
+        context.json(savedWorkout)
     }
 
-    public WorkoutController(WorkoutService workoutService) {
-        this.workoutService = workoutService;
+    fun getWorkouts(context: Context) {
+        val userId = getUserIdFromRequest(context)
+        checkUserIsAccessingOwnWorkouts(userId, context)
+        val workouts = workoutService.getWorkouts(userId)
+        context.json(workouts)
     }
 
-
-    public void addWorkout(Context context) {
-        int userId = getUserIdFromRequest(context);
-        checkUserIsAccessingOwnWorkouts(userId, context);
-        Workout workout = Json.intoClass(context.body(), Workout.class);
-        Workout savedWorkout = workoutService.addWorkout(userId, workout);
-        context.json(savedWorkout);
-    }
-
-    public void getWorkouts(Context context) {
-        int userId = getUserIdFromRequest(context);
-        checkUserIsAccessingOwnWorkouts(userId, context);
-        List<Workout> workouts = workoutService.getWorkouts(userId);
-        context.json(workouts);
-    }
-
-    private void checkUserIsAccessingOwnWorkouts(int userId, Context context) {
-        UserDetails userDetails = SessionUtils.getSession(context);
-        if (userId != userDetails.getId()) {
-            throw new UnauthorisedException("Can't access someone else's workouts!");
+    private fun checkUserIsAccessingOwnWorkouts(userId: Int, context: Context) {
+        val userDetails = SessionUtils.getSession(context)
+        if (userId.toLong() != userDetails!!.id) {
+            throw UnauthorisedException("Can't access someone else's workouts!")
         }
     }
 
-    private int getUserIdFromRequest(Context context) {
-        String userId = context.pathParam("userId");
+    private fun getUserIdFromRequest(context: Context): Int {
+        val userId = context.pathParam("userId")
         if (userId.isEmpty()) {
-            throw new HttpException(400, "Need userId in path");
+            throw HttpException(400, "Need userId in path")
         }
         try {
-            return Integer.parseInt(userId);
-        } catch (NumberFormatException e) {
-            throw new HttpException(400, "userId provided is not a number!");
+            return Integer.parseInt(userId)
+        } catch (e: NumberFormatException) {
+            throw HttpException(400, "userId provided is not a number!")
         }
+
     }
 }

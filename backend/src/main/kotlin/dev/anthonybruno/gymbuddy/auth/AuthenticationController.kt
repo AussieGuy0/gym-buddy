@@ -1,50 +1,34 @@
-package dev.anthonybruno.gymbuddy.auth;
+package dev.anthonybruno.gymbuddy.auth
 
-import dev.anthonybruno.gymbuddy.exception.BadRequestException;
-import dev.anthonybruno.gymbuddy.user.model.UserDetails;
-import dev.anthonybruno.gymbuddy.util.json.Json;
-import io.javalin.http.Context;
-
-import static dev.anthonybruno.gymbuddy.auth.SessionUtils.getSession;
-import static dev.anthonybruno.gymbuddy.auth.SessionUtils.setSession;
-
-public class AuthenticationController {
+import dev.anthonybruno.gymbuddy.exception.BadRequestException
+import dev.anthonybruno.gymbuddy.user.UserDetails
+import dev.anthonybruno.gymbuddy.util.json.Json
+import io.javalin.http.Context
 
 
-    private final AuthenticationService authenticationService;
+class AuthenticationController @JvmOverloads constructor(private val authenticationService: AuthenticationService = DbAuthenticationService()) {
 
-    public AuthenticationController() {
-        this(new DbAuthenticationService());
+    fun login(context: Context) {
+        val (email, password) = context.body<UserCredentials>()
+        val userDetails = this.authenticationService.login(email, password)
+                ?: throw BadRequestException("Incorrect details")
+
+        SessionUtils.setSession(context, userDetails)
+        context.status(200)
+        context.json(userDetails)
     }
 
-    public AuthenticationController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+    fun logout(context: Context) {
+        SessionUtils.setSession(context, UserDetails.NOOP)
+        context.status(200)
     }
 
-    public void login(Context context) {
-        UserCredentials credentials = Json.intoClass(context.body(), UserCredentials.class);
-        if (credentials == null) {
-            throw new IllegalStateException("Need email and password");
-        }
-        UserDetails userDetails = this.authenticationService.login(credentials.getEmail(), credentials.getPassword())
-                .orElseThrow(() -> new BadRequestException("Incorrect details"));
-
-        setSession(context, userDetails);
-        context.status(200);
-        context.json(userDetails);
-    }
-
-    public void logout(Context context) {
-        setSession(context, UserDetails.NOOP);
-        context.status(200);
-    }
-
-    public void logCheck(Context context) {
-        UserDetails sessionDetails = getSession(context);
-        if (sessionDetails == null || sessionDetails == UserDetails.NOOP) {
-            context.status(401);
+    fun logCheck(context: Context) {
+        val sessionDetails = SessionUtils.getSession(context)
+        if (sessionDetails == null || sessionDetails === UserDetails.NOOP) {
+            context.status(401)
         } else {
-            context.json(getSession(context));
+            context.json(sessionDetails)
         }
     }
 

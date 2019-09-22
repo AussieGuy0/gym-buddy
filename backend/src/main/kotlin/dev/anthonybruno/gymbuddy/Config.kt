@@ -1,40 +1,35 @@
-package dev.anthonybruno.gymbuddy;
+package dev.anthonybruno.gymbuddy
 
-import dev.anthonybruno.gymbuddy.db.Database;
-import dev.anthonybruno.gymbuddy.util.ClassPathFile;
+import java.io.IOException
+import java.io.Reader
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.Properties
 
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Properties;
+class Config(propertiesPath: Path) {
 
-public class Config {
+    private val properties: Properties
 
-    private final Properties properties;
+    val dbUsername: String
+        get() = properties.getProperty("db.username")
 
-    public Config(Path propertiesPath) {
+    val dbPassword: String
+        get() = properties.getProperty("db.password")
+
+    val dbUrl: String
+        get() = properties.getProperty("db.url")
+
+    init {
         if (!Files.exists(propertiesPath)) {
-            throw new IllegalStateException("No properties file in path " + propertiesPath);
+            throw IllegalStateException("No properties file in path $propertiesPath")
         }
-        properties = new Properties();
-        try (Reader reader = Files.newBufferedReader(propertiesPath)) {
-            properties.load(reader);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not read settings files", e);
+        properties = Properties()
+        try {
+            Files.newBufferedReader(propertiesPath).use { reader -> properties.load(reader) }
+        } catch (e: IOException) {
+            throw RuntimeException("Could not read settings files", e)
         }
-    }
 
-    public String getDbUsername() {
-        return properties.getProperty("db.username");
-    }
-
-    public String getDbPassword() {
-        return properties.getProperty("db.password");
-    }
-
-    public String getDbUrl() {
-        return properties.getProperty("db.url");
     }
 
 

@@ -1,46 +1,35 @@
-package dev.anthonybruno.gymbuddy.util;
+package dev.anthonybruno.gymbuddy.util
 
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
+import java.io.InputStream
+import java.net.URISyntaxException
+import java.net.URL
+import java.nio.file.Path
+import java.nio.file.Paths
 
-public class ClassPathFile {
+class ClassPathFile @JvmOverloads constructor(private val location: String, private val context: Class<*> = ClassPathFile::class.java) {
 
-    private final Class<?> context;
-    private final String location;
+    private val classLoader: ClassLoader
+        get() = context.classLoader
 
-    public ClassPathFile(String location) {
-        this(location, ClassPathFile.class);
+    fun exists(): Boolean {
+        return asStream() != null
     }
 
-    public ClassPathFile(String location, Class<?> context) {
-        this.location = location;
-        this.context = context;
+    fun asStream(): InputStream? {
+        return classLoader.getResourceAsStream(location)
     }
 
-    public boolean exists() {
-        return asStream() != null;
+    fun asUrl(): URL? {
+        return classLoader.getResource(location)
     }
 
-    public InputStream asStream() {
-        return getClassLoader().getResourceAsStream(location);
-    }
-
-    public URL asUrl() {
-        return getClassLoader().getResource(location);
-    }
-
-    public Path asPath() {
+    fun asPath(): Path {
         try {
-            return Path.of(asUrl().toURI());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            return Paths.get(asUrl()!!.toURI())
+        } catch (e: URISyntaxException) {
+            throw RuntimeException(e)
         }
-    }
 
-    private ClassLoader getClassLoader() {
-        return context.getClassLoader();
     }
 
 

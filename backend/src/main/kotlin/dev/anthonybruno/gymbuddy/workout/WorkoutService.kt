@@ -1,10 +1,8 @@
-package dev.anthonybruno.gymbuddy.workout;
+package dev.anthonybruno.gymbuddy.workout
 
-import java.util.List;
+interface WorkoutService {
 
-public interface WorkoutService {
+    fun getWorkouts(userId: Int): List<Workout>
 
-    List<Workout> getWorkouts(int userId);
-
-    Workout addWorkout(int userId, Workout workout);
+    fun addWorkout(userId: Int, workout: Workout): Workout
 }

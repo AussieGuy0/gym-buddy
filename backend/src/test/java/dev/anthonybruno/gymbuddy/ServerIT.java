@@ -34,7 +34,7 @@ public class ServerIT {
     public void signIn() {
         given()
                 .contentType("application/json")
-                .body("{\"username\": \"user\", \"password\": \"password\"}")
+                .body("{\"email\": \"bla@example.org\", \"password\": \"password\"}")
                 .when()
                 .post(url + "/auth/login")
                 .then()

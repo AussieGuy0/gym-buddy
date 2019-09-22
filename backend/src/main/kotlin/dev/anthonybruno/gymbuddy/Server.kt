@@ -1,41 +1,44 @@
-package dev.anthonybruno.gymbuddy;
+package dev.anthonybruno.gymbuddy
 
-import dev.anthonybruno.gymbuddy.db.Database;
-import dev.anthonybruno.gymbuddy.util.ClassPathFile;
-import io.javalin.Javalin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import dev.anthonybruno.gymbuddy.db.Database
+import dev.anthonybruno.gymbuddy.util.ClassPathFile
+import io.javalin.Javalin
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.Connection
+import java.sql.SQLException
 
-public class Server {
+class Server {
+    private val app = Javalin.create { config -> config.addStaticFiles("webapp") }
 
-    public static final Config CONFIG = new Config(new ClassPathFile("settings.properties").asPath());
-    public static final Database DATABASE = new Database(CONFIG.getDbUsername(), CONFIG.getDbPassword(), CONFIG.getDbUrl());
-
-    private static final Logger log = LoggerFactory.getLogger(Server.class);
-    private final Javalin app = Javalin.create(config -> config.addStaticFiles("webapp"));
-
-    public void start(int portNum) {
-        attemptDatabaseConnection();
-        app.start(portNum);
-        Routes routes = new Routes(app);
-        routes.setupEndpoints();
-        app.after((context) -> {
-           log.info(context.method() + " " +  context.path() + " " + context.status());
-        });
+    fun start(portNum: Int) {
+        attemptDatabaseConnection()
+        app.start(portNum)
+        val routes = Routes(app)
+        routes.setupEndpoints()
+        app.after { context -> log.info(context.method() + " " + context.path() + " " + context.status()) }
     }
 
-    public void stop() {
-        app.stop();
+    fun stop() {
+        app.stop()
     }
 
-    private void attemptDatabaseConnection() {
-        try (Connection connection = DATABASE.getConnection()) {
-        } catch (SQLException e) {
-            throw new IllegalStateException("Could not connect to database!", e);
+    private fun attemptDatabaseConnection() {
+        try {
+            DATABASE.getConnection().use { connection -> }
+        } catch (e: SQLException) {
+            throw IllegalStateException("Could not connect to database!", e)
         }
+
+    }
+
+    companion object {
+
+        val CONFIG = Config(ClassPathFile("settings.properties").asPath())
+        val DATABASE = Database(CONFIG.dbUsername, CONFIG.dbPassword, CONFIG.dbUrl)
+
+        private val log = LoggerFactory.getLogger(Server::class.java)
     }
 
 }

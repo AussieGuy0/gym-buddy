@@ -1,8 +1,3 @@
-package dev.anthonybruno.gymbuddy.exception;
+package dev.anthonybruno.gymbuddy.exception
 
-public class BadRequestException extends HttpException {
-
-    public BadRequestException(String message) {
-        super(400, message);
-    }
-}
+class BadRequestException(message: String) : HttpException(400, message)

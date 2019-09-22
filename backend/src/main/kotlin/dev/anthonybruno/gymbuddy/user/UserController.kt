@@ -1,54 +1,42 @@
-package dev.anthonybruno.gymbuddy.user;
+package dev.anthonybruno.gymbuddy.user
 
-import dev.anthonybruno.gymbuddy.exception.BadRequestException;
-import dev.anthonybruno.gymbuddy.user.model.UserDetails;
-import dev.anthonybruno.gymbuddy.user.model.UserRego;
-import dev.anthonybruno.gymbuddy.util.json.Json;
-import io.javalin.http.Context;
+import dev.anthonybruno.gymbuddy.exception.BadRequestException
+import dev.anthonybruno.gymbuddy.util.json.Json
+import io.javalin.http.Context
 
-public class UserController {
+class UserController constructor(private val userService: UserService = UserServiceImpl()) {
 
-    private final UserService userService;
-
-    public UserController() {
-        this(new UserServiceImpl());
-    }
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    public void addUser(Context context) {
-        UserRego rego = Json.intoClass(context.body(), UserRego.class);
-        String password = rego.getPassword();
-        if (password.length() < 8) {
-            throw new BadRequestException("Password must be at least 8 characters long");
+    fun addUser(context: Context) {
+        val rego = Json.intoClass(context.body(), UserRego::class.java)
+        val password = rego.password
+        if (password.length < 8) {
+            throw BadRequestException("Password must be at least 8 characters long")
         }
 
-        String email = rego.getEmail();
+        val email = rego.email
         if (!email.contains("@")) {
-            throw new BadRequestException("Email (" + email + ") not a email format");
+            throw BadRequestException("Email ($email) not a email format")
         }
-        userService.addUser(email, password);
+        userService.addUser(email, password)
 
     }
 
-    public void editUser(Context context) {
-        throw new UnsupportedOperationException();
+    fun editUser(context: Context) {
+        throw UnsupportedOperationException()
     }
 
-    public void deleteUser(Context context) {
-        long userId = getUserIdFromRequest(context);
-        userService.deleteUser(userId);
+    fun deleteUser(context: Context) {
+        val userId = getUserIdFromRequest(context)
+        userService.deleteUser(userId)
     }
 
-    public void getUser(Context context) {
-        long userId = getUserIdFromRequest(context);
-        UserDetails userDetails = userService.getUser(userId);
-        context.json(userDetails);
+    fun getUser(context: Context) {
+        val userId = getUserIdFromRequest(context)
+        val userDetails = userService.getUser(userId)
+        context.json(userDetails)
     }
 
-    private long getUserIdFromRequest(Context context) {
-        return Long.parseLong(context.pathParam("userId"));
+    private fun getUserIdFromRequest(context: Context): Long {
+        return java.lang.Long.parseLong(context.pathParam("userId"))
     }
 }

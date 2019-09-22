@@ -1,8 +1,3 @@
-package dev.anthonybruno.gymbuddy.exception;
+package dev.anthonybruno.gymbuddy.exception
 
-public class UnauthorisedException extends HttpException {
-
-    public UnauthorisedException(String message) {
-        super(401, message);
-    }
-}
+class UnauthorisedException(message: String) : HttpException(401, message)

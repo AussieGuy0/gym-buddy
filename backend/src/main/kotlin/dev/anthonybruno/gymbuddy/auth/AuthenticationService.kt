@@ -1,12 +1,10 @@
-package dev.anthonybruno.gymbuddy.auth;
+package dev.anthonybruno.gymbuddy.auth
 
 
-import dev.anthonybruno.gymbuddy.user.model.UserDetails;
+import dev.anthonybruno.gymbuddy.user.UserDetails
 
-import java.util.Optional;
+interface AuthenticationService {
 
-public interface AuthenticationService {
-
-    Optional<UserDetails> login(String email, String password);
+    fun login(email: String, password: String): UserDetails?
 
 }

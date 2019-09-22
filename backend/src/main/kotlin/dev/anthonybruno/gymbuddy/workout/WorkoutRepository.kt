@@ -1,54 +1,68 @@
-package dev.anthonybruno.gymbuddy.workout;
+package dev.anthonybruno.gymbuddy.workout
 
-import dev.anthonybruno.gymbuddy.common.Repository;
-import dev.anthonybruno.gymbuddy.util.IOUtils;
+import dev.anthonybruno.gymbuddy.common.Repository
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*
+import java.time.LocalDate
+import java.util.ArrayList
 
-public class WorkoutRepository extends Repository {
-
-    public WorkoutRepository() {
-        super("workouts");
-    }
+class WorkoutRepository : Repository("workouts") {
 
 
-    public List<Workout> getWorkouts(int userId) {
-        List<Workout> workouts = new ArrayList<>();
-        ResultSet results = null;
-        try (Connection conn = db.getConnection();
-             PreparedStatement statement = conn.prepareStatement("SELECT * FROM " +  tableName + " WHERE user_id = ?")) {
-            statement.setInt(1, userId);
-            results = statement.executeQuery();
-            while (results.next()) {
-                Workout workout = new Workout(results.getInt("id"),
-                        results.getDate("date"),
-                        results.getString("title"),
-                        results.getString("description"));
-                workouts.add(workout);
+    fun getWorkouts(userId: Int): List<Workout> {
+        val workouts = ArrayList<Workout>()
+        db.getConnection().use { conn ->
+            conn.prepareStatement("SELECT * FROM $tableName WHERE user_id = ?").use { statement ->
+                statement.setInt(1, userId)
+                statement.executeQuery().use { resultSet ->
+                    while (resultSet.next()) {
+                        workouts.add(mapWorkoutFromResultSet(resultSet))
+                    }
+                }
+                return workouts
             }
-            return workouts;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeNoException(results);
+        }
+    }
+
+    fun getWorkout(workoutId: Int): Workout? {
+        db.getConnection().use { conn ->
+            conn.prepareStatement("SELECT * FROM $tableName WHERE id = ?").use { statement ->
+                statement.setInt(1, workoutId)
+                statement.executeQuery().use { resultSet ->
+                    return if (resultSet.next()) {
+                        mapWorkoutFromResultSet(resultSet)
+                    } else {
+                        null
+                    }
+                }
+            }
         }
 
     }
 
-    public Workout addWorkout(int userId, Workout workout) {
-        try (Connection conn = db.getConnection();
-             PreparedStatement statement = conn.prepareStatement("INSERT INTO " + tableName + "(user_id, title, description, date) VALUES (?,?,?,?) RETURNING id")) {
-            statement.setInt(1, userId);
-            statement.setString(2, workout.getTitle());
-            statement.setString(3, workout.getDescription());
-            statement.setDate(4, new Date(workout.getDate().getTime()));
-            statement.executeQuery();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    fun addWorkout(userId: Int, workout: Workout): Workout {
+        var id = -1;
+        db.getConnection().use { conn ->
+            conn.prepareStatement("INSERT INTO $tableName(user_id, title, description, date) VALUES (?,?,?,?) RETURNING id").use { statement ->
+                statement.setInt(1, userId)
+                statement.setString(2, workout.title)
+                statement.setString(3, workout.description)
+                statement.setString(4, workout.date.toString())
+                val result = statement.executeQuery()
+                if (result.next()) {
+                    id = result.getInt(0)
+                }
+            }
         }
 
-        return null;
+        val workout = getWorkout(id)
+        return workout!!
+    }
+
+    private fun mapWorkoutFromResultSet(resultSet: ResultSet): Workout {
+        return Workout(resultSet.getInt("id"),
+                LocalDate.parse(resultSet.getString("date")),
+                resultSet.getString("title"),
+                resultSet.getString("description"))
     }
 }

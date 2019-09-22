@@ -1,29 +1,23 @@
-package dev.anthonybruno.gymbuddy.user;
+package dev.anthonybruno.gymbuddy.user
 
-import dev.anthonybruno.gymbuddy.user.model.UserDetails;
+class UserServiceImpl : UserService {
 
-public class UserServiceImpl implements UserService {
+    private var userRepository = UserRepository()
 
-    UserRepository userRepository = new UserRepository();
-
-    @Override
-    public UserDetails addUser(String email, String password) {
-        userRepository.addUser(email, password);
-        return new UserDetails(0, email);
+    override fun addUser(email: String, password: String): UserDetails {
+        userRepository.addUser(email, password)
+        return UserDetails(0, email)
     }
 
-    @Override
-    public UserDetails editUser(long userId, UserDetails newDetails) {
-        throw new UnsupportedOperationException();
+    override fun editUser(userId: Long, newDetails: UserDetails): UserDetails {
+        throw UnsupportedOperationException()
     }
 
-    @Override
-    public UserDetails getUser(long userId) {
-        throw new UnsupportedOperationException();
+    override fun getUser(userId: Long): UserDetails {
+        throw UnsupportedOperationException()
     }
 
-    @Override
-    public void deleteUser(long userId) {
-        throw new UnsupportedOperationException();
+    override fun deleteUser(userId: Long) {
+        throw UnsupportedOperationException()
     }
 }

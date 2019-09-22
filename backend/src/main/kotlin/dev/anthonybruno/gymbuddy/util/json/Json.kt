@@ -1,39 +1,44 @@
-package dev.anthonybruno.gymbuddy.util.json;
+package dev.anthonybruno.gymbuddy.util.json
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ArrayNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 
-import java.io.IOException;
+import java.io.IOException
 
-public class Json {
+class Json(json: String) {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private val jsonNode: JsonNode
 
-    private final JsonNode jsonNode;
-
-    public Json(String json)  {
+    init {
         try {
-            jsonNode = objectMapper.readTree(json);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
+            jsonNode = objectMapper.readTree(json)
+        } catch (e: IOException) {
+            throw IllegalStateException(e)
         }
+
     }
 
-    public ObjectNode asObject() {
-        return (ObjectNode) jsonNode;
+    fun asObject(): ObjectNode {
+        return jsonNode as ObjectNode
     }
 
-    public ArrayNode asArray() {
-        return (ArrayNode) jsonNode;
+    fun asArray(): ArrayNode {
+        return jsonNode as ArrayNode
     }
 
-    public static <T> T intoClass(String json, Class<T> c) {
-        try {
-            return objectMapper.readValue(json, c);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    companion object {
+
+        private val objectMapper = ObjectMapper()
+
+        fun <T> intoClass(json: String, c: Class<T>): T {
+            try {
+                return objectMapper.readValue(json, c)
+            } catch (e: IOException) {
+                throw RuntimeException(e)
+            }
+
         }
     }
 

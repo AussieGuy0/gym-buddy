@@ -1,30 +1,21 @@
-package dev.anthonybruno.gymbuddy.auth;
+package dev.anthonybruno.gymbuddy.auth
 
-import dev.anthonybruno.gymbuddy.auth.password.BcryptPasswordHasher;
-import dev.anthonybruno.gymbuddy.auth.password.PasswordHasher;
-import dev.anthonybruno.gymbuddy.user.UserRepository;
-import dev.anthonybruno.gymbuddy.user.model.InternalUserDetails;
-import dev.anthonybruno.gymbuddy.user.model.UserDetails;
+import dev.anthonybruno.gymbuddy.auth.password.BcryptPasswordHasher
+import dev.anthonybruno.gymbuddy.user.UserRepository
+import dev.anthonybruno.gymbuddy.user.UserDetails
 
-import java.util.Optional;
+class DbAuthenticationService : AuthenticationService {
 
-public class DbAuthenticationService implements AuthenticationService {
+    private val userRepository = UserRepository()
+    private val passwordHasher = BcryptPasswordHasher()
 
-    private final UserRepository userRepository = new UserRepository();
-    private final PasswordHasher passwordHasher = new BcryptPasswordHasher();
+    override fun login(email: String, password: String): UserDetails? {
+        val userDetails = userRepository.getUserByEmail(email) ?: return null
 
-    @Override
-    public Optional<UserDetails> login(String email, String password) {
-        Optional<InternalUserDetails> userDetails = userRepository.getUserByEmail(email);
-        if (userDetails.isEmpty()) {
-            return Optional.empty();
-        }
+        val hashedPw = userDetails.password
+        return if (passwordHasher.checkPassword(hashedPw, password)) {
+            return userDetails
+        } else null
 
-        String hashedPw = userDetails.get().getPassword();
-        if (passwordHasher.checkPassword(hashedPw, password)) {
-            return Optional.of(userDetails.get());
-        }
-
-        return Optional.empty();
     }
 }

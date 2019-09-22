@@ -1,9 +1,10 @@
-package dev.anthonybruno.gymbuddy;
+package dev.anthonybruno.gymbuddy
 
-public class StartServer {
+object StartServer {
 
-    public static void main(String[] args) {
-        Server server = new Server();
-        server.start(8000);
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val server = Server()
+        server.start(8000)
     }
 }

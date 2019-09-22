@@ -1,15 +1,13 @@
-package dev.anthonybruno.gymbuddy.user;
+package dev.anthonybruno.gymbuddy.user
 
-import dev.anthonybruno.gymbuddy.user.model.UserDetails;
+interface UserService {
 
-public interface UserService {
+    fun addUser(email: String, password: String): UserDetails
 
-    UserDetails addUser(String email, String password);
+    fun editUser(userId: Long, newDetails: UserDetails): UserDetails
 
-    UserDetails editUser(long userId, UserDetails newDetails);
+    fun getUser(userId: Long): UserDetails
 
-    UserDetails getUser(long userId);
-
-    void deleteUser(long userId);
+    fun deleteUser(userId: Long)
 
 }
