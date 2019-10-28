@@ -12,7 +12,7 @@ class UserRepository : Repository("users") {
     fun addUser(email: String, password: String) {
         try {
             db.getConnection().use { conn ->
-                conn.prepareStatement("INSERT INTO $tableName(email, password) VALUES (?,?,?)").use { statement ->
+                conn.prepareStatement("INSERT INTO $tableName(email, password) VALUES (?,?)").use { statement ->
                     statement.setString(1, email)
                     statement.setString(2, passwordHasher.hashPassword(password))
                     statement.executeUpdate()

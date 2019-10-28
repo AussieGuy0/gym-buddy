@@ -3,6 +3,8 @@ package dev.anthonybruno.gymbuddy
 import dev.anthonybruno.gymbuddy.auth.AuthenticationController
 import dev.anthonybruno.gymbuddy.exception.HttpException
 import dev.anthonybruno.gymbuddy.user.UserController
+import dev.anthonybruno.gymbuddy.user.UserServiceImpl
+import dev.anthonybruno.gymbuddy.workout.ExerciseController
 import dev.anthonybruno.gymbuddy.workout.WorkoutController
 
 import io.javalin.Javalin
@@ -15,6 +17,7 @@ class Routes(private val app: Javalin) {
     private val authenticationController = AuthenticationController()
     private val userController = UserController()
     private val workoutController = WorkoutController()
+    private val exerciseController = ExerciseController()
 
     fun setupEndpoints() {
         app.routes {
@@ -36,6 +39,9 @@ class Routes(private val app: Javalin) {
                             get { workoutController.getWorkouts(it) }
                         }
                     }
+                }
+                path("/exercises") {
+                    get { exerciseController.getExercises(it) }
                 }
             }
         }

@@ -2,6 +2,7 @@ package dev.anthonybruno.gymbuddy.auth
 
 import dev.anthonybruno.gymbuddy.exception.BadRequestException
 import dev.anthonybruno.gymbuddy.user.UserDetails
+import dev.anthonybruno.gymbuddy.user.noopUserDetails
 import dev.anthonybruno.gymbuddy.util.json.Json
 import io.javalin.http.Context
 
@@ -19,13 +20,13 @@ class AuthenticationController @JvmOverloads constructor(private val authenticat
     }
 
     fun logout(context: Context) {
-        SessionUtils.setSession(context, UserDetails.NOOP)
+        SessionUtils.setSession(context, noopUserDetails)
         context.status(200)
     }
 
     fun logCheck(context: Context) {
         val sessionDetails = SessionUtils.getSession(context)
-        if (sessionDetails == null || sessionDetails === UserDetails.NOOP) {
+        if (sessionDetails == null || sessionDetails === noopUserDetails) {
             context.status(401)
         } else {
             context.json(sessionDetails)

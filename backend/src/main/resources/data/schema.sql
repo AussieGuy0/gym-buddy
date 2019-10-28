@@ -1,15 +1,19 @@
+DROP TABLE IF EXISTS workout_exercises;
+DROP TABLE IF EXISTS exercises;
+DROP TABLE IF EXISTS workouts;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
-  id SERIAL UNIQUE PRIMARY KEY ,
-  password VARCHAR(60) NOT NULL,
-  email VARCHAR(150) NOT NULL UNIQUE
+  id SERIAL UNIQUE PRIMARY KEY,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE workouts (
   id SERIAL UNIQUE PRIMARY KEY,
   user_id INTEGER NOT NULL,
-  title VARCHAR(100) NOT NULL,
-  description TEXT,
+  title VARCHAR(100) NULL,
+  description TEXT NULL,
   date TIMESTAMP NOT NULL,
   FOREIGN KEY(user_id) REFERENCES users(id)
 );
@@ -24,8 +28,11 @@ CREATE TABLE exercises (
 CREATE TABLE workout_exercises (
    id SERIAL UNIQUE PRIMARY KEY,
    workout_id INTEGER,
-   exercise_id exercises,
+   exercise_id INTEGER,
    weight INTEGER NULL,
    FOREIGN KEY(workout_id) references workouts(id),
    FOREIGN KEY (exercise_id) references exercises(id)
-)
+);
+
+CREATE INDEX idx_user_email
+ON users(email)

@@ -2,7 +2,7 @@ package dev.anthonybruno.gymbuddy.workout
 
 interface WorkoutService {
 
-    fun getWorkouts(userId: Int): List<Workout>
+    fun getWorkouts(userId: Long): List<Workout>
 
-    fun addWorkout(userId: Int, workout: Workout): Workout
+    fun addWorkout(userId: Long, workout: Workout): Workout
 }

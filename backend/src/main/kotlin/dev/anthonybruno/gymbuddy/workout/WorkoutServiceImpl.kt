@@ -4,11 +4,11 @@ class WorkoutServiceImpl : WorkoutService {
 
     private val workoutRepository = WorkoutRepository()
 
-    override fun getWorkouts(userId: Int): List<Workout> {
+    override fun getWorkouts(userId: Long): List<Workout> {
         return workoutRepository.getWorkouts(userId)
     }
 
-    override fun addWorkout(userId: Int, workout: Workout): Workout {
+    override fun addWorkout(userId: Long, workout: Workout): Workout {
         return workoutRepository.addWorkout(userId, workout)
     }
 }

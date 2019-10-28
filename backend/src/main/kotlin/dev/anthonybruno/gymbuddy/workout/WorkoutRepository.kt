@@ -9,11 +9,11 @@ import java.util.ArrayList
 class WorkoutRepository : Repository("workouts") {
 
 
-    fun getWorkouts(userId: Int): List<Workout> {
+    fun getWorkouts(userId: Long): List<Workout> {
         val workouts = ArrayList<Workout>()
         db.getConnection().use { conn ->
             conn.prepareStatement("SELECT * FROM $tableName WHERE user_id = ?").use { statement ->
-                statement.setInt(1, userId)
+                statement.setLong(1, userId)
                 statement.executeQuery().use { resultSet ->
                     while (resultSet.next()) {
                         workouts.add(mapWorkoutFromResultSet(resultSet))
@@ -40,11 +40,11 @@ class WorkoutRepository : Repository("workouts") {
 
     }
 
-    fun addWorkout(userId: Int, workout: Workout): Workout {
+    fun addWorkout(userId: Long, workout: Workout): Workout {
         var id = -1;
         db.getConnection().use { conn ->
             conn.prepareStatement("INSERT INTO $tableName(user_id, title, description, date) VALUES (?,?,?,?) RETURNING id").use { statement ->
-                statement.setInt(1, userId)
+                statement.setLong(1, userId)
                 statement.setString(2, workout.title)
                 statement.setString(3, workout.description)
                 statement.setString(4, workout.date.toString())
@@ -54,15 +54,14 @@ class WorkoutRepository : Repository("workouts") {
                 }
             }
         }
-
-        val workout = getWorkout(id)
-        return workout!!
+        return getWorkout(id)!!
     }
 
     private fun mapWorkoutFromResultSet(resultSet: ResultSet): Workout {
         return Workout(resultSet.getInt("id"),
-                LocalDate.parse(resultSet.getString("date")),
+                resultSet.getDate("date").toInstant(),
                 resultSet.getString("title"),
-                resultSet.getString("description"))
+                resultSet.getString("description"),
+                listOf())
     }
 }
