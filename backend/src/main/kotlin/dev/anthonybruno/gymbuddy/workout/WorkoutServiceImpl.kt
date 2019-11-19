@@ -8,7 +8,7 @@ class WorkoutServiceImpl : WorkoutService {
         return workoutRepository.getWorkouts(userId)
     }
 
-    override fun addWorkout(userId: Long, workout: Workout): Workout {
+    override fun addWorkout(userId: Long, workout: AddWorkout): Workout {
         return workoutRepository.addWorkout(userId, workout)
     }
 }

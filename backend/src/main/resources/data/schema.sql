@@ -29,6 +29,8 @@ CREATE TABLE workout_exercises (
    id SERIAL UNIQUE PRIMARY KEY,
    workout_id INTEGER,
    exercise_id INTEGER,
+   sets INTEGER NOT NULL,
+   reps INTEGER NOT NULL,
    weight INTEGER NULL,
    FOREIGN KEY(workout_id) references workouts(id),
    FOREIGN KEY (exercise_id) references exercises(id)

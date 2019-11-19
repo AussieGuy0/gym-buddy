@@ -4,5 +4,5 @@ interface WorkoutService {
 
     fun getWorkouts(userId: Long): List<Workout>
 
-    fun addWorkout(userId: Long, workout: Workout): Workout
+    fun addWorkout(userId: Long, workout: AddWorkout): Workout
 }

@@ -2,7 +2,9 @@ package dev.anthonybruno.gymbuddy
 
 import dev.anthonybruno.gymbuddy.db.Database
 import dev.anthonybruno.gymbuddy.util.ClassPathFile
+import dev.anthonybruno.gymbuddy.util.json.objectMapper
 import io.javalin.Javalin
+import io.javalin.plugin.json.JavalinJackson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -18,6 +20,7 @@ class Server {
         val routes = Routes(app)
         routes.setupEndpoints()
         app.after { context -> log.info(context.method() + " " + context.path() + " " + context.status()) }
+        JavalinJackson.configure(objectMapper)
     }
 
     fun stop() {

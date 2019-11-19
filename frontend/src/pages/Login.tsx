@@ -10,7 +10,6 @@ const Login: React.FC<any> = ({handleSuccessfulLogin}) => {
             .then((userDetails) => {
                 handleSuccessfulLogin(userDetails)
             }).catch((err) => {
-                //TODO: Handle error message somewhere
                 console.warn(err)
         })
     }
@@ -20,7 +19,7 @@ const Login: React.FC<any> = ({handleSuccessfulLogin}) => {
             <h1>Login</h1>
             <form onSubmit={handleLogin}>
                 <div className='form-group'>
-                    <label htmlFor='email'> Email</label>
+                    <label htmlFor='email'>Email</label>
                     <input className='form-control' type='email' id='email' value={email} onChange={(evt) => setEmail(evt.target.value)}/>
                 </div>
                 <div className='form-group'>

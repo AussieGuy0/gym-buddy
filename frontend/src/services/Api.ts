@@ -6,11 +6,18 @@ export interface UserDetails {
   password: string
 }
 
-
 export interface Workout {
+  id: number
   date: string,
   title: string,
   description: string
+}
+
+export interface Exercise {
+  id: number,
+  name: string,
+  description: string,
+  mainMuscle: string,
 }
 
 
@@ -48,11 +55,18 @@ export class Api {
       })
   }
 
-  static addWorkout (userId: number, title: string, description: string, date: Date): Promise<any> {
-    return post(`/api/v1/user/${userId}/workouts`, {title: title, description: description, date: date})
+  static addWorkout (userId: number, title: string, description: string, exercises: Array<object>): Promise<any> {
+    return post(`/api/v1/users/${userId}/workouts`, {title: title, description: description, exercises: exercises})
       .then(res => {
         return res.json()
       })
+  }
+
+  static getExercises (): Promise<Array<Exercise>> {
+    return get(`/api/v1/exercises`)
+        .then(res => {
+          return res.json()
+        })
   }
 
 }
