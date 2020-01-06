@@ -2,7 +2,7 @@ import React, {useEffect, useState, Fragment} from 'react'
 import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
 import Index from "./pages/Index"
 import Login from "./pages/Login"
-import Workouts from "./pages/Workouts"
+import Workouts from "./pages/workouts/Workouts"
 import {Navbar, Nav, NavbarBrand} from "react-bootstrap"
 import NavbarCollapse from "react-bootstrap/NavbarCollapse"
 import NavbarToggle from "react-bootstrap/NavbarToggle"
@@ -22,6 +22,7 @@ interface NavigationLinkProps {
 
 interface NavigationBarProps {
     session: Session,
+
     handleSuccessfulLogout(): void
 }
 
@@ -68,25 +69,26 @@ interface PrivateRouteProps {
     session: Session
     children: React.ReactNode
 }
+
 const PrivateRoute: React.FC<PrivateRouteProps> = ({session, children}) => {
     return (
         <Fragment>
-            { session.id != null ? children : <Redirect to='/login'/>}
+            {session.id != null ? children : <Redirect to='/login'/>}
         </Fragment>
     )
 
 }
 
 const App: React.FC = (props) => {
-    const noSession: Session = {id: null}
+    const noSession: Session = {id: null, loaded: false}
     const [session, setSession] = useState<Session>(noSession)
 
     function handleSuccessfulLogin(session: Session): void {
-        setSession(session)
+        setSession({...session, loaded: true})
     }
 
     function handleSuccessfulLogout(): void {
-        setSession(noSession)
+        setSession({id: null, loaded: true})
     }
 
     useEffect(() => {
@@ -100,24 +102,29 @@ const App: React.FC = (props) => {
     }, [])
     return (
         <Router>
-            <div>
-                <NavigationBar session={session} handleSuccessfulLogout={handleSuccessfulLogout}/>
-                <Switch>
-                    <div className="container">
-                        <Route path="/" exact>
-                            <Index/>
-                        </Route>
-                        <Route path="/login/">
-                            <Login handleSuccessfulLogin={handleSuccessfulLogin}/>
-                        </Route>
-                        <PrivateRoute session={session}>
-                            <Route path="/workouts">
-                                <Workouts session={session}/>
+            { session.loaded &&
+            (
+                <div>
+                    <NavigationBar session={session} handleSuccessfulLogout={handleSuccessfulLogout}/>
+                    <Switch>
+                        <div className="container">
+                            <Route path="/" exact>
+                                <Index/>
                             </Route>
-                        </PrivateRoute>
-                    </div>
-                </Switch>
-            </div>
+                            <Route path="/login/">
+                                <Login handleSuccessfulLogin={handleSuccessfulLogin}/>
+                            </Route>
+                            <PrivateRoute session={session}>
+                                <Route path="/workouts">
+                                    <Workouts session={session}/>
+                                </Route>
+                            </PrivateRoute>
+                        </div>
+                    </Switch>
+                </div>
+            )
+            }
+
         </Router>
     )
 }
