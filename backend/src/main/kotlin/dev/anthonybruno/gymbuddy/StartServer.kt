@@ -4,7 +4,7 @@ import dev.anthonybruno.gymbuddy.util.ClassPathFile
 
 object StartServer {
 
-    private val CONFIG = if (System.getenv("stage") == "production") {
+    private val CONFIG = if (System.getenv("STAGE") == "production") {
         EnvPropertiesConfig()
     } else {
         FileConfig(ClassPathFile("settings.properties").asPath())
