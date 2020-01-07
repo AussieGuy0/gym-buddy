@@ -1,22 +1,35 @@
 package dev.anthonybruno.gymbuddy
 
 import java.io.IOException
-import java.io.Reader
+import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.Properties
+import java.util.*
 
-class Config(propertiesPath: Path) {
+interface Config {
 
-    private val properties: Properties
+    val port: Int
 
     val dbUsername: String
-        get() = properties.getProperty("db.username")
 
     val dbPassword: String
-        get() = properties.getProperty("db.password")
 
     val dbUrl: String
+}
+
+class FileConfig(propertiesPath: Path): Config {
+
+    private val properties: Properties
+    override val port: Int
+        get() = Integer.parseInt(properties.getProperty("port"))
+
+    override val dbUsername: String
+        get() = properties.getProperty("db.username")
+
+    override val dbPassword: String
+        get() = properties.getProperty("db.password")
+
+    override val dbUrl: String
         get() = properties.getProperty("db.url")
 
     init {
@@ -31,6 +44,24 @@ class Config(propertiesPath: Path) {
         }
 
     }
+}
+
+class EnvPropertiesConfig(): Config {
+
+    override val port: Int
+        get() = Integer.parseInt(System.getenv("PORT"))
+
+    override val dbUsername: String
+    override val dbPassword: String
+    override val dbUrl: String
 
 
+    init {
+        val dbUri = URI(System.getenv("DATABASE_URL"))
+
+        dbUsername = dbUri.userInfo.split(":")[0]
+        dbPassword = dbUri.userInfo.split(":")[1]
+        dbUrl = "jdbc:postgresql://" + dbUri.host + dbUri.path
+
+    }
 }

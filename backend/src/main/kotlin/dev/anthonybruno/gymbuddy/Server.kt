@@ -5,10 +5,8 @@ import dev.anthonybruno.gymbuddy.util.ClassPathFile
 import dev.anthonybruno.gymbuddy.util.json.objectMapper
 import io.javalin.Javalin
 import io.javalin.plugin.json.JavalinJackson
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import java.sql.Connection
 import java.sql.SQLException
 
 class Server {
@@ -38,7 +36,12 @@ class Server {
 
     companion object {
 
-        val CONFIG = Config(ClassPathFile("settings.properties").asPath())
+
+        private val CONFIG = if (System.getProperty("stage") == "production") {
+            EnvPropertiesConfig()
+        } else {
+            FileConfig(ClassPathFile("settings.properties").asPath())
+        }
         val DATABASE = Database(CONFIG.dbUsername, CONFIG.dbPassword, CONFIG.dbUrl)
 
         private val log = LoggerFactory.getLogger(Server::class.java)
