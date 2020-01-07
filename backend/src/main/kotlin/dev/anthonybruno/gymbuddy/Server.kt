@@ -1,5 +1,6 @@
 package dev.anthonybruno.gymbuddy
 
+import dev.anthonybruno.gymbuddy.StartServer.CONFIG
 import dev.anthonybruno.gymbuddy.db.Database
 import dev.anthonybruno.gymbuddy.util.ClassPathFile
 import dev.anthonybruno.gymbuddy.util.json.objectMapper
@@ -36,12 +37,6 @@ class Server {
 
     companion object {
 
-
-        private val CONFIG = if (System.getProperty("stage") == "production") {
-            EnvPropertiesConfig()
-        } else {
-            FileConfig(ClassPathFile("settings.properties").asPath())
-        }
         val DATABASE = Database(CONFIG.dbUsername, CONFIG.dbPassword, CONFIG.dbUrl)
 
         private val log = LoggerFactory.getLogger(Server::class.java)
