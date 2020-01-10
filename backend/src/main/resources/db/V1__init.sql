@@ -1,8 +1,3 @@
-DROP TABLE IF EXISTS workout_exercises;
-DROP TABLE IF EXISTS exercises;
-DROP TABLE IF EXISTS workouts;
-DROP TABLE IF EXISTS users;
-
 CREATE TABLE users (
   id SERIAL UNIQUE PRIMARY KEY,
   email VARCHAR(150) NOT NULL UNIQUE,
@@ -36,5 +31,4 @@ CREATE TABLE workout_exercises (
    FOREIGN KEY (exercise_id) references exercises(id)
 );
 
-CREATE INDEX idx_user_email
-ON users(email)
+CREATE INDEX idx_user_email ON users(email)
