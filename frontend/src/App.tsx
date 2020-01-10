@@ -97,7 +97,7 @@ const App: React.FC = (props) => {
                 handleSuccessfulLogin(json)
             })
             .catch((err) => {
-                console.error(err)
+                handleSuccessfulLogout()
             })
     }, [])
     return (

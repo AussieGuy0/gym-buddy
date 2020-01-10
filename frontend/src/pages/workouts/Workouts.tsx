@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react"
-import {Api, Exercise, Workout} from "../../services/Api"
+import {Api, Workout} from "../../services/Api"
 import {Session} from "../../Session";
-import {removeElement} from "../../utils/utils"
 import WorkoutForm from "./WorkoutForm"
 
 export interface SessionProps {
