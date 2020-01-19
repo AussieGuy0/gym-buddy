@@ -16,6 +16,7 @@ const Login: React.FC<LoginProps> = ({session, handleSuccessfulLogin}) => {
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<ErrorDetails | null>(null)
+    const isLoggedIn = session.loaded && session.id !== null
 
     async function handleLogin(evt: FormEvent) {
         evt.preventDefault()
@@ -30,12 +31,8 @@ const Login: React.FC<LoginProps> = ({session, handleSuccessfulLogin}) => {
         setLoading(false)
     }
 
-    function isLoggedIn(): boolean {
-        return session.loaded && session.id !== null
-    }
-
     useEffect(() => {
-        if (isLoggedIn()) {
+        if (isLoggedIn) {
             setTimeout(() => {
                 history.push("/workouts")
             }, 500)
@@ -45,10 +42,10 @@ const Login: React.FC<LoginProps> = ({session, handleSuccessfulLogin}) => {
     return (
         <div>
             <h1>Login</h1>
-            <div className={isLoggedIn() ? 'd-flex justify-content-center align-items-center' : 'hidden'}>
+            <div className={isLoggedIn ? 'd-flex justify-content-center align-items-center' : 'hidden'}>
                 <h4>Logged in. Redirecting....</h4>
             </div>
-            <form onSubmit={handleLogin} className={isLoggedIn() ? 'hidden' : ''}>
+            <form onSubmit={handleLogin} className={isLoggedIn ? 'hidden' : ''}>
                 <div className='form-group'>
                     <label htmlFor='email'>Email</label>
                     <input className='form-control' type='email' id='email' value={email}
