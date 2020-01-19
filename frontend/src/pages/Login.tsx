@@ -1,37 +1,74 @@
-import React, {FormEvent, useState} from "react";
-import {Api} from "../services/Api";
+import React, {FormEvent, useEffect, useState} from "react"
+import {Api} from "../services/Api"
+import {ErrorDetails} from "../services/Http"
+import {Session} from "../Session"
+import {useHistory} from "react-router"
 
-const Login: React.FC<any> = ({handleSuccessfulLogin}) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    function handleLogin (evt: FormEvent) {
+interface LoginProps {
+    session: Session
+
+    handleSuccessfulLogin(session: Session): void
+}
+
+const Login: React.FC<LoginProps> = ({session, handleSuccessfulLogin}) => {
+    const history = useHistory()
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<ErrorDetails | null>(null)
+
+    async function handleLogin(evt: FormEvent) {
         evt.preventDefault()
-        Api.login(email, password)
-            .then((userDetails) => {
-                handleSuccessfulLogin(userDetails)
-            }).catch((err) => {
-                console.warn(err)
-        })
+        setLoading(true)
+        setError(null)
+        try {
+            const userDetails = await Api.login(email, password)
+            handleSuccessfulLogin(userDetails)
+        } catch (err) {
+            setError(err)
+        }
+        setLoading(false)
     }
+
+    function isLoggedIn(): boolean {
+        return session.loaded && session.id !== null
+    }
+
+    useEffect(() => {
+        if (isLoggedIn()) {
+            setTimeout(() => {
+                history.push("/workouts")
+            }, 500)
+        }
+    }, [session, history])
 
     return (
         <div>
             <h1>Login</h1>
-            <form onSubmit={handleLogin}>
+            <div className={isLoggedIn() ? 'd-flex justify-content-center align-items-center' : 'hidden'}>
+                <h4>Logged in. Redirecting....</h4>
+            </div>
+            <form onSubmit={handleLogin} className={isLoggedIn() ? 'hidden' : ''}>
                 <div className='form-group'>
                     <label htmlFor='email'>Email</label>
-                    <input className='form-control' type='email' id='email' value={email} onChange={(evt) => setEmail(evt.target.value)}/>
+                    <input className='form-control' type='email' id='email' value={email}
+                           onChange={(evt) => setEmail(evt.target.value)}/>
                 </div>
                 <div className='form-group'>
                     <label htmlFor='password'>Password</label>
-                    <input className='form-control' type='password' value={password} id='password' onChange={(evt) => setPassword(evt.target.value)}/>
+                    <input className='form-control' type='password' value={password} id='password'
+                           onChange={(evt) => setPassword(evt.target.value)}/>
                 </div>
-                <button className='btn btn-primary'>
+                <button disabled={loading} className='btn btn-primary'>
                     Login
                 </button>
+                {
+                    error &&
+                    (<span className="ml-2 text-danger">{error.message}</span>)
+                }
             </form>
         </div>
-    );
+    )
 }
 
-export default Login;
+export default Login

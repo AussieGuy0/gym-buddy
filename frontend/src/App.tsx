@@ -102,7 +102,7 @@ const App: React.FC = (props) => {
     }, [])
     return (
         <Router>
-            { session.loaded &&
+            {session.loaded &&
             (
                 <div>
                     <NavigationBar session={session} handleSuccessfulLogout={handleSuccessfulLogout}/>
@@ -112,7 +112,7 @@ const App: React.FC = (props) => {
                                 <Index/>
                             </Route>
                             <Route path="/login/">
-                                <Login handleSuccessfulLogin={handleSuccessfulLogin}/>
+                                <Login session={session} handleSuccessfulLogin={handleSuccessfulLogin}/>
                             </Route>
                             <PrivateRoute session={session}>
                                 <Route path="/workouts">

@@ -1,4 +1,5 @@
 import {get, post} from "./Http";
+import {Session} from "../Session"
 
 export interface UserDetails {
   userId: number,
@@ -23,7 +24,7 @@ export interface Exercise {
 
 export class Api {
 
-  static login (email: string, password: string): Promise<UserDetails> { //TODO: Look for a way to 'verify' against interface
+  static login (email: string, password: string): Promise<Session> { //TODO: Look for a way to 'verify' against interface
     return post('/auth/login', {email: email, password: password})
       .then(res => {
         return res.json()
