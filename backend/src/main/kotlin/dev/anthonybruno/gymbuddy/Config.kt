@@ -1,9 +1,10 @@
 package dev.anthonybruno.gymbuddy
 
+import dev.anthonybruno.gymbuddy.util.ClassPathFile
 import java.io.IOException
+import java.io.InputStreamReader
+import java.io.Reader
 import java.net.URI
-import java.nio.file.Files
-import java.nio.file.Path
 import java.util.*
 
 interface Config {
@@ -17,9 +18,8 @@ interface Config {
     val dbUrl: String
 }
 
-class FileConfig(propertiesPath: Path): Config {
+class FileConfig(private val properties: Properties): Config {
 
-    private val properties: Properties
     override val port: Int
         get() = Integer.parseInt(properties.getProperty("port"))
 
@@ -32,13 +32,22 @@ class FileConfig(propertiesPath: Path): Config {
     override val dbUrl: String
         get() = properties.getProperty("db.url")
 
-    init {
-        if (!Files.exists(propertiesPath)) {
-            throw IllegalStateException("No properties file in path $propertiesPath")
+    companion object {
+        fun fromReader(propertiesReader: Reader): FileConfig {
+            val props = Properties()
+            propertiesReader.use { reader -> props.load(reader) }
+            return FileConfig(props)
         }
-        properties = Properties()
+
+        fun fromClassPath(classPathFile: ClassPathFile): FileConfig {
+            if (!classPathFile.exists()) {
+                throw IllegalStateException("No properties file in path $classPathFile")
+            }
+            return fromReader(InputStreamReader(classPathFile.asStream()!!))
+        }
+    }
+    init {
         try {
-            Files.newBufferedReader(propertiesPath).use { reader -> properties.load(reader) }
         } catch (e: IOException) {
             throw RuntimeException("Could not read settings files", e)
         }

@@ -2,16 +2,17 @@ package dev.anthonybruno.gymbuddy
 
 import dev.anthonybruno.gymbuddy.StartServer.CONFIG
 import dev.anthonybruno.gymbuddy.db.Database
-import dev.anthonybruno.gymbuddy.util.ClassPathFile
 import dev.anthonybruno.gymbuddy.util.json.objectMapper
 import io.javalin.Javalin
 import io.javalin.plugin.json.JavalinJackson
 import org.slf4j.LoggerFactory
-
 import java.sql.SQLException
 
 class Server {
-    private val app = Javalin.create { config -> config.addStaticFiles("webapp") }
+    private val app = Javalin.create { config ->
+        config.addStaticFiles("webapp")
+        config.addSinglePageRoot("/", "webapp/index.html")
+    }
 
     fun start(portNum: Int) {
         attemptDatabaseConnection()

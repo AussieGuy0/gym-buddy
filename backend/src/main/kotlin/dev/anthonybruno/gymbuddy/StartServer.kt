@@ -7,7 +7,7 @@ object StartServer {
     val CONFIG = if (System.getenv("STAGE") == "production") {
         EnvPropertiesConfig()
     } else {
-        FileConfig(ClassPathFile("settings.properties").asPath())
+        FileConfig.fromClassPath(ClassPathFile("settings.properties"))
     }
 
     @JvmStatic
