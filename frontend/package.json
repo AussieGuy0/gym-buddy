@@ -29,7 +29,7 @@
   },
   "browserslist": {
     "production": [
-      "default"
+      "defaults"
     ],
     "development": [
       "last 1 chrome version",
