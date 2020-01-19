@@ -37,7 +37,7 @@ const Login: React.FC<LoginProps> = ({session, handleSuccessfulLogin}) => {
                 history.push("/workouts")
             }, 500)
         }
-    }, [session, history])
+    }, [session, history, isLoggedIn])
 
     return (
         <div>
