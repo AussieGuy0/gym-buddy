@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {Api, Workout} from "../../services/Api"
 import {Session} from "../../Session";
-import WorkoutForm from "./WorkoutForm"
+import {WorkoutForm} from "./WorkoutForm"
 
 export interface SessionProps {
     session: Session
@@ -46,16 +46,22 @@ const Workouts: React.FC<SessionProps> = ({session}) => {
                 setWorkouts(workouts);
             })
             .catch((err) => {
+                //TODO: Handle
                 console.warn(err)
             })
 
 
     }, [session.id])
+
+    function workoutAdded(workout: Workout) {
+        setWorkouts((prev) => [...prev, workout])
+    }
+
     return (
         <div>
             <div className="row">
                 <div className="col">
-                    <WorkoutForm session={session}/>
+                    <WorkoutForm session={session} workoutAdded={workoutAdded}/>
                 </div>
             </div>
             <div className="row">

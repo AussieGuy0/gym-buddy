@@ -1,22 +1,35 @@
 import React, {useEffect, useState} from "react"
-import {Api, Exercise} from "../../services/Api"
+import {Api, Exercise, Workout} from "../../services/Api"
 import {removeElement} from "../../utils/utils"
-import {SessionProps} from "./Workouts"
+import {Session} from "../../Session"
 
-const WorkoutForm: React.FC<SessionProps> = ({session}) => {
+export interface WorkoutFormProps {
+    session: Session
+    workoutAdded(workout: Workout): void
+}
+
+export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded}) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const defaultExercise = {id: -1, sets: 3, reps: 12}
     const [workoutExercises, setAllWorkoutExercises] = useState<Array<WorkoutExercise>>([defaultExercise])
     const [allExercises, setAllExercises] = useState<Array<Exercise>>([])
+    const [loading, setLoading] = useState(false)
 
 
     useEffect(() => {
+        //TODO: Handle error
         Api.getExercises()
             .then((exercises) => {
                 setAllExercises(exercises)
             })
     }, [])
+
+    function clear() {
+        setTitle('')
+        setDescription('')
+        setAllWorkoutExercises([defaultExercise])
+    }
 
     function addExercise() {
         setAllWorkoutExercises(current => current.concat(defaultExercise))
@@ -36,14 +49,18 @@ const WorkoutForm: React.FC<SessionProps> = ({session}) => {
         })
     }
 
-    function submitWorkout() {
+    async function submitWorkout() {
         const id =  session.id || -1;
-        Api.addWorkout(id, title, description, workoutExercises)
-            .then(result => {
-                console.log(result)
-            }).catch(err => {
-            console.log(err)
-        })
+        setLoading(true)
+        try {
+            const savedWorkout = await Api.addWorkout(id, title, description, workoutExercises)
+            workoutAdded(savedWorkout)
+            clear()
+        } catch (err) {
+            //TODO: Handle
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -74,7 +91,7 @@ const WorkoutForm: React.FC<SessionProps> = ({session}) => {
                     </button>
 
                 </div>
-                <button type='button' className='btn btn-primary' onClick={submitWorkout}>
+                <button type='button' className='btn btn-primary' disabled={loading} onClick={submitWorkout}>
                     Add Workout
                 </button>
             </form>
@@ -119,4 +136,3 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({exercises, selectedE
     )
 }
 
-export default WorkoutForm;

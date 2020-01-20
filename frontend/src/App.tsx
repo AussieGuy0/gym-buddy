@@ -106,8 +106,8 @@ const App: React.FC = (props) => {
             (
                 <div>
                     <NavigationBar session={session} handleSuccessfulLogout={handleSuccessfulLogout}/>
-                    <Switch>
-                        <div className="container">
+                    <div className="container">
+                        <Switch>
                             <Route path="/" exact>
                                 <Index/>
                             </Route>
@@ -119,8 +119,8 @@ const App: React.FC = (props) => {
                                     <Workouts session={session}/>
                                 </Route>
                             </PrivateRoute>
-                        </div>
-                    </Switch>
+                        </Switch>
+                    </div>
                 </div>
             )
             }

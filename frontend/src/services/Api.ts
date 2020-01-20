@@ -56,7 +56,7 @@ export class Api {
       })
   }
 
-  static addWorkout (userId: number, title: string, description: string, exercises: Array<object>): Promise<any> {
+  static addWorkout (userId: number, title: string, description: string, exercises: Array<object>): Promise<Workout> {
     return post(`/api/v1/users/${userId}/workouts`, {title: title, description: description, exercises: exercises})
       .then(res => {
         return res.json()
