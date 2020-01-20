@@ -1,4 +1,6 @@
 # Gym Buddy
+[![Build Status](https://travis-ci.org/AussieGuy0/gym-buddy.svg?branch=master)](https://travis-ci.org/AussieGuy0/gym-buddy)  [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=AussieGuy0/gym-buddy)](https://dependabot.com)
+
 A web based application to track workouts
 
 ## Goals
