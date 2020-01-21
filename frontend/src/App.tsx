@@ -1,13 +1,8 @@
 import React, {useEffect, useState, Fragment} from 'react'
-import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom'
+import {BrowserRouter as Router, Route, Switch, Redirect, Link} from 'react-router-dom'
 import Index from "./pages/Index"
 import Login from "./pages/Login"
 import Workouts from "./pages/workouts/Workouts"
-import {Navbar, Nav, NavbarBrand} from "react-bootstrap"
-import NavbarCollapse from "react-bootstrap/NavbarCollapse"
-import NavbarToggle from "react-bootstrap/NavbarToggle"
-import NavLink from "react-bootstrap/NavLink"
-import {LinkContainer} from 'react-router-bootstrap'
 
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -15,25 +10,9 @@ import {Session} from "./Session"
 import {Api} from "./services/Api"
 
 
-interface NavigationLinkProps {
-    path: string,
-    label: string
-}
-
 interface NavigationBarProps {
     session: Session,
-
     handleSuccessfulLogout(): void
-}
-
-const NavigationLink: React.FC<NavigationLinkProps> = ({path, label}) => {
-    return (
-        <LinkContainer to={path}>
-            <NavLink>
-                {label}
-            </NavLink>
-        </LinkContainer>
-    )
 }
 
 const NavigationBar: React.FC<NavigationBarProps> = ({session, handleSuccessfulLogout}) => {
@@ -41,27 +20,26 @@ const NavigationBar: React.FC<NavigationBarProps> = ({session, handleSuccessfulL
         Api.logout()
             .then(() => handleSuccessfulLogout())
             .catch((err) => {
+                //TODO: Handle
                 console.warn(err)
             })
     }
 
-    return (
-        <Navbar bg="light" expand="sm">
-            <div className="container">
-                <LinkContainer to='/'>
-                    <NavbarBrand>Gym Buddy</NavbarBrand>
-                </LinkContainer>
-                <NavbarToggle aria-controls="basic-navbar-nav"/>
-                <NavbarCollapse id="basic-navbar-nav">
-                    <Nav className="ml-auto">
-                        {session.id !== null && (<NavigationLink path="/workouts" label="Workouts"/>)}
-                        {session.id !== null && (<NavLink onClick={logout}>Logout</NavLink>)}
-                        {session.id === null && (<NavigationLink path="/login" label="Login"/>)}
-                    </Nav>
-                </NavbarCollapse>
-            </div>
-        </Navbar>
+    const signedIn = session.id !== null
 
+    return (
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <div className="container">
+                <Link className="navbar-brand" to="/">Gym Buddy</Link>
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav ml-auto">
+                        <li className="nav-item">{signedIn && (<Link to="/workouts" className="nav-link">Workouts</Link>)}</li>
+                        <li className="nav-item">{signedIn && (<span onClick={logout} className="nav-link">Logout</span>)}</li>
+                        <li className="nav-item">{!signedIn && (<Link to="/login" className="nav-link">Login</Link>)}</li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
     )
 }
 
