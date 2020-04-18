@@ -8,6 +8,7 @@ import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {Session} from "./Session"
 import {Api} from "./services/Api"
+import {LandingPage} from "./pages/LandingPage"
 
 
 interface NavigationBarProps {
@@ -87,12 +88,16 @@ const App: React.FC = (props) => {
                     <div className="container">
                         <Switch>
                             <Route path="/" exact>
-                                <Index/>
+                                {session.id ?
+                                    (<Index session={session}/>) : <LandingPage/>
+                                }
                             </Route>
                             <Route path="/login/">
                                 <Login session={session} handleSuccessfulLogin={handleSuccessfulLogin}/>
                             </Route>
                             <PrivateRoute session={session}>
+                                <Route path="/" exact>
+                                </Route>
                                 <Route path="/workouts">
                                     <Workouts session={session}/>
                                 </Route>
