@@ -1,11 +1,16 @@
 package dev.anthonybruno.gymbuddy
 
 import dev.anthonybruno.gymbuddy.auth.AuthenticationController
+import dev.anthonybruno.gymbuddy.auth.AuthenticationService
+import dev.anthonybruno.gymbuddy.auth.password.BcryptPasswordHasher
 import dev.anthonybruno.gymbuddy.exception.HttpException
+import dev.anthonybruno.gymbuddy.user.DbUserRepository
 import dev.anthonybruno.gymbuddy.user.UserController
-import dev.anthonybruno.gymbuddy.user.UserServiceImpl
+import dev.anthonybruno.gymbuddy.user.UserService
+import dev.anthonybruno.gymbuddy.workout.DbWorkoutRepository
 import dev.anthonybruno.gymbuddy.workout.ExerciseController
 import dev.anthonybruno.gymbuddy.workout.WorkoutController
+import dev.anthonybruno.gymbuddy.workout.WorkoutService
 
 import io.javalin.Javalin
 
@@ -14,9 +19,14 @@ import io.javalin.apibuilder.ApiBuilder.*
 
 class Routes(private val app: Javalin) {
 
-    private val authenticationController = AuthenticationController()
-    private val userController = UserController()
-    private val workoutController = WorkoutController()
+    // When you don't have auto dependency injection, this is what you do!
+    private val passwordHasher = BcryptPasswordHasher()
+
+    private val userRepository = DbUserRepository(passwordHasher)
+
+    private val authenticationController = AuthenticationController(AuthenticationService(userRepository, passwordHasher))
+    private val userController = UserController(UserService(userRepository))
+    private val workoutController = WorkoutController(WorkoutService(DbWorkoutRepository()))
     private val exerciseController = ExerciseController()
 
     fun setupEndpoints() {

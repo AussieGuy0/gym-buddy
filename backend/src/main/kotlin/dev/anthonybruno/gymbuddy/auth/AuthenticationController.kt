@@ -1,13 +1,11 @@
 package dev.anthonybruno.gymbuddy.auth
 
 import dev.anthonybruno.gymbuddy.exception.BadRequestException
-import dev.anthonybruno.gymbuddy.user.UserDetails
 import dev.anthonybruno.gymbuddy.user.noopUserDetails
-import dev.anthonybruno.gymbuddy.util.json.Json
 import io.javalin.http.Context
 
 
-class AuthenticationController @JvmOverloads constructor(private val authenticationService: AuthenticationService = DbAuthenticationService()) {
+class AuthenticationController(private val authenticationService: AuthenticationService) {
 
     fun login(context: Context) {
         val (email, password) = context.body<UserCredentials>()

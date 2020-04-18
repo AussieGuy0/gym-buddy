@@ -1,13 +1,34 @@
 package dev.anthonybruno.gymbuddy.db
 
+import org.postgresql.ds.PGSimpleDataSource
+import java.io.PrintWriter
+import java.net.URL
 import java.sql.Connection
 import java.sql.DriverManager
-import java.sql.SQLException
+import java.util.logging.Logger
+import javax.sql.DataSource
 
 class Database(private val username: String, private val password: String, private val url: String) {
 
+    private val dataSource = createDataSource()
+
     fun getConnection(): Connection {
-        return DriverManager.getConnection(url, username, password)
+        return toDataSource().connection
+    }
+
+    private fun toDataSource(): DataSource {
+        return dataSource
+    }
+
+    private fun createDataSource(): DataSource {
+        //TODO: Probably use Hikari
+        val dataSource = PGSimpleDataSource()
+        dataSource.setURL(url)
+        dataSource.user = username
+        dataSource.password = password
+        dataSource.logWriter
+        return dataSource
     }
 
 }
+

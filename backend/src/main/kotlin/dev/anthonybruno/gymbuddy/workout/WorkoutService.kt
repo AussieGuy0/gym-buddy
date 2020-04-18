@@ -1,8 +1,12 @@
 package dev.anthonybruno.gymbuddy.workout
 
-interface WorkoutService {
+class WorkoutService(private val workoutRepository: WorkoutRepository) {
 
-    fun getWorkouts(userId: Long): List<Workout>
+    fun getWorkouts(userId: Long): List<Workout> {
+        return workoutRepository.getWorkouts(userId)
+    }
 
-    fun addWorkout(userId: Long, workout: AddWorkout): Workout
+    fun addWorkout(userId: Long, workout: AddWorkout): Workout {
+        return workoutRepository.addWorkout(userId, workout)
+    }
 }

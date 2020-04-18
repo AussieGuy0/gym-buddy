@@ -5,7 +5,7 @@ import dev.anthonybruno.gymbuddy.util.getUserIdFromPath
 import dev.anthonybruno.gymbuddy.util.json.Json
 import io.javalin.http.Context
 
-class UserController(private val userService: UserService = UserServiceImpl()) {
+class UserController(private val userService: UserService) {
 
     fun addUser(context: Context) {
         val rego = Json.intoClass(context.body(), UserRego::class.java)

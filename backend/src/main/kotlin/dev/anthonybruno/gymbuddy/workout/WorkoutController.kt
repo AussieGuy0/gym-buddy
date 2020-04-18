@@ -1,12 +1,11 @@
 package dev.anthonybruno.gymbuddy.workout
 
 import dev.anthonybruno.gymbuddy.exception.UnauthorisedException
-import dev.anthonybruno.gymbuddy.util.json.Json
 import dev.anthonybruno.gymbuddy.auth.SessionUtils
 import dev.anthonybruno.gymbuddy.util.getUserIdFromPath
 import io.javalin.http.Context
 
-class WorkoutController(private val workoutService: WorkoutService = WorkoutServiceImpl()) {
+class WorkoutController(private val workoutService: WorkoutService) {
 
 
     fun addWorkout(context: Context) {
