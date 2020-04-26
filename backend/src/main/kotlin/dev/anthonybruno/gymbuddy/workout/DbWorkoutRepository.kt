@@ -1,6 +1,7 @@
 package dev.anthonybruno.gymbuddy.workout
 
 import dev.anthonybruno.gymbuddy.Server
+import java.lang.RuntimeException
 
 import java.sql.*
 import java.time.Instant
@@ -10,54 +11,39 @@ class DbWorkoutRepository : WorkoutRepository {
 
     private val tableName = "workouts"
     private val db = Server.DATABASE
+    private val dbHelper = db.getHelper();
 
     override fun getWorkouts(userId: Long): List<Workout> {
-        val workouts = ArrayList<Workout>()
-        db.getConnection().use { conn ->
-            conn.prepareStatement("SELECT * FROM $tableName WHERE user_id = ?").use { statement ->
-                statement.setLong(1, userId)
-                statement.executeQuery().use { resultSet ->
-                    while (resultSet.next()) {
-                        workouts.add(mapWorkoutFromResultSet(resultSet))
-                    }
-                }
-                return workouts
-            }
-        }
+        return dbHelper.query({
+            val statement = it.prepareStatement("SELECT * FROM $tableName WHERE user_id = ?")
+            statement.setLong(1, userId)
+            statement
+        }, { rs, _ ->
+            mapWorkoutFromResultSet(rs)
+        })
     }
 
     override fun getWorkout(workoutId: Int): Workout? {
-        db.getConnection().use { conn ->
-            conn.prepareStatement("SELECT * FROM $tableName WHERE id = ?").use { statement ->
-                statement.setInt(1, workoutId)
-                statement.executeQuery().use { resultSet ->
-                    return if (resultSet.next()) {
-                        mapWorkoutFromResultSet(resultSet)
-                    } else {
-                        null
-                    }
-                }
-            }
-        }
-
+        return dbHelper.queryOne({
+            val statement = it.prepareStatement("SELECT * FROM $tableName WHERE id = ?")
+            statement.setInt(1, workoutId)
+            statement
+        }, { rs, _ ->
+            mapWorkoutFromResultSet(rs)
+        })
     }
 
     override fun addWorkout(userId: Long, workout: AddWorkout): Workout {
-        val workoutId: Int
-        val conn = db.getConnection();
-        conn.autoCommit = false;
-        try {
-            workoutId = addWorkoutToDb(conn, userId, workout)
+        var workoutId = -1;
+        dbHelper.runTransaction {
+            workoutId = addWorkoutToDb(it, userId, workout)
             for (exercise in workout.exercises) {
-                 addWorkoutExerciseToDb(conn, workoutId, exercise)
+                addWorkoutExerciseToDb(it, workoutId, exercise)
             }
-            conn.commit()
-        } catch (e: SQLException) {
-            conn.rollback()
-            throw e
-        } finally {
-            conn.autoCommit = false
-            conn.close()
+        }
+        if (workoutId == -1) {
+            // should never happen
+            throw RuntimeException("Workout not saved correctly?")
         }
         return getWorkout(workoutId)!!
     }

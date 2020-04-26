@@ -28,19 +28,14 @@ class ExerciseRepository {
 
     private val tableName = "exercises"
     private val db = Server.DATABASE
+    private val dbHelper = db.getHelper()
 
     fun getExercises(): List<Exercise> {
-        val exercises = ArrayList<Exercise>()
-        db.getConnection().use { conn ->
-            conn.prepareStatement("SELECT * FROM $tableName").use { statement ->
-                statement.executeQuery().use { resultSet ->
-                    while (resultSet.next()) {
-                        exercises.add(mapExerciseFromResultSet(resultSet))
-                    }
-                }
-                return exercises
-            }
-        }
+        return dbHelper.query({
+            it.prepareStatement("SELECT * FROM $tableName")
+        }, { rs, _ ->
+            mapExerciseFromResultSet(rs)
+        })
     }
 
     private fun mapExerciseFromResultSet(resultSet: ResultSet): Exercise {

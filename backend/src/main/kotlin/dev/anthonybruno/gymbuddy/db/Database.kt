@@ -5,6 +5,8 @@ import java.io.PrintWriter
 import java.net.URL
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.PreparedStatement
+import java.sql.ResultSet
 import java.util.logging.Logger
 import javax.sql.DataSource
 
@@ -14,6 +16,10 @@ class Database(private val username: String, private val password: String, priva
 
     fun getConnection(): Connection {
         return toDataSource().connection
+    }
+
+    fun getHelper(): JdbcHelper {
+        return DefaultJdbcHelper(dataSource)
     }
 
     private fun toDataSource(): DataSource {
@@ -31,4 +37,3 @@ class Database(private val username: String, private val password: String, priva
     }
 
 }
-

@@ -10,6 +10,7 @@ class DbUserRepository(private val passwordHasher: PasswordHasher): UserReposito
 
     private val tableName = "users"
     private val db = Server.DATABASE
+    private val dbHelper = db.getHelper()
 
     override fun addUser(email: String, password: String) {
         try {
@@ -27,20 +28,12 @@ class DbUserRepository(private val passwordHasher: PasswordHasher): UserReposito
     }
 
     override fun getUserByEmail(email: String): InternalUserDetails? {
-        try {
-            db.getConnection().use { conn ->
-                conn.prepareStatement("SELECT * FROM $tableName WHERE email=?").use { statement ->
-                    statement.setString(1, email)
-                    statement.executeQuery().use { results ->
-                        return if (results.next()) {
-                            return InternalUserDetails(results.getInt("id").toLong(), results.getString("password"), results.getString("email"))
-                        } else null
-                    }
-                }
-            }
-        } catch (e: SQLException) {
-            throw RuntimeException(e)
-        }
-
+        return dbHelper.queryOne({
+            val statement = it.prepareStatement("SELECT * FROM $tableName WHERE email=?")
+            statement.setString(1, email)
+            statement
+        }, { rs, _ ->
+            InternalUserDetails(rs.getInt("id").toLong(), rs.getString("password"), rs.getString("email"))
+        })
     }
 }
