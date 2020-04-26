@@ -1,5 +1,6 @@
 package dev.anthonybruno.gymbuddy.util.json
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -18,6 +19,7 @@ fun createObjectMapper(): ObjectMapper {
             .registerModule(KotlinModule())
             .registerModule(Jdk8Module())
             .registerModule(JavaTimeModule())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
 }
 

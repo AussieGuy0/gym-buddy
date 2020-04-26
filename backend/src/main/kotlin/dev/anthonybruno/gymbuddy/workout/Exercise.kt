@@ -10,7 +10,7 @@ import kotlin.system.exitProcess
 class ExerciseController(private val exerciseService: ExerciseService = ExerciseService()) {
 
     fun getExercises(ctx: Context) {
-        ensureUserSignedIn(ctx)
+        ctx.ensureUserSignedIn()
         ctx.json(exerciseService.getExercises())
     }
 

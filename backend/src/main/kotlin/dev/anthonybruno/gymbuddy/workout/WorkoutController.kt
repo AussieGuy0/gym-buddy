@@ -9,7 +9,7 @@ class WorkoutController(private val workoutService: WorkoutService) {
 
 
     fun addWorkout(context: Context) {
-        val userId = getUserIdFromPath(context)
+        val userId = context.getUserIdFromPath()
         checkUserIsAccessingOwnWorkouts(userId, context)
         val workout = context.body<AddWorkout>()
         val savedWorkout = workoutService.addWorkout(userId, workout)
@@ -17,7 +17,7 @@ class WorkoutController(private val workoutService: WorkoutService) {
     }
 
     fun getWorkouts(context: Context) {
-        val userId = getUserIdFromPath(context)
+        val userId = context.getUserIdFromPath()
         checkUserIsAccessingOwnWorkouts(userId, context)
         val workouts = workoutService.getWorkouts(userId)
         context.json(workouts)

@@ -6,7 +6,7 @@ import java.net.URL
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class ClassPathFile @JvmOverloads constructor(private val location: String, private val context: Class<*> = ClassPathFile::class.java) {
+class ClassPathFile(private val location: String, private val context: Class<*> = ClassPathFile::class.java) {
 
     private val classLoader: ClassLoader
         get() = context.classLoader

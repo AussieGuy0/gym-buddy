@@ -27,12 +27,12 @@ class UserController(private val userService: UserService) {
     }
 
     fun deleteUser(context: Context) {
-        val userId = getUserIdFromPath(context)
+        val userId = context.getUserIdFromPath()
         userService.deleteUser(userId)
     }
 
     fun getUser(context: Context) {
-        val userId = getUserIdFromPath(context)
+        val userId = context.getUserIdFromPath()
         val userDetails = userService.getUser(userId)
         context.json(userDetails)
     }

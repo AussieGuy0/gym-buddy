@@ -8,8 +8,8 @@ import dev.anthonybruno.gymbuddy.user.noopUserDetails
 import io.javalin.http.Context
 import java.lang.Long.parseLong
 
-fun getUserIdFromPath(context: Context): Long {
-    val userId = context.pathParam("userId")
+fun Context.getUserIdFromPath(): Long {
+    val userId = this.pathParam("userId")
     if (userId.isEmpty()) {
         throw HttpException(400, "Need userId in path")
     }
@@ -20,8 +20,8 @@ fun getUserIdFromPath(context: Context): Long {
     }
 }
 
-fun ensureUserSignedIn(context: Context) {
-    val userDetails = SessionUtils.getSession(context)
+fun Context.ensureUserSignedIn() {
+    val userDetails = SessionUtils.getSession(this)
     if (userDetails == null || userDetails === noopUserDetails) {
         throw UnauthorisedException("Need to be logged in!")
     }
