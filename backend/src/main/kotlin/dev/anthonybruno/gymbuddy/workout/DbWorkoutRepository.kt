@@ -5,7 +5,6 @@ import java.lang.RuntimeException
 
 import java.sql.*
 import java.time.Instant
-import java.util.ArrayList
 
 class DbWorkoutRepository : WorkoutRepository {
 
@@ -14,12 +13,40 @@ class DbWorkoutRepository : WorkoutRepository {
     private val dbHelper = db.getHelper();
 
     override fun getWorkouts(userId: Long): List<Workout> {
+        val query = """SELECT w.id, w.title, w.description, w.date, we.weight, we.sets, we.reps, e.name
+                      |FROM $tableName as w
+                      |LEFT JOIN workout_exercises as we ON w.id = we.workout_id
+                      |LEFT JOIN exercises as e on we.exercise_id = e.id
+                      |WHERE w.user_id = ?
+                      |""".trimMargin()
         return dbHelper.query({
-            val statement = it.prepareStatement("SELECT * FROM $tableName WHERE user_id = ?")
+            val statement = it.prepareStatement(query)
             statement.setLong(1, userId)
             statement
-        }, { rs, _ ->
-            mapWorkoutFromResultSet(rs)
+        }, { rs ->
+            val workouts = mutableMapOf<Workout, MutableList<WorkoutExerciseDto>>()
+            while (rs.next()) {
+                val workout = mapWorkoutFromResultSet(rs)
+                workouts.compute(workout) { _, list ->
+                    // If workout has no exercises, every exercise column will be null. In this case, we can just
+                    // return an empty list.
+                    val name = rs.getString("name")
+                    if (name == null) {
+                        return@compute mutableListOf()
+                    }
+
+                    val workoutExerciseDto = WorkoutExerciseDto(rs.getString("name"), rs.getInt("weight"), rs.getInt("sets"), rs.getInt("reps"))
+                    if (list == null) {
+                        mutableListOf(workoutExerciseDto)
+                    } else {
+                        list.add(workoutExerciseDto)
+                        list
+                    }
+                }
+            }
+            workouts.toList().map {
+                it.first.copy(exercises = it.second)
+            }
         })
     }
 
@@ -79,11 +106,11 @@ class DbWorkoutRepository : WorkoutRepository {
         }
     }
 
-    private fun mapWorkoutFromResultSet(resultSet: ResultSet): Workout {
-        return Workout(resultSet.getInt("id"),
-                resultSet.getTimestamp("date").toInstant(),
-                resultSet.getString("title"),
-                resultSet.getString("description"),
+    private fun mapWorkoutFromResultSet(rs: ResultSet): Workout {
+        return Workout(rs.getInt("id"),
+                rs.getTimestamp("date").toInstant(),
+                rs.getString("title"),
+                rs.getString("description"),
                 listOf())
     }
 }
