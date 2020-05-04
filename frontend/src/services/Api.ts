@@ -11,7 +11,15 @@ export interface Workout {
   id: number
   date: string,
   title: string,
-  description: string
+  description: string,
+  exercises: Array<WorkoutExercise>
+}
+
+export interface WorkoutExercise {
+  name: string,
+  weight: number,
+  sets: number,
+  reps: number,
 }
 
 export interface Exercise {

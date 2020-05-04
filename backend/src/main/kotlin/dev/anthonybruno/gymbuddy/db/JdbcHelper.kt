@@ -36,8 +36,9 @@ class DefaultJdbcHelper(private val dataSource: DataSource) : JdbcHelper {
     override fun <T> query(querySupplier: (Connection) -> PreparedStatement, resultMapper: (ResultSet) -> T): T {
         dataSource.connection.use { conn ->
             querySupplier(conn).use { statement ->
-                log.info("QUERY:\n$statement")
+                val queryStart = System.currentTimeMillis()
                 statement.executeQuery().use {
+                    log.info("Query executed (${System.currentTimeMillis() - queryStart}ms):\n$statement")
                     val result = resultMapper(it)
                     it.close()
                     return result
