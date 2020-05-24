@@ -53,7 +53,6 @@ class DbWorkoutRepository : WorkoutRepository {
     override fun getStats(userId: Long): WorkoutStats {
         //TODO: Handle case where user has no workouts
         return dbHelper.queryOne({
-            val now = Instant.now()
             val statement = it.prepareStatement("""
                 WITH latest_workout_date AS (SELECT date
                   FROM $tableName
@@ -63,7 +62,7 @@ class DbWorkoutRepository : WorkoutRepository {
                  ),
                  workouts_last_30_days AS (SELECT COUNT(*)
                   FROM $tableName
-                  WHERE user_id = ? AND date <= ? 
+                  WHERE user_id = ? AND date >= ? 
                  ),
                  most_common_exercise AS (SELECT exercises.id, exercises.name, COUNT(*)
                   FROM $tableName
@@ -77,9 +76,11 @@ class DbWorkoutRepository : WorkoutRepository {
                  SELECT latest_workout_date.date, workouts_last_30_days.count, most_common_exercise.name
                  FROM latest_workout_date, workouts_last_30_days, most_common_exercise
             """.trimIndent())
+            val now = Instant.now()
+            val thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS)
             statement.setLong(1, userId)
             statement.setLong(2, userId)
-            statement.setTimestamp(3, Timestamp.from(now.plus(30, ChronoUnit.DAYS)))
+            statement.setTimestamp(3, Timestamp.from(thirtyDaysAgo))
             statement.setLong(4, userId)
             statement
         }, { rs, _ ->
