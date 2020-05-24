@@ -21,3 +21,9 @@ data class AddWorkout(val title: String?,
                       val exercises: List<AddExercise>)
 
 data class AddExercise(val id: Int, val sets: Int, val reps: Int, val weight: Int?)
+
+data class WorkoutStats(
+        val lastWorkout: Instant,
+        val commonExercise: String,
+        val workoutsLast30Days: Int
+)

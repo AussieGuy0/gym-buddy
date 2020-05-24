@@ -1,23 +1,48 @@
-import React from "react";
+import React, {useEffect, useState} from "react"
 import {Session} from "../Session"
+import {Api, Stats} from "../services/Api"
+import {formatDistance, parseISO} from 'date-fns'
 
 
 interface IndexProps {
     session: Session
 }
+
 const Index: React.FC<IndexProps> = ({session}) => {
+    const [stats, setStats] = useState<Stats>({
+        lastWorkout: new Date().toISOString(),
+        commonExercise: "",
+        workoutsLast30Days: 0
+    })
+
+    useEffect(() => {
+        const id = session.id
+        if (id == null) {
+            return
+        }
+        Api.getStats(id)
+            .then((stats) => {
+                setStats(stats)
+            })
+            .catch((err) => {
+                //TODO: Handle
+                console.warn(err)
+            })
+    }, [session.id])
+
     return (
         <div>
             {/*TODO: Fetch data for below*/}
             <div className="row d-flex mt-3">
                 <div className="col">
-                    <InfoCard title={"Last workout"} content={"8 days ago"}/>
+                    <InfoCard title={"Last workout"}
+                              content={`${formatDistance(parseISO(stats.lastWorkout), new Date())} ago`}/>
                 </div>
                 <div className="col">
-                    <InfoCard title={"Past 30 days"} content={"3 workouts"}/>
+                    <InfoCard title={"Past 30 days"} content={`${stats.workoutsLast30Days} workouts`}/>
                 </div>
                 <div className="col d-none d-lg-block">
-                    <InfoCard title={"Common exercise"} content={"Bicep Curl"}/>
+                    <InfoCard title={"Common exercise"} content={`${stats.commonExercise}`}/>
                 </div>
             </div>
             <div className="row mt-5">
