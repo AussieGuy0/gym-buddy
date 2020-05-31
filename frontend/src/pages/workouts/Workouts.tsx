@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react"
 import {Api, Workout} from "../../services/Api"
 import {Session} from "../../Session"
 import {WorkoutForm} from "./WorkoutForm"
-import {Button} from "../../components/buttons/buttons"
 import {AllWorkoutsTable} from "./AllWorkoutsTable"
 import {Card} from "../../components/cards"
 
