@@ -3,7 +3,8 @@ import {Api, Workout} from "../../services/Api"
 import {Session} from "../../Session"
 import {WorkoutForm} from "./WorkoutForm"
 import {Button} from "../../components/buttons/buttons"
-import { AllWorkoutsTable } from "./AllWorkoutsTable"
+import {AllWorkoutsTable} from "./AllWorkoutsTable"
+import {Card} from "../../components/cards"
 
 export interface SessionProps {
     session: Session
@@ -41,27 +42,18 @@ const Workouts: React.FC<SessionProps> = ({session}) => {
                     <h1>Workouts</h1>
                 </div>
             </div>
-            <div className="row">
+            <div className="row mb-3">
                 <div className="col">
-                    <Button label="Add Workout" onClick={() => {}} additionalClass="btn-primary col"/>
-                </div>
-                <div className="col">
-                    <Button label="See Previous Workouts" onClick={() => {}} additionalClass="btn-primary col"/>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col">
-                    <WorkoutForm session={session} workoutAdded={workoutAdded}/>
+                    <Card title="Add Workout">
+                        <WorkoutForm session={session} workoutAdded={workoutAdded}/>
+                    </Card>
                 </div>
             </div>
             <div className="row">
                 <div className="col">
-                    <h2>Past Workouts</h2>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col">
-                    <AllWorkoutsTable workouts={workouts}/>
+                    <Card title="Past Workouts">
+                        <AllWorkoutsTable workouts={workouts}/>
+                    </Card>
                 </div>
             </div>
         </div>
