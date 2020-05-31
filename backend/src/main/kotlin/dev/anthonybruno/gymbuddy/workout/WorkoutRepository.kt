@@ -8,4 +8,6 @@ interface WorkoutRepository {
 
     fun addWorkout(userId: Long, workout: AddWorkout): Workout
 
+    fun getStats(userId: Long): WorkoutStats
+
 }

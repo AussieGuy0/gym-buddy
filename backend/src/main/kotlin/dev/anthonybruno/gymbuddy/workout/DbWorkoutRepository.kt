@@ -5,6 +5,9 @@ import java.lang.RuntimeException
 
 import java.sql.*
 import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
+import java.util.ArrayList
 
 class DbWorkoutRepository : WorkoutRepository {
 
@@ -73,6 +76,44 @@ class DbWorkoutRepository : WorkoutRepository {
             throw RuntimeException("Workout not saved correctly?")
         }
         return getWorkout(workoutId)!!
+    }
+
+    override fun getStats(userId: Long): WorkoutStats {
+        //TODO: Handle case where user has no workouts
+        return dbHelper.queryOne({
+            val statement = it.prepareStatement("""
+                WITH latest_workout_date AS (SELECT date
+                  FROM $tableName
+                  WHERE user_id = ?
+                  ORDER BY date DESC
+                  LIMIT 1
+                 ),
+                 workouts_last_30_days AS (SELECT COUNT(*)
+                  FROM $tableName
+                  WHERE user_id = ? AND date >= ? 
+                 ),
+                 most_common_exercise AS (SELECT exercises.id, exercises.name, COUNT(*)
+                  FROM $tableName
+                  LEFT JOIN workout_exercises ON $tableName.id = workout_exercises.workout_id
+                  LEFT JOIN exercises ON workout_exercises.exercise_id = exercises.id
+                  WHERE workouts.user_id = ?
+                  GROUP BY exercises.id, exercises.name
+                  ORDER BY count DESC
+                  LIMIT 1
+                 )
+                 SELECT latest_workout_date.date, workouts_last_30_days.count, most_common_exercise.name
+                 FROM latest_workout_date, workouts_last_30_days, most_common_exercise
+            """.trimIndent())
+            val now = Instant.now()
+            val thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS)
+            statement.setLong(1, userId)
+            statement.setLong(2, userId)
+            statement.setTimestamp(3, Timestamp.from(thirtyDaysAgo))
+            statement.setLong(4, userId)
+            statement
+        }, { rs, _ ->
+            WorkoutStats(rs.getTimestamp(1).toInstant(), rs.getString(3), rs.getInt(2));
+        })!!
     }
 
     private fun addWorkoutExerciseToDb(conn: Connection, workoutId: Int, exercise: AddExercise) {

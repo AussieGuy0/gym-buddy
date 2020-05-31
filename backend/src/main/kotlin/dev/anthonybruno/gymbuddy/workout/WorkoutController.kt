@@ -23,6 +23,13 @@ class WorkoutController(private val workoutService: WorkoutService) {
         context.json(workouts)
     }
 
+    fun getStats(context: Context) {
+        val userId = context.getUserIdFromPath()
+        checkUserIsAccessingOwnWorkouts(userId, context)
+        val workoutStats = workoutService.getStats(userId)
+        context.json(workoutStats)
+    }
+
     private fun checkUserIsAccessingOwnWorkouts(userId: Long, context: Context) {
         val userDetails = SessionUtils.getSession(context)
         if (userId != userDetails!!.id) {

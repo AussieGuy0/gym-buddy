@@ -15,9 +15,13 @@ import dev.anthonybruno.gymbuddy.workout.WorkoutService
 import io.javalin.Javalin
 
 import io.javalin.apibuilder.ApiBuilder.*
+import org.slf4j.LoggerFactory
+import java.lang.Exception
 
 
 class Routes(private val app: Javalin) {
+
+    private val log = LoggerFactory.getLogger(Routes::class.java)
 
     // When you don't have auto dependency injection, this is what you do!
     private val passwordHasher = BcryptPasswordHasher()
@@ -47,6 +51,7 @@ class Routes(private val app: Javalin) {
                         path("/workouts") {
                             post { workoutController.addWorkout(it) }
                             get { workoutController.getWorkouts(it) }
+                            get("/stats") { workoutController.getStats(it) }
                         }
                     }
                 }
@@ -55,9 +60,15 @@ class Routes(private val app: Javalin) {
                 }
             }
         }
+
         app.exception(HttpException::class.java) { exception, ctx ->
             ctx.status(exception.statusCode)
-            ctx.json(exception.serialise())
+            ctx.json(exception.asProblemDetails())
+        }
+
+        app.exception(Exception::class.java) { exception, ctx ->
+            log.error("Unhandled exception", exception)
+            ctx.status(500)
         }
     }
 
