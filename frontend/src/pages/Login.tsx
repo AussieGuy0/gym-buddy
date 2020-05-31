@@ -6,7 +6,6 @@ import {useHistory} from "react-router"
 
 interface LoginProps {
     session: Session
-
     handleSuccessfulLogin(session: Session): void
 }
 

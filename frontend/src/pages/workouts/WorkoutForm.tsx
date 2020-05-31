@@ -2,19 +2,23 @@ import React, {useEffect, useState} from "react"
 import {Api, Exercise, Workout} from "../../services/Api"
 import {removeElement} from "../../utils/utils"
 import {Session} from "../../Session"
+import {ErrorDetails} from "../../services/Http"
 
 export interface WorkoutFormProps {
     session: Session
+
     workoutAdded(workout: Workout): void
 }
 
+const defaultExercise = {id: -1, sets: 3, reps: 12}
+
 export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded}) => {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const defaultExercise = {id: -1, sets: 3, reps: 12}
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
     const [workoutExercises, setAllWorkoutExercises] = useState<Array<WorkoutExercise>>([defaultExercise])
     const [allExercises, setAllExercises] = useState<Array<Exercise>>([])
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<ErrorDetails | null>(null)
 
 
     useEffect(() => {
@@ -52,12 +56,13 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded})
     async function submitWorkout() {
         const id =  session.id || -1;
         setLoading(true)
+        setError(null)
         try {
             const savedWorkout = await Api.addWorkout(id, title, description, workoutExercises)
             workoutAdded(savedWorkout)
             clear()
         } catch (err) {
-            //TODO: Handle
+            setError(err)
         } finally {
             setLoading(false)
         }
@@ -65,7 +70,6 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded})
 
     return (
         <div>
-            <h2>Add Workout</h2>
             <form>
                 <div className='form-group'>
                     <label htmlFor='title'>Title</label>
@@ -76,7 +80,7 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded})
                     <input className='form-control' type='text' value={description} id='description' onChange={(evt) => setDescription(evt.target.value)}/>
                 </div>
                 <div className='form-group'>
-                    <label>Exercises</label>
+                    <h4>Exercises</h4>
                     <div className="row">
                         <strong className="col-5">Name</strong>
                         <strong className="col-2 pl-0">Sets</strong>
@@ -84,16 +88,21 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded})
                         <strong className="col-2 pl-0">Weight (kg)</strong>
                     </div>
                     {workoutExercises.map((exercise, index) =>
-                        (<ExerciseFormItem key={index} exercises={allExercises} selectedExercise={exercise} updateExercise={(updated) => updateExercise(index, updated) } removeExercise={() => removeExercise(index)}/>)
+                        (<ExerciseFormItem key={index} exercises={allExercises} selectedExercise={exercise}
+                                           updateExercise={(updated) => updateExercise(index, updated)}
+                                           removeExercise={() => removeExercise(index)}/>)
                     )}
                     <button type='button' className='btn btn-secondary mt-2' onClick={addExercise}>
                         Add Exercise
                     </button>
-
                 </div>
                 <button type='button' className='btn btn-primary' disabled={loading} onClick={submitWorkout}>
                     Add Workout
                 </button>
+                {
+                    error &&
+                    (<span className="ml-2 text-danger">{error.message}</span>)
+                }
             </form>
         </div>
     );
@@ -117,16 +126,20 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({exercises, selectedE
     function updateExerciseValue(key: keyof WorkoutExercise, evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void {
         updateExercise({...selectedExercise, [key]: Number(evt.target.value)})
     }
+
+    const exerciseId = selectedExercise === defaultExercise ? '' : selectedExercise.id
     return (
         <div className="row mb-1">
             <div className="col-5">
-                <select className="form-control" value={selectedExercise.id + ''} onChange={(evt) => updateExerciseValue('id', evt)}>
+                <select className="form-control" value={exerciseId} onChange={(evt) => updateExerciseValue('id', evt)}>
+                    <option value="" disabled selected hidden>Select...</option>
                     {exercises.map(exercise => (
                         <option key={exercise.id} value={exercise.id}>{exercise.name}</option>
                     ))}
                 </select>
             </div>
-            <input className="col-2 form-control" type="number" min='0' value={selectedExercise.sets + ''} onChange={(evt) => updateExerciseValue('sets', evt)}/>
+            <input className="col-2 form-control" type="number" min='0' value={selectedExercise.sets + ''}
+                   onChange={(evt) => updateExerciseValue('sets', evt)}/>
             <input className="col-2 form-control" type="number" min='0' value={selectedExercise.reps + ''} onChange={(evt) => updateExerciseValue('reps', evt)}/>
             <input className="col-2 form-control" type="number" min='0' value={selectedExercise.weight + ''} onChange={(evt) => updateExerciseValue('weight', evt)}/>
             <div className="col-1">
