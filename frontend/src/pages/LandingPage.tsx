@@ -9,7 +9,7 @@ export const LandingPage: React.FC = () => {
                 <div className="container mt-5 pl-5 pr-5">
                     <div className="row">
                         <div className="col">
-                            <h1 className="hero-title ta-center">
+                            <h1 className="display-1 ta-center font-weight-bold">
                                 <RewritingText template={"The best way to track $REPLACE"}
                                                replacements={["gainz.", "lifting.", "workouts.", "exercises.", "your goals.", "fitness."]}/>
                             </h1>

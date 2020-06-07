@@ -46,7 +46,7 @@ const Index: React.FC<IndexProps> = ({session}) => {
                 </div>
             </div>
             <div className="row mt-5">
-                <div className="col-4">
+                <div className="col-4 d-none d-sm-block">
                     <div className="card">
                         <h2 className="card-header">Info</h2>
                         <div className="card-body">
@@ -63,7 +63,6 @@ const Index: React.FC<IndexProps> = ({session}) => {
                 </div>
                 <div className="col-8">
                     <span>Pretend there's a chart here</span>
-
                 </div>
             </div>
         </div>

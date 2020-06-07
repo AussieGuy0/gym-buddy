@@ -19,7 +19,7 @@ export const AllWorkoutsTable: React.FC<AllWorkoutsTableProps> = ({workouts}) =>
             </tr>
             </thead>
             <tbody>
-            {workouts.map(workout => (<WorkoutsRow workout={workout}/>))}
+            {workouts.map(workout => (<WorkoutsRow key={workout.id} workout={workout}/>))}
             </tbody>
         </table>
     )
@@ -34,19 +34,20 @@ const WorkoutsRow: React.FC<WorkoutsRowProps> = ({workout}) => {
     const buttonLabel = opened ? "-" : "+"
     return (
         <>
-            <tr key={workout.id}>
-                <td>{format(new Date(workout.date), "h:ma d/M/Y")}</td>
+            <tr>
+                <td>{format(new Date(workout.date), "d/M/Y")}</td>
                 <td>{workout.title}</td>
                 <td>{workout.description}</td>
-                <td >{workout.exercises.length} <Button additionalClass="btn-light" label={buttonLabel} onClick={() => setOpened(!opened)}/></td>
+                <td>{workout.exercises.length} <Button additionalClass="btn-light" label={buttonLabel}
+                                                       onClick={() => setOpened(!opened)}/></td>
             </tr>
 
             {opened && (
                 <tr>
                     <td colSpan={4} className="border-top-0">
                         <ul>
-                            {workout.exercises.map((exercise) => {
-                                return (<li>
+                            {workout.exercises.map((exercise, idx) => {
+                                return (<li key={idx}>
                                     {exercise.name} {`${exercise.sets}x${exercise.reps} ${exercise.weight}kg`}
                                 </li>)
                             })}

@@ -32,13 +32,13 @@ const NavigationBar: React.FC<NavigationBarProps> = ({session, handleSuccessfulL
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container">
                 <Link className="navbar-brand" to="/">Gym Buddy</Link>
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav ml-auto">
-                        <li className="nav-item">{signedIn && (<Link to="/workouts" className="nav-link">Workouts</Link>)}</li>
-                        <li className="nav-item">{signedIn && (<span onClick={logout} className="nav-link">Logout</span>)}</li>
-                        <li className="nav-item">{!signedIn && (<Link to="/login" className="nav-link">Login</Link>)}</li>
-                    </ul>
-                </div>
+                <ul className="navbar-nav ml-auto">
+                    <li className="nav-item">{signedIn && (
+                        <Link to="/workouts" className="nav-link">Workouts</Link>)}</li>
+                    <li className="nav-item">{signedIn && (
+                        <span onClick={logout} className="nav-link">Logout</span>)}</li>
+                    <li className="nav-item">{!signedIn && (<Link to="/login" className="nav-link">Login</Link>)}</li>
+                </ul>
             </div>
         </nav>
     )
