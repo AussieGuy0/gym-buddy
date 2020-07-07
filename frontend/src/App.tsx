@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import {Session} from "./Session"
 import {Api} from "./services/Api"
 import {LandingPage} from "./pages/LandingPage"
+import {useInterval} from "./utils/hooks"
 
 
 interface NavigationBarProps {
@@ -69,6 +70,19 @@ const App: React.FC = (props) => {
     function handleSuccessfulLogout(): void {
         setSession({id: null, loaded: true})
     }
+
+    useInterval(() => {
+        if (session.loaded && session.id != null) {
+            Api.logcheck()
+                .then((json) => {
+                })
+                .catch((err) => {
+                    // TODO: Don't log out, display modal
+                    handleSuccessfulLogout()
+                })
+        }
+
+    }, 30000)
 
     useEffect(() => {
         Api.logcheck()
