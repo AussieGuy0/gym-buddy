@@ -1,13 +1,11 @@
 package dev.anthonybruno.gymbuddy.workout
 
-import dev.anthonybruno.gymbuddy.Server
+import dev.anthonybruno.gymbuddy.db.Database
 import dev.anthonybruno.gymbuddy.util.ensureUserSignedIn
 import io.javalin.http.Context
 import java.sql.ResultSet
-import java.util.ArrayList
-import kotlin.system.exitProcess
 
-class ExerciseController(private val exerciseService: ExerciseService = ExerciseService()) {
+class ExerciseController(private val exerciseService: ExerciseService) {
 
     fun getExercises(ctx: Context) {
         ctx.ensureUserSignedIn()
@@ -16,7 +14,7 @@ class ExerciseController(private val exerciseService: ExerciseService = Exercise
 
 }
 
-class ExerciseService(private val exerciseRepository: ExerciseRepository = ExerciseRepository()) {
+class ExerciseService(private val exerciseRepository: DbExerciseRepository) {
 
     fun getExercises(): List<Exercise> {
         return exerciseRepository.getExercises();
@@ -24,10 +22,9 @@ class ExerciseService(private val exerciseRepository: ExerciseRepository = Exerc
 
 }
 
-class ExerciseRepository {
+class DbExerciseRepository(db: Database) {
 
     private val tableName = "exercises"
-    private val db = Server.DATABASE
     private val dbHelper = db.getHelper()
 
     fun getExercises(): List<Exercise> {

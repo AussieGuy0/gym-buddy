@@ -1,6 +1,7 @@
 package dev.anthonybruno.gymbuddy.workout
 
 import dev.anthonybruno.gymbuddy.Server
+import dev.anthonybruno.gymbuddy.db.Database
 import java.lang.RuntimeException
 
 import java.sql.*
@@ -9,10 +10,9 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalUnit
 import java.util.ArrayList
 
-class DbWorkoutRepository : WorkoutRepository {
+class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
 
     private val tableName = "workouts"
-    private val db = Server.DATABASE
     private val dbHelper = db.getHelper();
 
     override fun getWorkouts(userId: Long): List<Workout> {

@@ -3,13 +3,13 @@ package dev.anthonybruno.gymbuddy.user
 import dev.anthonybruno.gymbuddy.Server
 import dev.anthonybruno.gymbuddy.auth.password.BcryptPasswordHasher
 import dev.anthonybruno.gymbuddy.auth.password.PasswordHasher
+import dev.anthonybruno.gymbuddy.db.Database
 
 import java.sql.SQLException
 
-class DbUserRepository(private val passwordHasher: PasswordHasher): UserRepository {
+class DbUserRepository(private val passwordHasher: PasswordHasher, private val db: Database) : UserRepository {
 
     private val tableName = "users"
-    private val db = Server.DATABASE
     private val dbHelper = db.getHelper()
 
     override fun addUser(email: String, password: String) {

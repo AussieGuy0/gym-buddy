@@ -22,7 +22,7 @@ class Database(private val username: String, private val password: String, priva
         return DefaultJdbcHelper(dataSource)
     }
 
-    private fun toDataSource(): DataSource {
+    fun toDataSource(): DataSource {
         return dataSource
     }
 
