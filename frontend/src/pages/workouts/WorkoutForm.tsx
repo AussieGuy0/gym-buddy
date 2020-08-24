@@ -127,7 +127,8 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded})
                     )
                     }
                 </div>
-                <button type='button' className='btn btn-primary mt-5' disabled={loading || editingExercise != null}
+                <button type='button' className='btn btn-primary mt-5'
+                        disabled={loading || editingExercise != null || workoutExercises.length === 0}
                         onClick={submitWorkout}>
                     Save Workout
                 </button>

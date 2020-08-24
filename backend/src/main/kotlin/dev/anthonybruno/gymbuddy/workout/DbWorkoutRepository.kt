@@ -113,7 +113,7 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
             statement
         }, { rs, _ ->
             WorkoutStats(rs.getTimestamp(1).toInstant(), rs.getString(3), rs.getInt(2));
-        })!!
+        }) ?: WorkoutStats(null, "", 0)
     }
 
     private fun addWorkoutExerciseToDb(conn: Connection, workoutId: Int, exercise: AddExercise) {

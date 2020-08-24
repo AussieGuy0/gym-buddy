@@ -3,13 +3,17 @@ package dev.anthonybruno.gymbuddy
 import dev.anthonybruno.gymbuddy.db.Database
 import dev.anthonybruno.gymbuddy.util.ClassPathFile
 
-object StartServer {
-
-    val CONFIG = if (System.getenv("STAGE") == "production") {
+fun loadConfig(): Config {
+    return if (System.getenv("STAGE") == "production") {
         EnvPropertiesConfig()
     } else {
         FileConfig.fromClassPath(ClassPathFile("settings.properties"))
     }
+}
+
+object StartServer {
+
+    private val CONFIG = loadConfig()
 
     @JvmStatic
     fun main(args: Array<String>) {

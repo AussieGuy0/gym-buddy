@@ -30,7 +30,7 @@ export interface Exercise {
 }
 
 export interface Stats {
-    lastWorkout: string,
+    lastWorkout: string | null,
     workoutsLast30Days: number,
     commonExercise: String
 }

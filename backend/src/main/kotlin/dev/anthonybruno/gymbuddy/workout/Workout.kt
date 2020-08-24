@@ -1,12 +1,6 @@
 package dev.anthonybruno.gymbuddy.workout
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonProperty
-
-import java.time.Duration
 import java.time.Instant
-import java.time.LocalDate
-import java.util.Date
 
 data class Workout(val id: Int,
                    val date: Instant,
@@ -25,7 +19,7 @@ data class AddWorkout(val title: String?,
 data class AddExercise(val id: Int, val sets: Int, val reps: Int, val weight: Int?)
 
 data class WorkoutStats(
-        val lastWorkout: Instant,
+        val lastWorkout: Instant?,
         val commonExercise: String,
         val workoutsLast30Days: Int
 )

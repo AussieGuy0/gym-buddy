@@ -8,11 +8,17 @@ interface IndexProps {
     session: Session
 }
 
+interface StatsFetch {
+    stats: Stats | null,
+    loading: boolean,
+    error: object | null
+}
+
 const Index: React.FC<IndexProps> = ({session}) => {
-    const [stats, setStats] = useState<Stats>({
-        lastWorkout: new Date().toISOString(),
-        commonExercise: "",
-        workoutsLast30Days: 0
+    const [statsFetch, setStatsFetch] = useState<StatsFetch>({
+        stats: null,
+        loading: false,
+        error: null
     })
 
     useEffect(() => {
@@ -20,29 +26,33 @@ const Index: React.FC<IndexProps> = ({session}) => {
         if (id == null) {
             return
         }
+        setStatsFetch({stats: null, loading: true, error: null})
         Api.getStats(id)
             .then((stats) => {
-                setStats(stats)
+                setStatsFetch({stats: stats, loading: false, error: null})
             })
             .catch((err) => {
                 //TODO: Handle
+                setStatsFetch({stats: null, loading: false, error: err})
                 console.warn(err)
             })
     }, [session.id])
 
+    const stats = statsFetch.stats
     return (
         <div>
             {/*TODO: Fetch data for below*/}
             <div className="row d-flex mt-3">
                 <div className="col">
                     <InfoCard title={"Last workout"}
-                              content={`${formatDistance(parseISO(stats.lastWorkout), new Date())} ago`}/>
+                              content={stats?.lastWorkout == null ? '' : `${formatDistance(parseISO(stats.lastWorkout), new Date())} ago`}/>
                 </div>
                 <div className="col">
-                    <InfoCard title={"Past 30 days"} content={`${stats.workoutsLast30Days} workouts`}/>
+                    <InfoCard title={"Past 30 days"}
+                              content={stats == null ? '' : `${stats.workoutsLast30Days} workouts`}/>
                 </div>
                 <div className="col d-none d-lg-block">
-                    <InfoCard title={"Common exercise"} content={`${stats.commonExercise}`}/>
+                    <InfoCard title={"Common exercise"} content={stats == null ? '' : `${stats.commonExercise}`}/>
                 </div>
             </div>
             <div className="row mt-5">
@@ -66,7 +76,7 @@ const Index: React.FC<IndexProps> = ({session}) => {
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
 interface InfoCardProps {
@@ -86,4 +96,4 @@ const InfoCard: React.FC<InfoCardProps> = (props) => {
     )
 }
 
-export default Index;
+export default Index
