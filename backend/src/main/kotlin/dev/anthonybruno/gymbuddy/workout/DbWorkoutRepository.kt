@@ -112,7 +112,7 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
             statement.setLong(4, userId)
             statement
         }, { rs, _ ->
-            WorkoutStats(rs.getTimestamp(1).toInstant(), rs.getString(3), rs.getInt(2));
+            WorkoutStats(rs.getTimestamp(1).toInstant(), rs.getString(3), rs.getInt(2))
         }) ?: WorkoutStats(null, "", 0)
     }
 

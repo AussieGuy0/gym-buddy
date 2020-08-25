@@ -38,10 +38,10 @@ class ServerIT {
     }
 
     @Test
-    fun signIn() {
+    fun failLogIn() {
         RestAssured.given()
                 .contentType("application/json")
-                .body("{\"email\": \"bla@example.org\", \"password\": \"password\"}")
+                .body(mapOf("email" to "bla@example.org", "password" to "password"))
                 .`when`()
                 .post("$url/auth/login")
                 .then()

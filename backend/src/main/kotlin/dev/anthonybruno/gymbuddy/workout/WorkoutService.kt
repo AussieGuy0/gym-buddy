@@ -1,5 +1,7 @@
 package dev.anthonybruno.gymbuddy.workout
 
+import dev.anthonybruno.gymbuddy.exception.BadRequestException
+
 class WorkoutService(private val workoutRepository: WorkoutRepository) {
 
     fun getWorkouts(userId: Long): List<Workout> {
@@ -7,6 +9,9 @@ class WorkoutService(private val workoutRepository: WorkoutRepository) {
     }
 
     fun addWorkout(userId: Long, workout: AddWorkout): Workout {
+        if (workout.exercises.isEmpty()) {
+            throw BadRequestException("There must be at least one exercise to save a workout.")
+        }
         return workoutRepository.addWorkout(userId, workout)
     }
 

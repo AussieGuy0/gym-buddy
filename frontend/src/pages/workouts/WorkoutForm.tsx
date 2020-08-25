@@ -3,6 +3,7 @@ import {Api, Exercise, Workout} from "../../services/Api"
 import {arrayToMap, removeElement} from "../../utils/utils"
 import {Session} from "../../Session"
 import {ErrorDetails} from "../../services/Http"
+import {Icon} from "../../components/Icon"
 
 export interface WorkoutFormProps {
     session: Session
@@ -102,8 +103,8 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded})
                 </div>
                 <div className='form-group'>
                     <h4>Exercises</h4>
-                    {workoutExercises.length === 0 && (
-                        <span className="text-secondary">No exercises have been added to the workout :( </span>
+                    {workoutExercises.length === 0 && !editingExercise && (
+                        <div className="text-secondary">No exercises have been added to the workout :( </div>
                     )}
                     {workoutExercises.map((exercise, index) =>
                         (<ExerciseItem key={index} workoutExercise={exercise}
@@ -207,7 +208,7 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({exercises, initialWo
                            onChange={(evt) => updateExerciseValue('weight', evt)}/>
                 </div>
             </div>
-            <div className="row">
+            <div className="row mt-2">
                 <div className="col">
                     <button className="btn btn-success mr-2" type="button"
                             disabled={!isValid()}
@@ -223,9 +224,7 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({exercises, initialWo
 interface ExerciseItemProps {
     workoutExercise: WorkoutExercise
     exerciseCache: Map<number, Exercise>
-
     removeExercise(): void
-
     editExercise(workoutExercise: WorkoutExercise): void
 }
 
@@ -240,9 +239,10 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({workoutExercise, removeExerc
             </div>
             <div className="col-4">
                 <button className="btn btn-secondary mr-2" type="button"
-                        onClick={() => editExercise(workoutExercise)}>E
+                        onClick={() => editExercise(workoutExercise)}><Icon name="create"/>
                 </button>
-                <button className="btn btn-danger" type="button" onClick={removeExercise}>X</button>
+                <button className="btn btn-danger" type="button" onClick={removeExercise}><Icon name={"cross"}/>
+                </button>
             </div>
         </div>
     )

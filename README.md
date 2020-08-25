@@ -29,10 +29,12 @@ In `psql`:
 `\copy exercises(name,description,main_muscle) FROM 'exercises.csv' WITH DELIMITER ',' CSV HEADER;`
 
 ## Built With
+- [Kotlin](https://kotlinlang.org/) - Backend language
 - [Javalin](https://javalin.io/) - Backend web framework
 - [Flyway](https://flywaydb.org/) - Database migrations
 - [TypeScript](https://www.typescriptlang.org/) - Frontend language
 - [React](https://reactjs.org/) - Frontend framework
+- [Sysem UIcons](https://systemuicons.com/) - Icons
 
 ## API
 

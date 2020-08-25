@@ -14,7 +14,7 @@ export const AllWorkoutsTable: React.FC<AllWorkoutsTableProps> = ({workouts}) =>
             <tr>
                 <th>Date</th>
                 <th>Title</th>
-                <th>Description</th>
+                <th className="d-none d-md-table-cell">Description</th>
                 <th>Exercises</th>
             </tr>
             </thead>
@@ -37,14 +37,19 @@ const WorkoutsRow: React.FC<WorkoutsRowProps> = ({workout}) => {
             <tr>
                 <td>{format(new Date(workout.date), "d/M/Y")}</td>
                 <td>{workout.title}</td>
-                <td>{workout.description}</td>
-                <td>{workout.exercises.length} <Button additionalClass="btn-light" label={buttonLabel}
-                                                       onClick={() => setOpened(!opened)}/></td>
+                <td className="d-none d-md-table-cell">{workout.description}</td>
+                <td>
+                    <div className="d-flex">
+                        <span>{workout.exercises.length}</span> <Button additionalClass="btn-light ml-auto"
+                                                                        label={buttonLabel}
+                                                                        onClick={() => setOpened(!opened)}/>
+                    </div>
+                </td>
             </tr>
-
             {opened && (
                 <tr>
-                    <td colSpan={4} className="border-top-0">
+                    <td colSpan={4} className="border-top-0 pt-0">
+                        <div>{workout.description}</div>
                         <ul>
                             {workout.exercises.map((exercise, idx) => {
                                 return (<li key={idx}>
