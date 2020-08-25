@@ -32,7 +32,8 @@ const NavigationBar: React.FC<NavigationBarProps> = ({session, handleSuccessfulL
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
             <div className="container">
-                <Link className="navbar-brand" to="/"><img src="favicon.ico" height="32" width="32"/> <span
+                <Link className="navbar-brand" to="/"><img src="favicon.ico" height="32" width="32"
+                                                           alt="Gym buddy icon"/> <span
                     className="d-none d-sm-inline">Gym Buddy</span></Link>
                 <ul className="navbar-nav ml-auto">
                     <li className="nav-item">{signedIn && (
