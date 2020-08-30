@@ -229,6 +229,9 @@
                 <version>6.5.3</version>
                 <configuration>
                     <url>${env.JDBC_DATABASE_URL}</url>
+                    <locations>
+                        <location>classpath:db/migration</location>
+                    </locations>
                 </configuration>
                 <dependencies>
                     <dependency>
