@@ -38,7 +38,8 @@ class Server(private val database: Database) {
     }
 
     private fun runMigrations() {
-        val flyway = Flyway.configure().dataSource(database.toDataSource()).load()
+        val flyway = Flyway.configure()
+                .dataSource(database.toDataSource()).load()
         flyway.migrate()
     }
 

@@ -14,6 +14,8 @@ import javax.sql.DataSource
  */
 interface JdbcHelper {
 
+    fun execute(querySupplier: (Connection) -> PreparedStatement)
+
     fun <T> query(querySupplier: (Connection) -> PreparedStatement, resultMapper: (ResultSet) -> T): T
 
     fun <T> query(querySupplier: (Connection) -> PreparedStatement, rowMapper: (ResultSet, ResultContext) -> T): List<T>
@@ -32,6 +34,16 @@ interface ResultContext {
 class DefaultJdbcHelper(private val dataSource: DataSource) : JdbcHelper {
 
     val log = LoggerFactory.getLogger(javaClass)
+
+    override fun execute(querySupplier: (Connection) -> PreparedStatement) {
+        dataSource.connection.use { conn ->
+            querySupplier(conn).use { statement ->
+                val queryStart = System.currentTimeMillis()
+                statement.execute()
+                log.info("Query executed (${System.currentTimeMillis() - queryStart}ms):\n$statement")
+            }
+        }
+    }
 
     override fun <T> query(querySupplier: (Connection) -> PreparedStatement, resultMapper: (ResultSet) -> T): T {
         dataSource.connection.use { conn ->
