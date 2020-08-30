@@ -35,17 +35,6 @@ class V6__MakeWorkoutsTimeZoneAware : BaseJavaMigration() {
                 }
             }
         }
-
-        // Finally, we can drop the old date column and replace it with date_tz
-        helper.execute {
-            it.prepareStatement("""
-                ALTER TABLE workouts
-                DROP COLUMN date;
-
-                ALTER TABLE workouts
-                RENAME COLUMN date_tz to date;
-            """)
-        }
     }
 }
 

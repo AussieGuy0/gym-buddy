@@ -15,7 +15,7 @@ ALTER TABLE users
     ADD COLUMN timezone text NOT NULL default 'Australia/Adelaide';
 
 ALTER TABLE workouts
-    ADD COLUMN date_tz TIMESTAMP WITH TIME ZONE;
+    ALTER COLUMN date type TIMESTAMP WITH TIME ZONE;
 
 ALTER TABLE workouts
     ADD COLUMN timezone text;
