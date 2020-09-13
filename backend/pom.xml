@@ -17,7 +17,7 @@
         <java.version>11</java.version>
         <kotlin.version>1.3.72</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <postgres.version>42.2.12</postgres.version>
+        <postgres.version>42.2.16</postgres.version>
     </properties>
 
     <dependencies>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>
-            <version>3.9.1</version>
+            <version>3.10.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>6.5.3</version>
+            <version>6.5.5</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -182,7 +182,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>copy frontend content</id>
@@ -229,7 +229,7 @@
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>6.5.3</version>
+                <version>6.5.5</version>
                 <configuration>
                     <url>${env.JDBC_DATABASE_URL}</url>
                     <locations>
