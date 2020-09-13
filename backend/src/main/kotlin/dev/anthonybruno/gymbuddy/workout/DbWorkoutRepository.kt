@@ -1,14 +1,11 @@
 package dev.anthonybruno.gymbuddy.workout
 
-import dev.anthonybruno.gymbuddy.Server
 import dev.anthonybruno.gymbuddy.db.Database
 import java.lang.RuntimeException
 
 import java.sql.*
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalUnit
-import java.util.ArrayList
 
 class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
 
@@ -92,7 +89,7 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
                   FROM $tableName
                   WHERE user_id = ? AND date >= ? 
                  ),
-                 most_common_exercise AS (SELECT exercises.id, exercises.name, COUNT(*)
+                 most_common_exercise AS (SELECT exercises.id, exercises.name, COUNT(*) as count
                   FROM $tableName
                   LEFT JOIN workout_exercises ON $tableName.id = workout_exercises.workout_id
                   LEFT JOIN exercises ON workout_exercises.exercise_id = exercises.id
@@ -103,7 +100,7 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
                  )
                  SELECT latest_workout_date.date, workouts_last_30_days.count, most_common_exercise.name
                  FROM latest_workout_date, workouts_last_30_days, most_common_exercise
-            """.trimIndent())
+            """)
             val now = Instant.now()
             val thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS)
             statement.setLong(1, userId)
@@ -133,16 +130,27 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
     }
 
     private fun addWorkoutToDb(conn: Connection, userId: Long, workout: AddWorkout): Int {
-        conn.prepareStatement("INSERT INTO $tableName(user_id, title, description, date) VALUES (?,?,?,?) RETURNING id").use { statement ->
+        conn.prepareStatement("""
+            INSERT INTO $tableName(user_id, title, description, date, timezone) 
+            SELECT ?, ?, ?, ?, CASE WHEN ? IS NOT NULL THEN ?
+                                    ELSE u.timezone END
+            FROM users u
+            WHERE u.id = ?
+            RETURNING id
+            """).use { statement ->
             statement.setLong(1, userId)
             statement.setString(2, workout.title)
             statement.setString(3, workout.description)
             statement.setTimestamp(4, Timestamp.from(Instant.now()))
+            val timezone = workout.timezone?.toString();
+            statement.setString(5, timezone)
+            statement.setString(6, timezone)
+            statement.setLong(7, userId)
             val result = statement.executeQuery()
             return if (result.next()) {
                 result.getInt(1)
             } else {
-                -1;
+                throw RuntimeException("Failed to insert!")
             }
         }
     }

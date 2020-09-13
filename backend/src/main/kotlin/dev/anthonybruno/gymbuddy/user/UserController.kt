@@ -9,17 +9,7 @@ class UserController(private val userService: UserService) {
 
     fun addUser(context: Context) {
         val rego = Json.intoClass(context.body(), UserRego::class.java)
-        val password = rego.password
-        if (password.length < 8) {
-            throw BadRequestException("Password must be at least 8 characters long")
-        }
-
-        val email = rego.email
-        if (!email.contains("@")) {
-            throw BadRequestException("Email ($email) not a email format")
-        }
-        userService.addUser(email, password)
-
+        userService.addUser(rego.email, rego.password)
     }
 
     fun editUser(context: Context) {

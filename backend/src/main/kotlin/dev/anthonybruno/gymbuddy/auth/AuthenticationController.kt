@@ -2,6 +2,8 @@ package dev.anthonybruno.gymbuddy.auth
 
 import dev.anthonybruno.gymbuddy.exception.BadRequestException
 import dev.anthonybruno.gymbuddy.user.noopUserDetails
+import dev.anthonybruno.gymbuddy.util.getSession
+import dev.anthonybruno.gymbuddy.util.getUserIdFromPath
 import io.javalin.http.Context
 
 
@@ -23,7 +25,7 @@ class AuthenticationController(private val authenticationService: Authentication
     }
 
     fun logCheck(context: Context) {
-        val sessionDetails = SessionUtils.getSession(context)
+        val sessionDetails = context.getSession()
         if (sessionDetails == null || sessionDetails === noopUserDetails) {
             context.status(401)
         } else {

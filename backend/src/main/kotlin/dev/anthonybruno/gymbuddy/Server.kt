@@ -6,21 +6,23 @@ import io.javalin.Javalin
 import io.javalin.plugin.json.JavalinJackson
 import org.flywaydb.core.Flyway
 import org.slf4j.LoggerFactory
+import java.net.URI
 import java.sql.SQLException
+import javax.print.attribute.IntegerSyntax
 
 
 class Server(private val database: Database) {
-
-    companion object {
-
-        private val log = LoggerFactory.getLogger(Server::class.java)
-
-    }
 
     private val app = Javalin.create { config ->
         config.addStaticFiles("webapp")
         config.addSinglePageRoot("/", "webapp/index.html")
     }
+
+    val port: Int
+        get() = app.port()
+
+    val url: URI
+        get() = URI.create("http://localhost:$port")
 
 
     fun start(portNum: Int) {
@@ -49,6 +51,10 @@ class Server(private val database: Database) {
         } catch (e: SQLException) {
             throw IllegalStateException("Could not connect to database!", e)
         }
+    }
+
+    companion object {
+        private val log = LoggerFactory.getLogger(Server::class.java)
     }
 
 

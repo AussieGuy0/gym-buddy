@@ -1,6 +1,7 @@
 package dev.anthonybruno.gymbuddy.workout
 
 import java.time.Instant
+import java.time.ZoneId
 
 data class Workout(val id: Int,
                    val date: Instant,
@@ -14,6 +15,7 @@ data class Exercise(val id: Int, val name: String, val description: String?, val
 
 data class AddWorkout(val title: String?,
                       val description: String?,
+                      val timezone: ZoneId?,
                       val exercises: List<AddExercise>)
 
 data class AddExercise(val id: Int, val sets: Int, val reps: Int, val weight: Int?)

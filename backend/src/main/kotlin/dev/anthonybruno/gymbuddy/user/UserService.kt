@@ -1,10 +1,19 @@
 package dev.anthonybruno.gymbuddy.user
 
+import dev.anthonybruno.gymbuddy.exception.BadRequestException
+
 class UserService(private val userRepository: UserRepository) {
 
+    // TODO: Support timezone
     fun addUser(email: String, password: String): UserDetails {
-        userRepository.addUser(email, password)
-        return UserDetails(0, email)
+        if (password.length < 8) {
+            throw BadRequestException("Password must be at least 8 characters long")
+        }
+
+        if (!email.contains("@")) {
+            throw BadRequestException("Email ($email) not a email format")
+        }
+        return userRepository.addUser(email, password)
     }
 
     fun editUser(userId: Long, newDetails: UserDetails): UserDetails {
