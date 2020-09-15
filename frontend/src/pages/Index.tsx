@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react"
 import {Session} from "../Session"
 import {Api, Stats} from "../services/Api"
 import {formatDistance, parseISO} from 'date-fns'
+import {Graph, GraphLabels, GraphProps} from "../components/Graph"
+import {Data, Layout} from "plotly.js"
 
 
 interface IndexProps {
@@ -15,6 +17,7 @@ interface StatsFetch {
 }
 
 const Index: React.FC<IndexProps> = ({session}) => {
+    const [graph, setGraph] = useState<GraphProps>()
     const [statsFetch, setStatsFetch] = useState<StatsFetch>({
         stats: null,
         loading: false,
@@ -36,12 +39,26 @@ const Index: React.FC<IndexProps> = ({session}) => {
                 setStatsFetch({stats: null, loading: false, error: err})
                 console.warn(err)
             })
+        Api.getRandomGraph(id)
+            .then(graph => setGraph(graph))
+            .catch(err => console.warn(err))
     }, [session.id])
 
     const stats = statsFetch.stats
+    // const data: Data[] = [
+    //     {
+    //         x: ['giraffes', 'orangutans', 'monkeys'],
+    //         y: [20, 14, 23],
+    //         type: 'bar'
+    //     }
+    // ];
+    // const labels: GraphLabels = {
+    //     title: "Workouts per month",
+    //     xAxis: "Month",
+    //     yAxis: "Workout Number"
+    // }
     return (
         <div>
-            {/*TODO: Fetch data for below*/}
             <div className="row d-flex mt-3">
                 <div className="col">
                     <InfoCard title={"Last workout"}
@@ -72,7 +89,9 @@ const Index: React.FC<IndexProps> = ({session}) => {
                     </div>
                 </div>
                 <div className="col-8">
-                    <span>Pretend there's a chart here</span>
+                    {graph &&
+                    <Graph data={graph.data} labels={graph.labels}/>
+                    }
                 </div>
             </div>
         </div>

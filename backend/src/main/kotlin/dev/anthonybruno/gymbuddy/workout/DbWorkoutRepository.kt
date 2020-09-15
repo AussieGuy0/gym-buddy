@@ -113,6 +113,17 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
         }) ?: WorkoutStats(null, "", 0)
     }
 
+    override fun getWorkoutsPerMonth(userId: Long): WorkoutsPerMonth {
+        TODO()
+        dbHelper.query({
+            it.prepareStatement("""
+                SELECT date_part('month', date) AS month, date_part('year', date) AS year, count(*) as workouts
+                 FROM  workouts 
+                 GROUP BY month, year
+            """)
+        }, { resultSet, resultContext -> });
+    }
+
     private fun addWorkoutExerciseToDb(conn: Connection, workoutId: Int, exercise: AddExercise) {
         conn.prepareStatement("INSERT INTO workout_exercises(workout_id, exercise_id, sets, reps, weight) VALUES (?,?,?,?,?)").use { statement ->
             statement.setInt(1, workoutId)

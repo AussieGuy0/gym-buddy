@@ -1,5 +1,6 @@
 import {get, post} from "./Http"
 import {Session} from "../Session"
+import {GraphProps} from "../components/Graph"
 
 export interface UserDetails {
     userId: number,
@@ -91,6 +92,12 @@ export class Api {
             })
     }
 
+    static getRandomGraph(userId: number): Promise<GraphProps> {
+        return get(`/api/v1/users/${userId}/graphs/random`,)
+            .then(res => {
+                return res.json()
+            })
+    }
 
 }
 
