@@ -2,8 +2,7 @@ import React, {useEffect, useState} from "react"
 import {Session} from "../Session"
 import {Api, Stats} from "../services/Api"
 import {formatDistance, parseISO} from 'date-fns'
-import {Graph, GraphLabels, GraphProps} from "../components/Graph"
-import {Data, Layout} from "plotly.js"
+import {Graph, GraphProps} from "../components/Graph"
 
 
 interface IndexProps {
