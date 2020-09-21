@@ -44,18 +44,6 @@ const Index: React.FC<IndexProps> = ({session}) => {
     }, [session.id])
 
     const stats = statsFetch.stats
-    // const data: Data[] = [
-    //     {
-    //         x: ['giraffes', 'orangutans', 'monkeys'],
-    //         y: [20, 14, 23],
-    //         type: 'bar'
-    //     }
-    // ];
-    // const labels: GraphLabels = {
-    //     title: "Workouts per month",
-    //     xAxis: "Month",
-    //     yAxis: "Workout Number"
-    // }
     return (
         <div>
             <div className="row d-flex mt-3">
