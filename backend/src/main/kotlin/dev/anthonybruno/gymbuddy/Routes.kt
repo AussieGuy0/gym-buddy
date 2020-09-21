@@ -5,6 +5,8 @@ import dev.anthonybruno.gymbuddy.auth.AuthenticationService
 import dev.anthonybruno.gymbuddy.auth.password.BcryptPasswordHasher
 import dev.anthonybruno.gymbuddy.db.Database
 import dev.anthonybruno.gymbuddy.exception.HttpException
+import dev.anthonybruno.gymbuddy.graph.GraphController
+import dev.anthonybruno.gymbuddy.graph.GraphService
 import dev.anthonybruno.gymbuddy.user.DbUserRepository
 import dev.anthonybruno.gymbuddy.user.UserController
 import dev.anthonybruno.gymbuddy.user.UserService
@@ -26,10 +28,13 @@ class Routes(private val app: Javalin, private val database: Database) {
 
     private val userRepository = DbUserRepository(passwordHasher, database)
 
+    private val workoutService = WorkoutService(DbWorkoutRepository(database))
+
     private val authenticationController = AuthenticationController(AuthenticationService(userRepository, passwordHasher))
     private val userController = UserController(UserService(userRepository))
-    private val workoutController = WorkoutController(WorkoutService(DbWorkoutRepository(database)))
+    private val workoutController = WorkoutController(workoutService)
     private val exerciseController = ExerciseController(ExerciseService(DbExerciseRepository(database)))
+    private val graphController = GraphController(GraphService(workoutService))
 
     fun setupEndpoints() {
         app.routes {
@@ -50,6 +55,9 @@ class Routes(private val app: Javalin, private val database: Database) {
                             post { workoutController.addWorkout(it) }
                             get { workoutController.getWorkouts(it) }
                             get("/stats") { workoutController.getStats(it) }
+                        }
+                        path("/graphs") {
+                            get("/random") { graphController.getRandomGraph(it) }
                         }
                     }
                 }

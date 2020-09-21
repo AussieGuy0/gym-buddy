@@ -5,6 +5,7 @@ import java.lang.RuntimeException
 
 import java.sql.*
 import java.time.Instant
+import java.time.YearMonth
 import java.time.temporal.ChronoUnit
 
 class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
@@ -111,6 +112,21 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
         }, { rs, _ ->
             WorkoutStats(rs.getTimestamp(1).toInstant(), rs.getString(3), rs.getInt(2))
         }) ?: WorkoutStats(null, "", 0)
+    }
+
+    override fun getWorkoutsPerMonth(userId: Long): List<WorkoutsOnMonth> {
+        return dbHelper.query({
+            it.prepareStatement("""
+                 SELECT date_part('month', w.date AT TIME ZONE u.timezone) AS month, date_part('year', w.date AT TIME ZONE u.timezone) AS year, count(*) as workouts
+                 FROM workouts w
+                 LEFT JOIN users u on u.id = w.user_id
+                 WHERE w.user_id = ?
+                 GROUP BY month, year
+                 ORDER BY year, month
+            """).apply {
+                setLong(1, userId)
+            }
+        }, { rs, rc -> WorkoutsOnMonth(YearMonth.of(rs.getInt("year"), rs.getInt("month")), rs.getInt("workouts")) });
     }
 
     private fun addWorkoutExerciseToDb(conn: Connection, workoutId: Int, exercise: AddExercise) {

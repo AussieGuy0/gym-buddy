@@ -18,4 +18,8 @@ class WorkoutService(private val workoutRepository: WorkoutRepository) {
     fun getStats(userId: Long): WorkoutStats {
         return workoutRepository.getStats(userId)
     }
+
+    fun getWorkoutsPerMonth(userId: Long): List<WorkoutsOnMonth> {
+        return workoutRepository.getWorkoutsPerMonth(userId)
+    }
 }

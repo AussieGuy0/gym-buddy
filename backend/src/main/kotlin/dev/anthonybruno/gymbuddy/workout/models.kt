@@ -1,6 +1,8 @@
 package dev.anthonybruno.gymbuddy.workout
 
 import java.time.Instant
+import java.time.Month
+import java.time.YearMonth
 import java.time.ZoneId
 
 data class Workout(val id: Int,
@@ -24,4 +26,9 @@ data class WorkoutStats(
         val lastWorkout: Instant?,
         val commonExercise: String,
         val workoutsLast30Days: Int
+)
+
+data class WorkoutsOnMonth(
+        val month: YearMonth,
+        val workouts: Int
 )

@@ -1,5 +1,6 @@
 package dev.anthonybruno.gymbuddy
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import dev.anthonybruno.gymbuddy.db.Database
 import dev.anthonybruno.gymbuddy.util.json.objectMapper
 import io.javalin.Javalin
@@ -24,6 +25,8 @@ class Server(private val database: Database) {
     val url: URI
         get() = URI.create("http://localhost:$port")
 
+    val objectMapper: ObjectMapper
+        get() = JavalinJackson.getObjectMapper()
 
     fun start(portNum: Int) {
         attemptDatabaseConnection()
