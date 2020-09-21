@@ -28,7 +28,7 @@ data class WorkoutStats(
         val workoutsLast30Days: Int
 )
 
-data class WorkoutsPerMonth(
+data class WorkoutsOnMonth(
         val month: YearMonth,
         val workouts: Int
 )

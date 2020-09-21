@@ -10,6 +10,6 @@ interface WorkoutRepository {
 
     fun getStats(userId: Long): WorkoutStats
 
-    fun getWorkoutsPerMonth(userId: Long): WorkoutsPerMonth
+    fun getWorkoutsPerMonth(userId: Long): List<WorkoutsOnMonth>
 
 }
