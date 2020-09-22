@@ -2,14 +2,13 @@ package dev.anthonybruno.gymbuddy
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.anthonybruno.gymbuddy.db.Database
-import dev.anthonybruno.gymbuddy.util.json.objectMapper
+import dev.anthonybruno.gymbuddy.util.json.createObjectMapper
 import io.javalin.Javalin
 import io.javalin.plugin.json.JavalinJackson
 import org.flywaydb.core.Flyway
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.sql.SQLException
-import javax.print.attribute.IntegerSyntax
 
 
 class Server(private val database: Database) {
@@ -35,7 +34,7 @@ class Server(private val database: Database) {
         val routes = Routes(app, database)
         routes.setupEndpoints()
         app.after { context -> log.info(context.method() + " " + context.path() + " " + context.status()) }
-        JavalinJackson.configure(objectMapper)
+        JavalinJackson.configure(createObjectMapper())
     }
 
     fun stop() {
