@@ -1,4 +1,4 @@
-import Plotly, {Config, Data, Layout} from 'plotly.js'
+import Plotly, {Config, Data, Layout} from 'plotly.js-dist'
 import React, {useEffect, useRef} from "react"
 
 export interface GraphProps {
