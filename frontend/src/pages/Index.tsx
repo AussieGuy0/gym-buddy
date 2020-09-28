@@ -60,7 +60,7 @@ const Index: React.FC<IndexProps> = ({session}) => {
                 </div>
             </div>
             <div className="row mt-5">
-                <div className="col-4 d-none d-sm-block">
+                <div className="col-sm-4 d-none d-sm-block">
                     <div className="card">
                         <h2 className="card-header">Info</h2>
                         <div className="card-body">
@@ -75,7 +75,7 @@ const Index: React.FC<IndexProps> = ({session}) => {
                         </div>
                     </div>
                 </div>
-                <div className="col-8">
+                <div className="col-sm-8 col-12">
                     {graph &&
                     <Graph data={graph.data} labels={graph.labels}/>
                     }
