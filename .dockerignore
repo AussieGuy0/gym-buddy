@@ -1,0 +1,14 @@
+.git/
+classes/
+generated-sources/
+generated-test-sources/
+reports/
+surefire-reports/
+test-classes/
+test-results/
+**/src/main/tests/
+
+node_modules
+
+!*.jar
+!*.war
