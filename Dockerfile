@@ -5,6 +5,7 @@ COPY pom.xml .
 COPY backend/pom.xml backend/
 COPY frontend/pom.xml frontend/
 COPY frontend/*.json frontend/
+# TODO: Add npm install here as well
 RUN mvn dependency:go-offline
 
 COPY backend/src backend/src
