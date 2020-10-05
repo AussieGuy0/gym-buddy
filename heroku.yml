@@ -8,3 +8,5 @@ build:
       dockerfile: Dockerfile
       target: build
     web: Dockerfile
+run:
+  web: gym-buddy.jar
