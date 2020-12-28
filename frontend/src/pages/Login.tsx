@@ -45,12 +45,12 @@ const Login: React.FC<LoginProps> = ({session, handleSuccessfulLogin}) => {
                 <h4>Logged in. Redirecting....</h4>
             </div>
             <form onSubmit={handleLogin} className={isLoggedIn ? 'hidden' : ''}>
-                <div className='form-group'>
+                <div className='mb-3'>
                     <label htmlFor='email'>Email</label>
                     <input className='form-control' type='email' id='email' value={email}
                            onChange={(evt) => setEmail(evt.target.value)}/>
                 </div>
-                <div className='form-group'>
+                <div className='mb-3'>
                     <label htmlFor='password'>Password</label>
                     <input className='form-control' type='password' value={password} id='password'
                            onChange={(evt) => setPassword(evt.target.value)}/>
@@ -60,7 +60,7 @@ const Login: React.FC<LoginProps> = ({session, handleSuccessfulLogin}) => {
                 </button>
                 {
                     error &&
-                    (<span className="ml-2 text-danger">{error.message}</span>)
+                    (<span className="ms-2 text-danger">{error.message}</span>)
                 }
             </form>
         </div>

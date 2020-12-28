@@ -40,7 +40,7 @@ const WorkoutsRow: React.FC<WorkoutsRowProps> = ({workout}) => {
                 <td className="d-none d-md-table-cell">{workout.description}</td>
                 <td>
                     <div className="d-flex">
-                        <span>{workout.exercises.length}</span> <Button additionalClass="btn-light ml-auto"
+                        <span>{workout.exercises.length}</span> <Button additionalClass="btn-light ms-auto"
                                                                         label={buttonLabel}
                                                                         onClick={() => setOpened(!opened)}/>
                     </div>

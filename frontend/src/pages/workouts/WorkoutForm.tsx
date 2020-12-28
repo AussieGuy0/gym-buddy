@@ -91,17 +91,17 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded})
     return (
         <div>
             <form>
-                <div className='form-group'>
+                <div className='mb-3'>
                     <label htmlFor='title'>Title</label>
                     <input className='form-control' type='text' id='title' value={title}
                            onChange={(evt) => setTitle(evt.target.value)}/>
                 </div>
-                <div className='form-group'>
+                <div className='mb-3'>
                     <label htmlFor='description'>Description</label>
                     <input className='form-control' type='text' value={description} id='description'
                            onChange={(evt) => setDescription(evt.target.value)}/>
                 </div>
-                <div className='form-group'>
+                <div className='mb-3'>
                     <h4>Exercises</h4>
                     {workoutExercises.length === 0 && !editingExercise && (
                         <div className="text-secondary">No exercises have been added to the workout :( </div>
@@ -135,7 +135,7 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({session, workoutAdded})
                 </button>
                 {
                     error &&
-                    (<span className="ml-2 text-danger">{error.message}</span>)
+                    (<span className="ms-2 text-danger">{error.message}</span>)
                 }
             </form>
         </div>
@@ -210,7 +210,7 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({exercises, initialWo
             </div>
             <div className="row mt-2">
                 <div className="col">
-                    <button className="btn btn-success mr-2" type="button"
+                    <button className="btn btn-success me-2" type="button"
                             disabled={!isValid()}
                             onClick={() => upsertExercise(workoutExercise)}>Add
                     </button>
@@ -238,7 +238,7 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({workoutExercise, removeExerc
                 {workoutExercise.sets}x{workoutExercise.reps} {workoutExercise.weight && workoutExercise.weight + 'kg'}
             </div>
             <div className="col-4">
-                <button className="btn btn-secondary mr-2" type="button"
+                <button className="btn btn-secondary me-2" type="button"
                         onClick={() => editExercise(workoutExercise)}><Icon name="create"/>
                 </button>
                 <button className="btn btn-danger" type="button" onClick={removeExercise}><Icon name={"cross"}/>
