@@ -1,11 +1,12 @@
 import React from "react"
 
 export interface IconProps {
-    name: string
+    children: React.ReactNode
 }
 
-export const Icon: React.FC<IconProps> = ({name}) => {
+export const Icon: React.FC<IconProps> = (props) => {
+    const children = props.children
     return (
-        <img alt={name} src={`/icons/${name}.svg`}/>
+        <>{children}</>
     )
 }

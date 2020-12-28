@@ -3,6 +3,7 @@ import {Api, Exercise, Workout} from "../../services/Api"
 import {arrayToMap, removeElement} from "../../utils/utils"
 import {Session} from "../../Session"
 import {ErrorDetails} from "../../services/Http"
+import {PencilSquare, X} from 'react-bootstrap-icons'
 import {Icon} from "../../components/Icon"
 
 export interface WorkoutFormProps {
@@ -239,9 +240,9 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({workoutExercise, removeExerc
             </div>
             <div className="col-4">
                 <button className="btn btn-secondary me-2" type="button"
-                        onClick={() => editExercise(workoutExercise)}><Icon name="create"/>
+                        onClick={() => editExercise(workoutExercise)}><Icon><PencilSquare/></Icon>
                 </button>
-                <button className="btn btn-danger" type="button" onClick={removeExercise}><Icon name={"cross"}/>
+                <button className="btn btn-danger" type="button" onClick={removeExercise}><Icon><X/></Icon>
                 </button>
             </div>
         </div>

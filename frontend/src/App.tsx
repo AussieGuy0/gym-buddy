@@ -5,7 +5,6 @@ import Login from "./pages/Login"
 import Workouts from "./pages/workouts/Workouts"
 
 import './App.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import {Session} from "./Session"
 import {Api} from "./services/Api"
 import {LandingPage} from "./pages/LandingPage"
