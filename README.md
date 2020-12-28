@@ -34,7 +34,8 @@ In `psql`:
 - [Flyway](https://flywaydb.org/) - Database migrations
 - [TypeScript](https://www.typescriptlang.org/) - Frontend language
 - [React](https://reactjs.org/) - Frontend framework
-- [Sysem UIcons](https://systemuicons.com/) - Icons
+- [Bootstrap 5](https://getbootstrap.com/) - CSS Framework
+- [Bootstrap Icons](https://icons.getbootstrap.com/) - Icons
 
 ## API
 
