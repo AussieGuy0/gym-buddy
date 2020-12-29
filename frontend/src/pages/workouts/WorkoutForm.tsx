@@ -8,7 +8,6 @@ import { Icon } from "../../components/Icon"
 
 export interface WorkoutFormProps {
   session: Session
-
   workoutAdded(workout: Workout): void
 }
 
