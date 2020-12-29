@@ -19,7 +19,7 @@ const Index: React.FC<IndexProps> = ({ session }) => {
   const [statsFetch, setStatsFetch] = useState<StatsFetch>({
     stats: null,
     loading: false,
-    error: null
+    error: null,
   })
 
   useEffect(() => {
@@ -53,9 +53,9 @@ const Index: React.FC<IndexProps> = ({ session }) => {
               stats?.lastWorkout == null
                 ? ""
                 : `${formatDistance(
-                parseISO(stats.lastWorkout),
-                new Date()
-                )} ago`
+                    parseISO(stats.lastWorkout),
+                    new Date()
+                  )} ago`
             }
           />
         </div>

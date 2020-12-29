@@ -4,7 +4,7 @@ import {
   Route,
   Switch,
   Redirect,
-  Link
+  Link,
 } from "react-router-dom"
 import Index from "./pages/Index"
 import Login from "./pages/Login"
@@ -23,9 +23,9 @@ interface NavigationBarProps {
 }
 
 const NavigationBar: React.FC<NavigationBarProps> = ({
-                                                       session,
-                                                       handleSuccessfulLogout
-                                                     }) => {
+  session,
+  handleSuccessfulLogout,
+}) => {
   function logout() {
     Api.logout()
       .then(() => handleSuccessfulLogout())
@@ -100,8 +100,7 @@ const App: React.FC = (props) => {
   useInterval(() => {
     if (session.loaded && session.id != null) {
       Api.logcheck()
-        .then((json) => {
-        })
+        .then((json) => {})
         .catch((err) => {
           // TODO: Don't log out, display modal
           handleSuccessfulLogout()

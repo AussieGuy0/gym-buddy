@@ -19,12 +19,12 @@ export async function makeRequest(
 ): Promise<Response> {
   const requestOptions: RequestInit = {
     method: method,
-    credentials: "include"
+    credentials: "include",
   }
   if (data != null) {
     requestOptions.body = JSON.stringify(data)
     requestOptions.headers = new Headers({
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     })
   }
 
@@ -45,7 +45,7 @@ export async function makeRequest(
     error = {
       statusCode: json.statusCode,
       message: json.message,
-      originalResponse: res
+      originalResponse: res,
     }
   } else {
     error = defaultError(res)
@@ -57,6 +57,6 @@ function defaultError(res: Response): ErrorDetails {
   return {
     statusCode: res.status,
     message: "Server Error",
-    originalResponse: res
+    originalResponse: res,
   }
 }

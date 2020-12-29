@@ -18,7 +18,7 @@ export const LandingPage: React.FC = () => {
                     "workouts.",
                     "exercises.",
                     "your goals.",
-                    "fitness."
+                    "fitness.",
                   ]}
                 />
               </h1>

@@ -14,19 +14,23 @@ export interface WorkoutFormProps {
 const defaultExercise = { id: -1, sets: 3, reps: 12 }
 
 export const WorkoutForm: React.FC<WorkoutFormProps> = ({
-                                                          session,
-                                                          workoutAdded
-                                                        }) => {
+  session,
+  workoutAdded,
+}) => {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-  const [workoutExercises, setAllWorkoutExercises] = useState<Array<WorkoutExercise>>([])
+  const [workoutExercises, setAllWorkoutExercises] = useState<
+    Array<WorkoutExercise>
+  >([])
   const [allExercises, setAllExercises] = useState<Array<Exercise>>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ErrorDetails | null>(null)
-  const [editingExerciseIndex, setEditingExerciseIndex] = useState<number | null>(null)
+  const [editingExerciseIndex, setEditingExerciseIndex] = useState<
+    number | null
+  >(null)
   const [
     editingExercise,
-    setEditingExercise
+    setEditingExercise,
   ] = useState<WorkoutExercise | null>(null)
 
   //FIXME: This is going to run on every render?
@@ -196,13 +200,13 @@ interface WorkoutExercise {
 }
 
 const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({
-                                                             exercises,
-                                                             initialWorkoutExercise,
-                                                             upsertExercise,
-                                                             cancel
-                                                           }) => {
+  exercises,
+  initialWorkoutExercise,
+  upsertExercise,
+  cancel,
+}) => {
   const [workoutExercise, setWorkoutExercise] = useState<WorkoutExercise>({
-    ...initialWorkoutExercise
+    ...initialWorkoutExercise,
   })
 
   function updateExerciseValue(
@@ -310,11 +314,11 @@ interface ExerciseItemProps {
 }
 
 const ExerciseItem: React.FC<ExerciseItemProps> = ({
-                                                     workoutExercise,
-                                                     removeExercise,
-                                                     editExercise,
-                                                     exerciseCache
-                                                   }) => {
+  workoutExercise,
+  removeExercise,
+  editExercise,
+  exerciseCache,
+}) => {
   return (
     <div className="row mb-1">
       <div className="col-5">{exerciseCache.get(workoutExercise.id)?.name}</div>
