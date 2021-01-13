@@ -98,14 +98,15 @@ const App: React.FC = (props) => {
   }
 
   useInterval(() => {
-    if (session.loaded && session.id != null) {
-      Api.logcheck()
-        .then((json) => {})
-        .catch((err) => {
-          // TODO: Don't log out, display modal
-          handleSuccessfulLogout()
-        })
+    if (!session.loaded || session.id == null || !document.hasFocus) {
+      return
     }
+    Api.logcheck()
+      .then((json) => {})
+      .catch((err) => {
+      // TODO: Don't log out, display modal
+        handleSuccessfulLogout()
+    })
   }, 30000)
 
   useEffect(() => {
