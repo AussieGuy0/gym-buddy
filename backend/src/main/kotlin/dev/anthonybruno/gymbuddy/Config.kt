@@ -10,15 +10,12 @@ import java.util.*
 interface Config {
 
     val port: Int
-
     val dbUsername: String
-
     val dbPassword: String
-
     val dbUrl: String
 }
 
-class FileConfig(private val properties: Properties): Config {
+class FileConfig(private val properties: Properties) : Config {
 
     override val port: Int
         get() = Integer.parseInt(properties.getProperty("port"))
@@ -46,6 +43,7 @@ class FileConfig(private val properties: Properties): Config {
             return fromReader(InputStreamReader(classPathFile.asStream()!!))
         }
     }
+
     init {
         try {
         } catch (e: IOException) {
@@ -55,7 +53,7 @@ class FileConfig(private val properties: Properties): Config {
     }
 }
 
-class EnvPropertiesConfig(): Config {
+class EnvPropertiesConfig() : Config {
 
     override val port: Int
         get() = Integer.parseInt(System.getenv("PORT"))
@@ -70,7 +68,6 @@ class EnvPropertiesConfig(): Config {
 
         dbUsername = dbUri.userInfo.split(":")[0]
         dbPassword = dbUri.userInfo.split(":")[1]
-        dbUrl = "jdbc:postgresql://" + dbUri.host + dbUri.path
-
+        dbUrl = "jdbc:postgresql://${dbUri.host}${dbUri.path}"
     }
 }

@@ -3,7 +3,6 @@ package dev.anthonybruno.gymbuddy.auth
 import dev.anthonybruno.gymbuddy.exception.BadRequestException
 import dev.anthonybruno.gymbuddy.user.noopUserDetails
 import dev.anthonybruno.gymbuddy.util.getSession
-import dev.anthonybruno.gymbuddy.util.getUserIdFromPath
 import io.javalin.http.Context
 
 

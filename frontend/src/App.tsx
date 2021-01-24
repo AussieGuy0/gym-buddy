@@ -1,11 +1,5 @@
-import React, { useEffect, useState, Fragment } from "react"
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Redirect,
-  Link,
-} from "react-router-dom"
+import React, { Fragment, useCallback, useEffect, useState } from "react"
+import { BrowserRouter as Router, Link, Redirect, Route, Switch } from "react-router-dom"
 import Index from "./pages/Index"
 import Login from "./pages/Login"
 import Workouts from "./pages/workouts/Workouts"
@@ -15,10 +9,11 @@ import { Session } from "./Session"
 import { Api } from "./services/Api"
 import { LandingPage } from "./pages/LandingPage"
 import { useInterval } from "./utils/hooks"
+import { Modal } from "./components/Modal"
+import { ErrorDetails } from "./services/Http"
 
 interface NavigationBarProps {
   session: Session
-
   handleSuccessfulLogout(): void
 }
 
@@ -26,13 +21,14 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   session,
   handleSuccessfulLogout,
 }) => {
-  function logout() {
-    Api.logout()
-      .then(() => handleSuccessfulLogout())
-      .catch((err) => {
-        //TODO: Handle
-        console.warn(err)
-      })
+  async function logout() {
+    try {
+      await Api.logout()
+      handleSuccessfulLogout()
+    } catch (err) {
+      // TODO: Handle
+      console.warn(err)
+    }
   }
 
   const signedIn = session.id !== null
@@ -54,9 +50,9 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
           </li>
           <li className="nav-item">
             {signedIn && (
-              <span onClick={logout} className="nav-link">
+              <a href="#a" onClick={logout} className="nav-link">
                 Logout
-              </span>
+              </a>
             )}
           </li>
           <li className="nav-item">
@@ -85,9 +81,18 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ session, children }) => {
   )
 }
 
+interface LogCheckStatus {
+  failed: boolean
+  error: ErrorDetails | null
+}
+
 const App: React.FC = (props) => {
   const noSession: Session = { id: null, loaded: false }
   const [session, setSession] = useState<Session>(noSession)
+  const [logCheckStatus, setLogCheckStatus] = useState<LogCheckStatus>({
+    failed: false,
+    error: null,
+  })
 
   function handleSuccessfulLogin(session: Session): void {
     setSession({ ...session, loaded: true })
@@ -97,31 +102,56 @@ const App: React.FC = (props) => {
     setSession({ id: null, loaded: true })
   }
 
+  const updateLoginStatus = useCallback(async () => {
+    try {
+      const result = await Api.logcheck()
+      handleSuccessfulLogin(result)
+    } catch (err) {
+      handleSuccessfulLogout()
+    }
+  }, [])
+
   useInterval(() => {
-    if (!session.loaded || session.id == null || !document.hasFocus) {
+    if (!session.loaded || session.id == null || !document.hasFocus()) {
       return
     }
     Api.logcheck()
-      .then((json) => {})
+      .then((json) =>
+        setLogCheckStatus({
+          failed: false,
+          error: null,
+        })
+      )
       .catch((err) => {
-      // TODO: Don't log out, display modal
-        handleSuccessfulLogout()
-    })
+        setLogCheckStatus({
+          failed: true,
+          error: err,
+        })
+      })
   }, 30000)
 
   useEffect(() => {
-    Api.logcheck()
-      .then((json) => {
-        handleSuccessfulLogin(json)
-      })
-      .catch((err) => {
-        handleSuccessfulLogout()
-      })
-  }, [])
+    updateLoginStatus()
+  }, [updateLoginStatus])
   return (
     <Router>
       {session.loaded && (
         <div>
+          {logCheckStatus.failed && (
+            <Modal
+              title={"Disconnected!"}
+              content={logCheckStatus.error?.message || ""}
+              show={logCheckStatus.failed}
+            >
+              <div>
+                You have been disconnected from the server. Please wait and
+                we'll automatically reconnect.
+              </div>
+              <div className="mt-2 text-danger">
+                Error: {logCheckStatus.error?.message}
+              </div>
+            </Modal>
+          )}
           <NavigationBar
             session={session}
             handleSuccessfulLogout={handleSuccessfulLogout}
