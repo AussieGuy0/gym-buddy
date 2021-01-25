@@ -1,6 +1,7 @@
 package dev.anthonybruno.gymbuddy
 
 import com.fasterxml.jackson.databind.node.ArrayNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 import dev.anthonybruno.gymbuddy.db.Database
 import dev.anthonybruno.gymbuddy.exception.BadRequestException
 import dev.anthonybruno.gymbuddy.user.DbUserRepository
@@ -95,7 +96,6 @@ class ServerIT {
     @Nested
     inner class UserServiceTest {
 
-
         @Test
         fun canAddUser() {
             val email = TestUtils.randomEmail();
@@ -187,6 +187,47 @@ class ServerIT {
                     .post("$url/api/v1/users/${user.id}/workouts")
                     .andThen()
                     .statusCode(401)
+        }
+
+    }
+
+    @Nested
+    inner class GraphIT {
+
+        @Test
+        fun canGetGraph() {
+            val user = createUser()
+            loginThen(user.email!!)
+                .contentType("application/json")
+                .body(mapOf(
+                    "title" to "Leg day",
+                    "description" to "never skip!",
+                    "exercises" to listOf<Map<String, Any>>(
+                        mapOf(
+                            "id" to 1,
+                            "sets" to 3,
+                            "reps" to 12,
+                            "weight" to 20
+                        )
+                    )
+                ))
+                .`when`()
+                .post("$url/api/v1/users/${user.id}/workouts")
+                .andThen()
+                .statusCode(200)
+
+            val graph = loginThen(user.email!!)
+                .contentType("application/json")
+                .`when`()
+                .get("$url/api/v1/users/${user.id}/graphs/random")
+                .andThen()
+                .statusCode(200)
+                .extract()
+                .body()
+                .`as`(ObjectNode::class.java)
+            assertThat(graph).isNotNull
+            assertThat(graph["data"]).isInstanceOf(ArrayNode::class.java)
+            assertThat(graph["labels"]).isInstanceOf(ObjectNode::class.java)
         }
 
     }

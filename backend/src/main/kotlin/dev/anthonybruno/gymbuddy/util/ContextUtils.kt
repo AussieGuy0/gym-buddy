@@ -6,21 +6,22 @@ import dev.anthonybruno.gymbuddy.exception.UnauthorisedException
 import dev.anthonybruno.gymbuddy.user.UserDetails
 import dev.anthonybruno.gymbuddy.user.noopUserDetails
 import io.javalin.http.Context
+import java.lang.Integer.parseInt
 import java.lang.Long.parseLong
 
-fun Context.getUserIdFromPath(): Long {
+fun Context.getUserIdFromPath(): Int {
     val userId = pathParam("userId")
     if (userId.isEmpty()) {
         throw HttpException(400, "Need userId in path")
     }
     try {
-        return parseLong(userId)
+        return parseInt(userId)
     } catch (e: NumberFormatException) {
         throw HttpException(400, "userId provided is not a number!")
     }
 }
 
-fun Context.verifyUserAndGetIdFromPath(): Long {
+fun Context.verifyUserAndGetIdFromPath(): Int {
     ensureUserSignedIn()
     val userId = getUserIdFromPath()
     val userDetails = getSession() ?: throw UnauthorisedException("Need to be logged in!")

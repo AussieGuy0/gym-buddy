@@ -1,40 +1,28 @@
 package dev.anthonybruno.gymbuddy.user
 
-import dev.anthonybruno.gymbuddy.Server
 import dev.anthonybruno.gymbuddy.auth.password.BcryptPasswordHasher
 import dev.anthonybruno.gymbuddy.auth.password.PasswordHasher
 import dev.anthonybruno.gymbuddy.db.Database
-import dev.anthonybruno.gymbuddy.util.getZoneId
+import dev.anthonybruno.gymbuddy.db.jooq.tables.references.USERS
 
-import java.sql.SQLException
 import java.time.ZoneId
 
-class DbUserRepository(private val passwordHasher: PasswordHasher = BcryptPasswordHasher(), db: Database) : UserRepository {
+class DbUserRepository(private val passwordHasher: PasswordHasher = BcryptPasswordHasher(), private val db: Database) : UserRepository {
 
-    private val tableName = "users"
-    private val dbHelper = db.getHelper()
+    private val defaultTimezone = "Australia/Adelaide";
 
     override fun addUser(email: String, password: String): UserDetails {
-        return dbHelper.queryOne({ conn ->
-            conn.prepareStatement("""
-                    INSERT INTO $tableName(id, email, password, timezone) VALUES (DEFAULT, ?,?, DEFAULT)
-                    RETURNING id, email, password, timezone
-                """).apply {
-                setString(1, email)
-                setString(2, passwordHasher.hashPassword(password))
-            }
-        }, { rs, _ ->
-            UserDetails(rs.getLong("id"), rs.getString("email"), rs.getZoneId("timezone"))
-        })!! // Should never be null!
+        val user = db.jooq().newRecord(USERS).apply {
+            this.email = email
+            this.password = passwordHasher.hashPassword(password)
+            this.timezone = defaultTimezone
+            store()
+        }
+        return UserDetails(user.id!!, user.email, ZoneId.of(user.timezone))
     }
 
     override fun getUserByEmail(email: String): InternalUserDetails? {
-        return dbHelper.queryOne({
-            val statement = it.prepareStatement("SELECT * FROM $tableName WHERE email=?")
-            statement.setString(1, email)
-            statement
-        }, { rs, _ ->
-            InternalUserDetails(rs.getInt("id").toLong(), rs.getString("password"), rs.getString("email"), rs.getZoneId("timezone"))
-        })
+        val user = db.jooq().fetchOne(USERS, USERS.EMAIL.eq(email)) ?: return null
+        return InternalUserDetails(user.id!!, user.password!!, user.email!!, ZoneId.of(user.timezone))
     }
 }

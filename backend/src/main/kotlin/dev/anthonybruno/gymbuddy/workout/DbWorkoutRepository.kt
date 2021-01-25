@@ -1,6 +1,15 @@
 package dev.anthonybruno.gymbuddy.workout
 
 import dev.anthonybruno.gymbuddy.db.Database
+import dev.anthonybruno.gymbuddy.db.jooq.tables.WorkoutExercises.Companion.WORKOUT_EXERCISES
+import dev.anthonybruno.gymbuddy.db.jooq.tables.Workouts.Companion.WORKOUTS
+import dev.anthonybruno.gymbuddy.db.jooq.tables.references.EXERCISES
+import dev.anthonybruno.gymbuddy.db.jooq.tables.references.USERS
+import org.jooq.Condition
+import org.jooq.DatePart
+import org.jooq.impl.DSL
+import org.jooq.impl.DSL.*
+import java.lang.IllegalArgumentException
 import java.lang.RuntimeException
 
 import java.sql.*
@@ -13,55 +22,55 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
     private val tableName = "workouts"
     private val dbHelper = db.getHelper();
 
-    override fun getWorkouts(userId: Long): List<Workout> {
-        val query = """SELECT w.id, w.title, w.description, w.date, we.weight, we.sets, we.reps, e.name
-                      |FROM $tableName as w
-                      |LEFT JOIN workout_exercises as we ON w.id = we.workout_id
-                      |LEFT JOIN exercises as e on we.exercise_id = e.id
-                      |WHERE w.user_id = ?
-                      |""".trimMargin()
-        return dbHelper.query({
-            val statement = it.prepareStatement(query)
-            statement.setLong(1, userId)
-            statement
-        }, { rs ->
-            val workouts = mutableMapOf<Workout, MutableList<WorkoutExerciseDto>>()
-            while (rs.next()) {
-                val workout = mapWorkoutFromResultSet(rs)
-                workouts.compute(workout) { _, list ->
-                    // If workout has no exercises, every exercise column will be null. In this case, we can just
-                    // return an empty list.
-                    val name = rs.getString("name")
-                    if (name == null) {
-                        return@compute mutableListOf()
-                    }
+    private val userIdCondition = { userId: Int -> WORKOUTS.USER_ID.eq(userId) }
+    private val workoutIdCondition = { workoutId: Int -> WORKOUTS.ID.eq(workoutId) }
 
-                    val workoutExerciseDto = WorkoutExerciseDto(rs.getString("name"), rs.getInt("weight"), rs.getInt("sets"), rs.getInt("reps"))
-                    if (list == null) {
-                        mutableListOf(workoutExerciseDto)
-                    } else {
-                        list.add(workoutExerciseDto)
-                        list
-                    }
-                }
-            }
-            workouts.toList().map {
-                it.first.copy(exercises = it.second)
-            }
-        })
+    override fun getWorkouts(userId: Int): List<Workout> {
+        return getWorkouts(userIdCondition(userId))
     }
 
     override fun getWorkout(workoutId: Int): Workout? {
-        return dbHelper.queryOne({
-            val statement = it.prepareStatement("SELECT * FROM $tableName WHERE id = ?")
-            statement.setInt(1, workoutId)
-            statement
-        }, { rs, _ ->
-            mapWorkoutFromResultSet(rs)
-        })
+        val workouts = getWorkouts(workoutIdCondition(workoutId))
+        return if (workouts.isEmpty()) {
+            null
+        } else {
+            workouts[0]
+        }
     }
 
-    override fun addWorkout(userId: Long, workout: AddWorkout): Workout {
+    private fun getWorkouts(vararg conditions: Condition): List<Workout> {
+        val w = WORKOUTS
+        val we = WORKOUT_EXERCISES
+        val e = EXERCISES;
+        val workouts = mutableMapOf<Workout, MutableList<WorkoutExerciseDto>>()
+        db.jooq().select(w.ID, w.TITLE, w.DESCRIPTION, w.DATE, we.WEIGHT, we.SETS, we.REPS, e.NAME)
+                .from(w)
+                .leftJoin(we).on(w.ID.eq(we.WORKOUT_ID))
+                .leftJoin(e).on(we.EXERCISE_ID.eq(e.ID))
+                .where(*conditions)
+                .fetch { record ->
+                    val workout = Workout(record[w.ID]!!, record[w.DATE]!!.toInstant(), record[w.TITLE], record[w.DESCRIPTION], emptyList())
+                    workouts.compute(workout) { _, list ->
+                        // If workout has no exercises, every exercise column will be null. In this case, we can just
+                        // return an empty list.
+                        val name = record[e.NAME] ?: return@compute mutableListOf()
+
+                        val workoutExerciseDto = WorkoutExerciseDto(name, record[we.WEIGHT], record[we.SETS]!!, record[we.REPS]!!)
+                        if (list == null) {
+                            mutableListOf(workoutExerciseDto)
+                        } else {
+                            list.add(workoutExerciseDto)
+                            list
+                        }
+                    }
+                }
+        return workouts.toList().map {
+            it.first.copy(exercises = it.second)
+        }
+
+    }
+
+    override fun addWorkout(userId: Int, workout: AddWorkout): Workout {
         var workoutId = -1;
         dbHelper.runTransaction {
             workoutId = addWorkoutToDb(it, userId, workout)
@@ -76,7 +85,7 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
         return getWorkout(workoutId)!!
     }
 
-    override fun getStats(userId: Long): WorkoutStats {
+    override fun getStats(userId: Int): WorkoutStats {
         //TODO: Handle case where user has no workouts
         return dbHelper.queryOne({
             val statement = it.prepareStatement("""
@@ -104,17 +113,17 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
             """)
             val now = Instant.now()
             val thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS)
-            statement.setLong(1, userId)
-            statement.setLong(2, userId)
+            statement.setInt(1, userId)
+            statement.setInt(2, userId)
             statement.setTimestamp(3, Timestamp.from(thirtyDaysAgo))
-            statement.setLong(4, userId)
+            statement.setInt(4, userId)
             statement
         }, { rs, _ ->
             WorkoutStats(rs.getTimestamp(1).toInstant(), rs.getString(3), rs.getInt(2))
         }) ?: WorkoutStats(null, "", 0)
     }
 
-    override fun getWorkoutsPerMonth(userId: Long): List<WorkoutsOnMonth> {
+    override fun getWorkoutsPerMonth(userId: Int): List<WorkoutsOnMonth> {
         return dbHelper.query({
             it.prepareStatement("""
                  SELECT date_part('month', w.date AT TIME ZONE u.timezone) AS month, date_part('year', w.date AT TIME ZONE u.timezone) AS year, count(*) as workouts
@@ -124,9 +133,29 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
                  GROUP BY month, year
                  ORDER BY year, month
             """).apply {
-                setLong(1, userId)
+                setInt(1, userId)
             }
         }, { rs, rc -> WorkoutsOnMonth(YearMonth.of(rs.getInt("year"), rs.getInt("month")), rs.getInt("workouts")) });
+
+        //TODO
+//        val w = WORKOUTS.`as`("w")
+//        val u = USERS.`as`("u")
+//        // Need AT TIME ZONE but jooq does not support it!
+//        // https://github.com/jOOQ/jOOQ/issues/7238
+//        return db.jooq()
+//            .select(field("date_part('month', w.date AT TIME ZONE u.timezone)").`as`("month"),
+//                field("date_part('year', w.date AT TIME ZONE u.timezone)").`as`("year"),
+//                count().`as`("workouts"))
+//            .from(w)
+//            .leftJoin(u).on(w.ID.eq(w.USER_ID))
+//            .where(w.USER_ID.eq(userId))
+//            .groupBy(field("month"), field("year"))
+//            .orderBy(field("year"), field("month"))
+//            .fetch {
+//                val year = it.get("year", Int::class.java)
+//                val month = it.get("month", Int::class.java)
+//                WorkoutsOnMonth(YearMonth.of(year, month), it.value3())
+//            }
     }
 
     private fun addWorkoutExerciseToDb(conn: Connection, workoutId: Int, exercise: AddExercise) {
@@ -145,7 +174,7 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
 
     }
 
-    private fun addWorkoutToDb(conn: Connection, userId: Long, workout: AddWorkout): Int {
+    private fun addWorkoutToDb(conn: Connection, userId: Int, workout: AddWorkout): Int {
         conn.prepareStatement("""
             INSERT INTO $tableName(user_id, title, description, date, timezone) 
             SELECT ?, ?, ?, ?, CASE WHEN ? IS NOT NULL THEN ?
@@ -154,14 +183,14 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
             WHERE u.id = ?
             RETURNING id
             """).use { statement ->
-            statement.setLong(1, userId)
+            statement.setInt(1, userId)
             statement.setString(2, workout.title)
             statement.setString(3, workout.description)
             statement.setTimestamp(4, Timestamp.from(Instant.now()))
             val timezone = workout.timezone?.toString();
             statement.setString(5, timezone)
             statement.setString(6, timezone)
-            statement.setLong(7, userId)
+            statement.setInt(7, userId)
             val result = statement.executeQuery()
             return if (result.next()) {
                 result.getInt(1)
@@ -171,11 +200,4 @@ class DbWorkoutRepository(private val db: Database) : WorkoutRepository {
         }
     }
 
-    private fun mapWorkoutFromResultSet(rs: ResultSet): Workout {
-        return Workout(rs.getInt("id"),
-                rs.getTimestamp("date").toInstant(),
-                rs.getString("title"),
-                rs.getString("description"),
-                listOf())
-    }
 }

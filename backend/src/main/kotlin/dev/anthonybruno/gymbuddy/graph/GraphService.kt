@@ -4,7 +4,7 @@ import dev.anthonybruno.gymbuddy.workout.WorkoutService
 
 class GraphService(private val workoutService: WorkoutService) {
 
-    fun getRandomGraph(userId: Long): Graph {
+    fun getRandomGraph(userId: Int): Graph {
         // Definitely random...
         val xAxis = mutableListOf<String>()
         val yAxis = mutableListOf<Int>()

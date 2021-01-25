@@ -1,9 +1,10 @@
 package dev.anthonybruno.gymbuddy.workout
 
 import dev.anthonybruno.gymbuddy.db.Database
+import dev.anthonybruno.gymbuddy.db.jooq.tables.records.ExercisesRecord
+import dev.anthonybruno.gymbuddy.db.jooq.tables.references.EXERCISES
 import dev.anthonybruno.gymbuddy.util.ensureUserSignedIn
 import io.javalin.http.Context
-import java.sql.ResultSet
 
 class ExerciseController(private val exerciseService: ExerciseService) {
 
@@ -22,24 +23,17 @@ class ExerciseService(private val exerciseRepository: DbExerciseRepository) {
 
 }
 
-class DbExerciseRepository(db: Database) {
-
-    private val tableName = "exercises"
-    private val dbHelper = db.getHelper()
+class DbExerciseRepository(private val db: Database) {
 
     fun getExercises(): List<Exercise> {
-        return dbHelper.query({
-            it.prepareStatement("SELECT * FROM $tableName")
-        }, { rs, _ ->
-            mapExerciseFromResultSet(rs)
-        })
+        return db.jooq().fetch(EXERCISES).map(this::mapExerciseFromRecord)
     }
 
-    private fun mapExerciseFromResultSet(resultSet: ResultSet): Exercise {
-        return Exercise(resultSet.getInt("id"),
-                resultSet.getString("name"),
-                resultSet.getString("description"),
-                resultSet.getString("main_muscle"))
+    private fun mapExerciseFromRecord(record: ExercisesRecord): Exercise {
+        return Exercise(record.id!!,
+                record.name!!,
+                record.description,
+                record.mainMuscle!!)
     }
 
 }
