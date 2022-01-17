@@ -46,7 +46,7 @@ class Routes(private val app: Javalin, private val database: Database) {
             path("api/v1") {
                 path("/users") {
                     post { userController.addUser(it) }
-                    path("/:userId") {
+                    path("/{userId}") {
                         get { userController.getUser(it) }
                         put { userController.editUser(it) }
                         post { userController.addUser(it) }
