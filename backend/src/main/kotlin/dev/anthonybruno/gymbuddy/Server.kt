@@ -1,10 +1,10 @@
 package dev.anthonybruno.gymbuddy
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import dev.anthonybruno.gymbuddy.db.Database
+import dev.anthonybruno.gymbuddy.util.json.JavalinJsonMapper
 import dev.anthonybruno.gymbuddy.util.json.createObjectMapper
 import io.javalin.Javalin
-import io.javalin.plugin.json.JavalinJackson
+import io.javalin.http.staticfiles.Location
 import org.flywaydb.core.Flyway
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -13,9 +13,12 @@ import java.sql.SQLException
 
 class Server(private val database: Database) {
 
+    val objectMapper = createObjectMapper();
+
     private val app = Javalin.create { config ->
-        config.addStaticFiles("webapp")
+        config.addStaticFiles("webapp", Location.CLASSPATH)
         config.addSinglePageRoot("/", "webapp/index.html")
+        config.jsonMapper(JavalinJsonMapper(objectMapper));
     }
 
     val port: Int
@@ -24,8 +27,6 @@ class Server(private val database: Database) {
     val url: URI
         get() = URI.create("http://localhost:$port")
 
-    val objectMapper: ObjectMapper
-        get() = JavalinJackson.getObjectMapper()
 
     fun start(portNum: Int) {
         attemptDatabaseConnection()
@@ -34,7 +35,6 @@ class Server(private val database: Database) {
         val routes = Routes(app, database)
         routes.setupEndpoints()
         app.after { context -> log.info(context.method() + " " + context.path() + " " + context.status()) }
-        JavalinJackson.configure(createObjectMapper())
     }
 
     fun stop() {
