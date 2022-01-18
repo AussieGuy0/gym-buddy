@@ -26,7 +26,8 @@ const Login: React.FC<LoginProps> = ({ session, handleSuccessfulLogin }) => {
       const userDetails = await Api.login(email, password)
       handleSuccessfulLogin(userDetails)
     } catch (err) {
-      setError(err)
+      // FIXME: Unsafe cast.
+      setError(err as ErrorDetails)
     }
     setLoading(false)
   }

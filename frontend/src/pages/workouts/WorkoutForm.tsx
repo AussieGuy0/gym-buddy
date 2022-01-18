@@ -101,7 +101,8 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({
       workoutAdded(savedWorkout)
       clear()
     } catch (err) {
-      setError(err)
+      // FIXME: unsafe cast.
+      setError(err as ErrorDetails)
     } finally {
       setLoading(false)
     }
