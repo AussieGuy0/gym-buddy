@@ -4,22 +4,12 @@
 package dev.anthonybruno.gymbuddy.db.jooq.keys
 
 
-import dev.anthonybruno.gymbuddy.db.jooq.tables.Exercises
-import dev.anthonybruno.gymbuddy.db.jooq.tables.FlywaySchemaHistory
-import dev.anthonybruno.gymbuddy.db.jooq.tables.Users
-import dev.anthonybruno.gymbuddy.db.jooq.tables.WorkoutExercises
-import dev.anthonybruno.gymbuddy.db.jooq.tables.Workouts
-import dev.anthonybruno.gymbuddy.db.jooq.tables.records.ExercisesRecord
-import dev.anthonybruno.gymbuddy.db.jooq.tables.records.FlywaySchemaHistoryRecord
-import dev.anthonybruno.gymbuddy.db.jooq.tables.records.UsersRecord
-import dev.anthonybruno.gymbuddy.db.jooq.tables.records.WorkoutExercisesRecord
-import dev.anthonybruno.gymbuddy.db.jooq.tables.records.WorkoutsRecord
-
+import dev.anthonybruno.gymbuddy.db.jooq.tables.*
+import dev.anthonybruno.gymbuddy.db.jooq.tables.records.*
 import org.jooq.ForeignKey
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
-
 
 
 // -------------------------------------------------------------------------
@@ -31,6 +21,7 @@ val EXERCISES_PKEY: UniqueKey<ExercisesRecord> = Internal.createUniqueKey(Exerci
 val FLYWAY_SCHEMA_HISTORY_PK: UniqueKey<FlywaySchemaHistoryRecord> = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), arrayOf(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK), true)
 val USERS_EMAIL_KEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_email_key"), arrayOf(Users.USERS.EMAIL), true)
 val USERS_PKEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), arrayOf(Users.USERS.ID), true)
+val WEIGHT_MEASUREMENTS_PKEY: UniqueKey<WeightMeasurementsRecord> = Internal.createUniqueKey(WeightMeasurements.WEIGHT_MEASUREMENTS, DSL.name("weight_measurements_pkey"), arrayOf(WeightMeasurements.WEIGHT_MEASUREMENTS.ID), true)
 val WORKOUT_EXERCISES_PKEY: UniqueKey<WorkoutExercisesRecord> = Internal.createUniqueKey(WorkoutExercises.WORKOUT_EXERCISES, DSL.name("workout_exercises_pkey"), arrayOf(WorkoutExercises.WORKOUT_EXERCISES.ID), true)
 val WORKOUTS_PKEY: UniqueKey<WorkoutsRecord> = Internal.createUniqueKey(Workouts.WORKOUTS, DSL.name("workouts_pkey"), arrayOf(Workouts.WORKOUTS.ID), true)
 
@@ -38,6 +29,7 @@ val WORKOUTS_PKEY: UniqueKey<WorkoutsRecord> = Internal.createUniqueKey(Workouts
 // FOREIGN KEY definitions
 // -------------------------------------------------------------------------
 
+val WEIGHT_MEASUREMENTS__WEIGHT_MEASUREMENTS_USER_ID_FKEY: ForeignKey<WeightMeasurementsRecord, UsersRecord> = Internal.createForeignKey(WeightMeasurements.WEIGHT_MEASUREMENTS, DSL.name("weight_measurements_user_id_fkey"), arrayOf(WeightMeasurements.WEIGHT_MEASUREMENTS.USER_ID), dev.anthonybruno.gymbuddy.db.jooq.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
 val WORKOUT_EXERCISES__WORKOUT_EXERCISES_EXERCISE_ID_FKEY: ForeignKey<WorkoutExercisesRecord, ExercisesRecord> = Internal.createForeignKey(WorkoutExercises.WORKOUT_EXERCISES, DSL.name("workout_exercises_exercise_id_fkey"), arrayOf(WorkoutExercises.WORKOUT_EXERCISES.EXERCISE_ID), dev.anthonybruno.gymbuddy.db.jooq.keys.EXERCISES_PKEY, arrayOf(Exercises.EXERCISES.ID), true)
 val WORKOUT_EXERCISES__WORKOUT_EXERCISES_WORKOUT_ID_FKEY: ForeignKey<WorkoutExercisesRecord, WorkoutsRecord> = Internal.createForeignKey(WorkoutExercises.WORKOUT_EXERCISES, DSL.name("workout_exercises_workout_id_fkey"), arrayOf(WorkoutExercises.WORKOUT_EXERCISES.WORKOUT_ID), dev.anthonybruno.gymbuddy.db.jooq.keys.WORKOUTS_PKEY, arrayOf(Workouts.WORKOUTS.ID), true)
 val WORKOUTS__WORKOUTS_USER_ID_FKEY: ForeignKey<WorkoutsRecord, UsersRecord> = Internal.createForeignKey(Workouts.WORKOUTS, DSL.name("workouts_user_id_fkey"), arrayOf(Workouts.WORKOUTS.USER_ID), dev.anthonybruno.gymbuddy.db.jooq.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)

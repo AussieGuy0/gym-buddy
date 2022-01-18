@@ -10,13 +10,13 @@ import dev.anthonybruno.gymbuddy.graph.GraphService
 import dev.anthonybruno.gymbuddy.user.DbUserRepository
 import dev.anthonybruno.gymbuddy.user.UserController
 import dev.anthonybruno.gymbuddy.user.UserService
+import dev.anthonybruno.gymbuddy.weight.DbWeightRepository
+import dev.anthonybruno.gymbuddy.weight.WeightController
+import dev.anthonybruno.gymbuddy.weight.WeightService
 import dev.anthonybruno.gymbuddy.workout.*
-
 import io.javalin.Javalin
-
 import io.javalin.apibuilder.ApiBuilder.*
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 
 
 class Routes(private val app: Javalin, private val database: Database) {
@@ -35,6 +35,7 @@ class Routes(private val app: Javalin, private val database: Database) {
     private val workoutController = WorkoutController(workoutService)
     private val exerciseController = ExerciseController(ExerciseService(DbExerciseRepository(database)))
     private val graphController = GraphController(GraphService(workoutService))
+    private val weightController = WeightController(WeightService(DbWeightRepository(database)))
 
     fun setupEndpoints() {
         app.routes {
@@ -58,6 +59,10 @@ class Routes(private val app: Javalin, private val database: Database) {
                         }
                         path("/graphs") {
                             get("/random") { graphController.getRandomGraph(it) }
+                        }
+                        path("/weights") {
+                            get { weightController.getWeights(it) }
+                            post { weightController.addWeight(it) }
                         }
                     }
                 }

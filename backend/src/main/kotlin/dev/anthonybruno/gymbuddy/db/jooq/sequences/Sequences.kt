@@ -23,6 +23,11 @@ val EXERCISES_ID_SEQ: Sequence<Int> = Internal.createSequence("exercises_id_seq"
 val USERS_ID_SEQ: Sequence<Int> = Internal.createSequence("users_id_seq", Public.PUBLIC, SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null)
 
 /**
+ * The sequence <code>public.weight_measurements_id_seq</code>
+ */
+val WEIGHT_MEASUREMENTS_ID_SEQ: Sequence<Int> = Internal.createSequence("weight_measurements_id_seq", Public.PUBLIC, SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null)
+
+/**
  * The sequence <code>public.workout_exercises_id_seq</code>
  */
 val WORKOUT_EXERCISES_ID_SEQ: Sequence<Int> = Internal.createSequence("workout_exercises_id_seq", Public.PUBLIC, SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null)

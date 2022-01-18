@@ -4,18 +4,8 @@
 package dev.anthonybruno.gymbuddy.db.jooq
 
 
-import dev.anthonybruno.gymbuddy.db.jooq.sequences.EXERCISES_ID_SEQ
-import dev.anthonybruno.gymbuddy.db.jooq.sequences.USERS_ID_SEQ
-import dev.anthonybruno.gymbuddy.db.jooq.sequences.WORKOUTS_ID_SEQ
-import dev.anthonybruno.gymbuddy.db.jooq.sequences.WORKOUT_EXERCISES_ID_SEQ
-import dev.anthonybruno.gymbuddy.db.jooq.tables.Exercises
-import dev.anthonybruno.gymbuddy.db.jooq.tables.FlywaySchemaHistory
-import dev.anthonybruno.gymbuddy.db.jooq.tables.Users
-import dev.anthonybruno.gymbuddy.db.jooq.tables.WorkoutExercises
-import dev.anthonybruno.gymbuddy.db.jooq.tables.Workouts
-
-import kotlin.collections.List
-
+import dev.anthonybruno.gymbuddy.db.jooq.sequences.*
+import dev.anthonybruno.gymbuddy.db.jooq.tables.*
 import org.jooq.Catalog
 import org.jooq.Sequence
 import org.jooq.Table
@@ -51,6 +41,11 @@ class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     val USERS get() = Users.USERS
 
     /**
+     * The table <code>public.weight_measurements</code>.
+     */
+    val WEIGHT_MEASUREMENTS get() = WeightMeasurements.WEIGHT_MEASUREMENTS
+
+    /**
      * The table <code>public.workout_exercises</code>.
      */
     val WORKOUT_EXERCISES get() = WorkoutExercises.WORKOUT_EXERCISES
@@ -65,6 +60,7 @@ class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
     override fun getSequences(): List<Sequence<*>> = listOf(
         EXERCISES_ID_SEQ,
         USERS_ID_SEQ,
+        WEIGHT_MEASUREMENTS_ID_SEQ,
         WORKOUT_EXERCISES_ID_SEQ,
         WORKOUTS_ID_SEQ
     )
@@ -73,6 +69,7 @@ class Public : SchemaImpl("public", DefaultCatalog.DEFAULT_CATALOG) {
         Exercises.EXERCISES,
         FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
         Users.USERS,
+        WeightMeasurements.WEIGHT_MEASUREMENTS,
         WorkoutExercises.WORKOUT_EXERCISES,
         Workouts.WORKOUTS
     )

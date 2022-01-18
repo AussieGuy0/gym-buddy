@@ -4,12 +4,7 @@
 package dev.anthonybruno.gymbuddy.db.jooq.tables.references
 
 
-import dev.anthonybruno.gymbuddy.db.jooq.tables.Exercises
-import dev.anthonybruno.gymbuddy.db.jooq.tables.FlywaySchemaHistory
-import dev.anthonybruno.gymbuddy.db.jooq.tables.Users
-import dev.anthonybruno.gymbuddy.db.jooq.tables.WorkoutExercises
-import dev.anthonybruno.gymbuddy.db.jooq.tables.Workouts
-
+import dev.anthonybruno.gymbuddy.db.jooq.tables.*
 
 
 /**
@@ -26,6 +21,11 @@ val FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY
  * The table <code>public.users</code>.
  */
 val USERS = Users.USERS
+
+/**
+ * The table <code>public.weight_measurements</code>.
+ */
+val WEIGHT_MEASUREMENTS = WeightMeasurements.WEIGHT_MEASUREMENTS
 
 /**
  * The table <code>public.workout_exercises</code>.
