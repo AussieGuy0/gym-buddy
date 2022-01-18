@@ -8,11 +8,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>frontend</artifactId>
 
     <properties>
-
         <frontend-maven-plugin.version>1.10.0</frontend-maven-plugin.version>
     </properties>
 
@@ -30,7 +28,7 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v12.7.0</nodeVersion>
+                            <nodeVersion>v16.13.2</nodeVersion>
                         </configuration>
                     </execution>
                     <!-- Install all project dependencies -->
@@ -60,6 +58,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
