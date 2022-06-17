@@ -1,4 +1,4 @@
-FROM maven:3.6.3-jdk-11 AS build
+FROM maven:3.8.3-openjdk-17 AS build
 WORKDIR /opt/gym-buddy
 
 COPY pom.xml .
@@ -14,7 +14,7 @@ COPY frontend/public frontend/public
 
 RUN mvn package
 
-FROM gcr.io/distroless/java:11
+FROM gcr.io/distroless/java17-debian11
 ENV PORT 8000
 EXPOSE $PORT
 

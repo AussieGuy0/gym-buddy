@@ -10,8 +10,8 @@ A web based application to track workouts
 - Use minimal frameworks on both backend and frontend (no Spring here!)
 
 ## Pre-reqs
-- Java 11
-- Postgres 11+
+- Java 17
+- Postgres 14
 
 ## Building
 1. In project root directory: `./mvnw package`
