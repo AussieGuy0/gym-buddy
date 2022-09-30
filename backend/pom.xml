@@ -17,7 +17,7 @@
         <java.version>17</java.version>
         <kotlin.version>1.7.0</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <postgres.version>42.3.6</postgres.version>
+        <postgres.version>42.3.7</postgres.version>
         <jooq.version>3.16.6</jooq.version>
         <jackson.version>2.13.3</jackson.version>
     </properties>
