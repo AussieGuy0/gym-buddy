@@ -7,10 +7,7 @@ import dev.anthonybruno.gymbuddy.exception.BadRequestException
 import dev.anthonybruno.gymbuddy.user.DbUserRepository
 import dev.anthonybruno.gymbuddy.user.UserDetails
 import dev.anthonybruno.gymbuddy.user.UserService
-import dev.anthonybruno.gymbuddy.workout.DbExerciseRepository
 import io.restassured.RestAssured
-import io.restassured.matcher.ResponseAwareMatcher
-import io.restassured.matcher.RestAssuredMatchers
 import io.restassured.response.*
 import io.restassured.specification.RequestSpecification
 import org.assertj.core.api.Assertions.assertThat
@@ -26,7 +23,7 @@ import java.time.ZoneId
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ServerIT {
 
-    private val postgres = PostgreSQLContainer<Nothing>("postgres:12").apply {
+    private val postgres = PostgreSQLContainer<Nothing>("postgres:15").apply {
         start()
     }
 
