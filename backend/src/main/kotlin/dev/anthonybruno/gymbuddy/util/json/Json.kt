@@ -9,10 +9,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import io.javalin.plugin.json.JsonMapper
+import io.javalin.json.JsonMapper
 
 import java.io.IOException
 import java.io.InputStream
+import java.lang.reflect.Type
 
 val objectMapper = createObjectMapper()
 
@@ -27,21 +28,21 @@ fun createObjectMapper(): ObjectMapper {
 
 class JavalinJsonMapper(private val objectMapper: ObjectMapper): JsonMapper {
 
-    override fun toJsonString(obj: Any): String {
+    override fun toJsonString(obj: Any, type: Type): String {
         return objectMapper.writeValueAsString(obj)
     }
 
-    override fun toJsonStream(obj: Any): InputStream {
+    override fun toJsonStream(obj: Any, type: Type): InputStream {
         // TODO: Implement.
-        return super.toJsonStream(obj)
+        return super.toJsonStream(obj, type)
     }
 
-    override fun <T : Any?> fromJsonString(json: String, targetClass: Class<T>): T {
-        return objectMapper.readValue(json, targetClass)
+    override fun <T : Any> fromJsonString(json: String, targetType: Type): T {
+        return objectMapper.readValue(json, objectMapper.typeFactory.constructType(targetType))
     }
 
-    override fun <T : Any?> fromJsonStream(json: InputStream, targetClass: Class<T>): T {
-        return objectMapper.readValue(json, targetClass)
+    override fun <T : Any> fromJsonStream(json: InputStream, targetType: Type): T {
+        return objectMapper.readValue(json, objectMapper.typeFactory.constructType(targetType))
     }
 }
 

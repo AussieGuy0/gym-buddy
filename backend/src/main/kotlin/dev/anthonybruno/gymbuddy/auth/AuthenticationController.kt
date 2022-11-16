@@ -9,7 +9,7 @@ import io.javalin.http.Context
 class AuthenticationController(private val authenticationService: AuthenticationService) {
 
     fun login(context: Context) {
-        val (email, password) = context.bodyAsClass<UserCredentials>()
+        val (email, password) = context.bodyAsClass(UserCredentials::class.java)
         val userDetails = this.authenticationService.login(email, password)
                 ?: throw BadRequestException("Incorrect details")
 

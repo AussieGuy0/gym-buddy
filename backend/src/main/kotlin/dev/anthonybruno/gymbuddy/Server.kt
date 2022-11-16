@@ -16,8 +16,8 @@ class Server(private val database: Database) {
     val objectMapper = createObjectMapper();
 
     private val app = Javalin.create { config ->
-        config.addStaticFiles("webapp", Location.CLASSPATH)
-        config.addSinglePageRoot("/", "webapp/index.html")
+        config.staticFiles.add("webapp", Location.CLASSPATH)
+        config.spaRoot.addFile("/", "webapp/index.html")
         config.jsonMapper(JavalinJsonMapper(objectMapper));
     }
 
@@ -34,7 +34,7 @@ class Server(private val database: Database) {
         app.start(portNum)
         val routes = Routes(app, database)
         routes.setupEndpoints()
-        app.after { context -> log.info(context.method() + " " + context.path() + " " + context.status()) }
+        app.after { context -> log.info(context.method().name + " " + context.path() + " " + context.status()) }
     }
 
     fun stop() {

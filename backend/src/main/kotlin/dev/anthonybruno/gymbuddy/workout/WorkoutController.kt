@@ -7,7 +7,7 @@ class WorkoutController(private val workoutService: WorkoutService) {
 
     fun addWorkout(context: Context) {
         val userId = context.verifyUserAndGetIdFromPath();
-        val workout = context.bodyAsClass<AddWorkout>()
+        val workout = context.bodyAsClass(AddWorkout::class.java)
         val savedWorkout = workoutService.addWorkout(userId, workout)
         context.json(savedWorkout)
     }
