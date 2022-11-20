@@ -13,6 +13,7 @@ export interface ModalProps {
   title: string
   content: string
   show: boolean
+  children: React.ReactNode
 }
 
 export const Modal: React.FC<ModalProps> = (props) => {
