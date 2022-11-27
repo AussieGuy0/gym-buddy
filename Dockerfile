@@ -12,6 +12,7 @@ COPY backend/src backend/src
 COPY frontend/src frontend/src
 COPY frontend/public frontend/public
 COPY frontend/index.html frontend/
+COPY frontend/vite.config.ts frontend/
 
 RUN mvn package
 
