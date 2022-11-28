@@ -29,7 +29,8 @@
     "format": "prettier --write ."
   },
   "prettier": {
-    "singleQuote": true
+    "singleQuote": true,
+    "semi": false
   },
   "eslintConfig": {
     "extends": "react-app"

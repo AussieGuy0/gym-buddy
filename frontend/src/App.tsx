@@ -1,34 +1,40 @@
-import React, { Fragment } from "react"
-import { BrowserRouter as Router, Link, Redirect, Route, Switch } from "react-router-dom"
-import Index from "./pages/Index"
-import Login from "./pages/Login"
-import Workouts from "./pages/workouts/Workouts"
+import React, { Fragment } from 'react'
+import {
+  BrowserRouter as Router,
+  Link,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom'
+import Index from './pages/Index'
+import Login from './pages/Login'
+import Workouts from './pages/workouts/Workouts'
 
-import "./App.css"
-import { Session } from "./Session"
-import { Api } from "./services/Api"
-import { LandingPage } from "./pages/LandingPage"
-import { useUser } from "./hooks/User"
+import './App.css'
+import { Session } from './Session'
+import { Api } from './services/Api'
+import { LandingPage } from './pages/LandingPage'
+import { useUser } from './hooks/User'
 
 interface NavigationBarProps {
-  handleSuccessfulLogout(): void;
+  handleSuccessfulLogout(): void
 }
 
 const NavigationBar: React.FC<NavigationBarProps> = ({
   handleSuccessfulLogout,
 }) => {
-  const { session } = useUser();
+  const { session } = useUser()
   async function logout() {
     try {
-      await Api.logout();
-      handleSuccessfulLogout();
+      await Api.logout()
+      handleSuccessfulLogout()
     } catch (err) {
       // TODO: Handle
-      console.warn(err);
+      console.warn(err)
     }
   }
 
-  const signedIn = session !== undefined;
+  const signedIn = session !== undefined
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -62,27 +68,27 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
         </ul>
       </div>
     </nav>
-  );
-};
+  )
+}
 
 interface PrivateRouteProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const { session } = useUser();
-  return <Fragment>{session ? children : <Redirect to="/login" />}</Fragment>;
-};
+  const { session } = useUser()
+  return <Fragment>{session ? children : <Redirect to="/login" />}</Fragment>
+}
 
 const App: React.FC = () => {
-  const { session, error, isLoading, mutate } = useUser();
+  const { session, error, isLoading, mutate } = useUser()
 
   function handleSuccessfulLogin(session: Session): void {
-    mutate(session);
+    mutate(session)
   }
 
   function handleSuccessfulLogout(): void {
-    mutate(undefined);
+    mutate(undefined)
   }
 
   // TODO: The 'disconnected' modal behaviour needs rethinking now with the move
@@ -112,7 +118,7 @@ const App: React.FC = () => {
         </div>
       )}
     </Router>
-  );
-};
+  )
+}
 
-export default App;
+export default App
