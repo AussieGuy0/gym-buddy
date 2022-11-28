@@ -1,9 +1,9 @@
-import React, { FormEvent, useEffect, useState } from "react"
-import { Api } from "../services/Api"
-import { ErrorDetails } from "../services/Http"
-import { Session } from "../Session"
-import { useHistory } from "react-router"
-import { useUser } from "../hooks/User"
+import React, { FormEvent, useEffect, useState } from 'react';
+import { Api } from '../services/Api';
+import { ErrorDetails } from '../services/Http';
+import { Session } from '../Session';
+import { useHistory } from 'react-router';
+import { useUser } from '../hooks/User';
 
 interface LoginProps {
   handleSuccessfulLogin(session: Session): void;

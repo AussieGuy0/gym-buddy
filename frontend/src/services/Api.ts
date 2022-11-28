@@ -1,6 +1,6 @@
-import { get, post } from "./Http"
-import { Session } from "../Session"
-import { GraphProps } from "../components/Graph"
+import { get, post } from './Http';
+import { Session } from '../Session';
+import { GraphProps } from '../components/Graph';
 
 export interface UserDetails {
   userId: number;

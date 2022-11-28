@@ -1,6 +1,6 @@
-import React, { useState } from "react"
-import { getRandomElement } from "../utils/utils"
-import { useInterval } from "../utils/hooks"
+import React, { useState } from 'react';
+import { getRandomElement } from '../utils/utils';
+import { useInterval } from '../utils/hooks';
 
 interface RewritingTextProps {
   template: String;

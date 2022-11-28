@@ -1,7 +1,7 @@
-import { Api } from "../services/Api"
-import useSWR, { KeyedMutator } from "swr"
-import { ErrorDetails } from "../services/Http"
-import { Session } from "../Session"
+import { Api } from '../services/Api';
+import useSWR, { KeyedMutator } from 'swr';
+import { ErrorDetails } from '../services/Http';
+import { Session } from '../Session';
 
 export interface User {
   session?: Session;

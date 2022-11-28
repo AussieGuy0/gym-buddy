@@ -1,11 +1,11 @@
-import React from "react"
-import { Session } from "../Session"
-import { Api, Stats } from "../services/Api"
-import { formatDistance, parseISO } from "date-fns"
-import { Graph, GraphProps } from "../components/Graph"
-import useSWR from "swr"
-import { ErrorDetails } from "../services/Http"
-import { useUser } from "../hooks/User"
+import React from 'react';
+import { Session } from '../Session';
+import { Api, Stats } from '../services/Api';
+import { formatDistance, parseISO } from 'date-fns';
+import { Graph, GraphProps } from '../components/Graph';
+import useSWR from 'swr';
+import { ErrorDetails } from '../services/Http';
+import { useUser } from '../hooks/User';
 
 interface IndexProps {}
 

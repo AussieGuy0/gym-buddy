@@ -1,7 +1,7 @@
-import { Workout } from "../../services/Api"
-import React, { useState } from "react"
-import { format } from "date-fns"
-import { Button } from "../../components/buttons/buttons"
+import { Workout } from '../../services/Api';
+import React, { useState } from 'react';
+import { format } from 'date-fns';
+import { Button } from '../../components/buttons/buttons';
 
 interface AllWorkoutsTableProps {
   workouts: Array<Workout>;

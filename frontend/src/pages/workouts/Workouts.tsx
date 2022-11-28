@@ -1,12 +1,12 @@
-import React from "react"
-import { Api, Workout } from "../../services/Api"
-import { Session } from "../../Session"
-import { WorkoutForm } from "./WorkoutForm"
-import { AllWorkoutsTable } from "./AllWorkoutsTable"
-import { Card } from "../../components/cards"
-import useSWR from "swr"
-import { ErrorDetails } from "../../services/Http"
-import { useUser } from "../../hooks/User"
+import React from 'react';
+import { Api, Workout } from '../../services/Api';
+import { Session } from '../../Session';
+import { WorkoutForm } from './WorkoutForm';
+import { AllWorkoutsTable } from './AllWorkoutsTable';
+import { Card } from '../../components/cards';
+import useSWR from 'swr';
+import { ErrorDetails } from '../../services/Http';
+import { useUser } from '../../hooks/User';
 
 function useWorkouts(session?: Session) {
   const key = session ? '/workouts' : null;

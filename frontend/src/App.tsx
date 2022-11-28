@@ -1,14 +1,20 @@
-import React, { Fragment } from "react"
-import { BrowserRouter as Router, Link, Redirect, Route, Switch } from "react-router-dom"
-import Index from "./pages/Index"
-import Login from "./pages/Login"
-import Workouts from "./pages/workouts/Workouts"
+import React, { Fragment } from 'react';
+import {
+  BrowserRouter as Router,
+  Link,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom';
+import Index from './pages/Index';
+import Login from './pages/Login';
+import Workouts from './pages/workouts/Workouts';
 
-import "./App.css"
-import { Session } from "./Session"
-import { Api } from "./services/Api"
-import { LandingPage } from "./pages/LandingPage"
-import { useUser } from "./hooks/User"
+import './App.css';
+import { Session } from './Session';
+import { Api } from './services/Api';
+import { LandingPage } from './pages/LandingPage';
+import { useUser } from './hooks/User';
 
 interface NavigationBarProps {
   handleSuccessfulLogout(): void;

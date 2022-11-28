@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react"
-import * as bootstrap from "bootstrap"
+import React, { useEffect, useRef, useState } from 'react';
+import * as bootstrap from 'bootstrap';
 
 export interface ModalFooterProps {
   children: React.ReactNode;

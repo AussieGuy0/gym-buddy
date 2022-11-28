@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react"
-import { Api, Exercise, Workout } from "../../services/Api"
-import { arrayToMap, removeElement } from "../../utils/utils"
-import { ErrorDetails } from "../../services/Http"
-import { PencilSquare, X } from "react-bootstrap-icons"
-import { Icon } from "../../components/Icon"
-import { useUser } from "../../hooks/User"
-import useSWR from "swr"
+import React, { useEffect, useState } from 'react';
+import { Api, Exercise, Workout } from '../../services/Api';
+import { arrayToMap, removeElement } from '../../utils/utils';
+import { ErrorDetails } from '../../services/Http';
+import { PencilSquare, X } from 'react-bootstrap-icons';
+import { Icon } from '../../components/Icon';
+import { useUser } from '../../hooks/User';
+import useSWR from 'swr';
 
 export interface WorkoutFormProps {
   workoutAdded(workout: Workout): void;
