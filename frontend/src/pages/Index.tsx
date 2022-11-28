@@ -1,48 +1,46 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Session } from "../Session"
 import { Api, Stats } from "../services/Api"
 import { formatDistance, parseISO } from "date-fns"
 import { Graph, GraphProps } from "../components/Graph"
+import useSWR from "swr"
+import { ErrorDetails } from "../services/Http"
+import { useUser } from "../hooks/User"
 
-interface IndexProps {
-  session: Session
-}
+interface IndexProps { }
 
 interface StatsFetch {
-  stats: Stats | null
-  loading: boolean
-  error: object | null
+  stats?: Stats
+  isLoading: boolean
+  error?: object
 }
 
-const Index: React.FC<IndexProps> = ({ session }) => {
-  const [graph, setGraph] = useState<GraphProps>()
-  const [statsFetch, setStatsFetch] = useState<StatsFetch>({
-    stats: null,
-    loading: false,
-    error: null,
-  })
+function useStats(session?: Session): StatsFetch {
+  const key = session ? "/stats" : null;
+  const {data, error} = useSWR<Stats, ErrorDetails>(key, (key) => Api.getStats(session!.id));
+  return {
+    stats: data,
+    isLoading: !data && !error,
+    error: error
+  }
+}
 
-  useEffect(() => {
-    const id = session.id
-    if (id == null) {
-      return
-    }
-    setStatsFetch({ stats: null, loading: true, error: null })
-    Api.getStats(id)
-      .then((stats) => {
-        setStatsFetch({ stats: stats, loading: false, error: null })
-      })
-      .catch((err) => {
-        //TODO: Handle
-        setStatsFetch({ stats: null, loading: false, error: err })
-        console.warn(err)
-      })
-    Api.getRandomGraph(id)
-      .then((graph) => setGraph(graph))
-      .catch((err) => console.warn(err))
-  }, [session.id])
+function useGraph(session?: Session) {
+  const key = session ? "/graph" : null;
+  const {data, error} = useSWR<GraphProps, ErrorDetails>(key, (key) => Api.getRandomGraph(session!.id));
+  return {
+    graph: data,
+    isLoading: !data && !error,
+    error: error
+  }
+}
 
-  const stats = statsFetch.stats
+const Index: React.FC<IndexProps> = () => {
+  const { session } = useUser()
+  // TODO: Use error/isLoading values
+  const { stats } = useStats(session)
+  const { graph } = useGraph(session)
+
   return (
     <div>
       <div className="row d-flex mt-3">
@@ -63,14 +61,14 @@ const Index: React.FC<IndexProps> = ({ session }) => {
           <InfoCard
             title={"Past 30 days"}
             content={
-              stats == null ? "" : `${stats.workoutsLast30Days} workouts`
+              !stats ? "" : `${stats.workoutsLast30Days} workouts`
             }
           />
         </div>
         <div className="col d-none d-lg-block">
           <InfoCard
             title={"Common exercise"}
-            content={stats == null ? "" : `${stats.commonExercise}`}
+            content={!stats ? "" : `${stats.commonExercise}`}
           />
         </div>
       </div>

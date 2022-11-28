@@ -1,34 +1,37 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Api, Workout } from "../../services/Api"
 import { Session } from "../../Session"
 import { WorkoutForm } from "./WorkoutForm"
 import { AllWorkoutsTable } from "./AllWorkoutsTable"
 import { Card } from "../../components/cards"
+import useSWR from "swr"
+import { ErrorDetails } from "../../services/Http"
+import { useUser } from "../../hooks/User"
 
-export interface SessionProps {
-  session: Session
+function useWorkouts(session?: Session) {
+  const key = session ? "/workouts" : null
+  const {data, error, mutate} = useSWR<Workout[], ErrorDetails>(key, (key) => Api.getWorkouts(session!.id))
+  return {
+    mutate: mutate,
+    workouts: data,
+    isLoading: !data && !error,
+    error: error
+  }
 }
 
-const Workouts: React.FC<SessionProps> = ({ session }) => {
-  const [workouts, setWorkouts] = useState<Array<Workout>>([])
+interface WorkoutProps { }
 
-  useEffect(() => {
-    const id = session.id
-    if (id == null) {
-      return
-    }
-    Api.getWorkouts(id)
-      .then((workouts) => {
-        setWorkouts(workouts)
-      })
-      .catch((err) => {
-        //TODO: Handle
-        console.warn(err)
-      })
-  }, [session.id])
+const Workouts: React.FC<WorkoutProps> = () => {
+  const { session } = useUser()
+  // TODO: use error.
+  const {workouts, error, mutate} = useWorkouts(session)
 
   function workoutAdded(workout: Workout) {
-    setWorkouts((prev) => [...prev, workout])
+    if (!workouts) {
+      return
+    }
+    const newWorkouts = [ ...workouts, workout]
+    mutate(newWorkouts)
   }
 
   return (
@@ -41,14 +44,16 @@ const Workouts: React.FC<SessionProps> = ({ session }) => {
       <div className="row mb-3">
         <div className="col">
           <Card title="Add Workout">
-            <WorkoutForm session={session} workoutAdded={workoutAdded} />
+            <WorkoutForm workoutAdded={workoutAdded} />
           </Card>
         </div>
       </div>
       <div className="row">
         <div className="col">
           <Card title="Past Workouts">
-            <AllWorkoutsTable workouts={workouts} />
+            { workouts != undefined &&
+              (<AllWorkoutsTable workouts={workouts} />)
+            }
           </Card>
         </div>
       </div>

@@ -13,7 +13,7 @@ export interface Workout {
   date: string
   title: string
   description: string
-  exercises: Array<WorkoutExercise>
+  exercises: WorkoutExercise[]
 }
 
 export interface WorkoutExercise {
@@ -46,7 +46,7 @@ export class Api {
     )
   }
 
-  static logcheck(): Promise<any> {
+  static logcheck(): Promise<Session> {
     return post("/auth/logcheck").then((res) => {
       return res.json()
     })
@@ -64,10 +64,9 @@ export class Api {
     )
   }
 
-  static getWorkouts(userId: number): Promise<Array<Workout>> {
-    return get(`/api/v1/users/${userId}/workouts`).then((res) => {
-      return res.json()
-    })
+  static async getWorkouts(userId: number): Promise<Workout[]> {
+    const res = await get(`/api/v1/users/${userId}/workouts`)
+    return await res.json()
   }
 
   static addWorkout(
@@ -85,7 +84,7 @@ export class Api {
     })
   }
 
-  static getExercises(): Promise<Array<Exercise>> {
+  static getExercises(): Promise<Exercise[]> {
     return get(`/api/v1/exercises`).then((res) => {
       return res.json()
     })

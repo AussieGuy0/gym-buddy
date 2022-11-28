@@ -21,7 +21,7 @@ export async function makeRequest(
     method: method,
     credentials: "include",
   }
-  if (data != null) {
+  if (data !== undefined) {
     requestOptions.body = JSON.stringify(data)
     requestOptions.headers = new Headers({
       "Content-Type": "application/json",
