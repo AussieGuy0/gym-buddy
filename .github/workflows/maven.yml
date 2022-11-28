@@ -6,7 +6,9 @@ name: Java CI with Maven
 on: [push, pull_request]
 
 jobs:
+
   format:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
