@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from "react"
+import React, { Fragment } from "react"
 import { BrowserRouter as Router, Link, Redirect, Route, Switch } from "react-router-dom"
 import Index from "./pages/Index"
 import Login from "./pages/Login"
@@ -8,19 +8,16 @@ import "./App.css"
 import { Session } from "./Session"
 import { Api } from "./services/Api"
 import { LandingPage } from "./pages/LandingPage"
-import { useInterval } from "./utils/hooks"
-import { Modal } from "./components/Modal"
-import { ErrorDetails } from "./services/Http"
+import { useUser } from "./hooks/User"
 
 interface NavigationBarProps {
-  session: Session
   handleSuccessfulLogout(): void
 }
 
 const NavigationBar: React.FC<NavigationBarProps> = ({
-  session,
   handleSuccessfulLogout,
 }) => {
+  const { session } = useUser();
   async function logout() {
     try {
       await Api.logout()
@@ -31,7 +28,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
     }
   }
 
-  const signedIn = session.id !== null
+  const signedIn = session !== undefined
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -69,108 +66,53 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
 }
 
 interface PrivateRouteProps {
-  session: Session
   children: React.ReactNode
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ session, children }) => {
+const PrivateRoute: React.FC<PrivateRouteProps> = ({  children }) => {
+  const { session } = useUser();
   return (
     <Fragment>
-      {session.id != null ? children : <Redirect to="/login" />}
+      { session ? children : <Redirect to="/login" />}
     </Fragment>
   )
 }
 
-interface LogCheckStatus {
-  failed: boolean
-  error: ErrorDetails | null
-}
-
-const App: React.FC = (props) => {
-  const noSession: Session = { id: null, loaded: false }
-  const [session, setSession] = useState<Session>(noSession)
-  const [logCheckStatus, setLogCheckStatus] = useState<LogCheckStatus>({
-    failed: false,
-    error: null,
-  })
+const App: React.FC = () => {
+  const {session, error, isLoading, mutate} = useUser()
 
   function handleSuccessfulLogin(session: Session): void {
-    setSession({ ...session, loaded: true })
+    mutate(session)
   }
 
   function handleSuccessfulLogout(): void {
-    setSession({ id: null, loaded: true })
+    mutate(undefined)
   }
 
-  const updateLoginStatus = useCallback(async () => {
-    try {
-      const result = await Api.logcheck()
-      handleSuccessfulLogin(result)
-    } catch (err) {
-      handleSuccessfulLogout()
-    }
-  }, [])
-
-  useInterval(() => {
-    if (!session.loaded || session.id == null || !document.hasFocus()) {
-      return
-    }
-    Api.logcheck()
-      .then((json) =>
-        setLogCheckStatus({
-          failed: false,
-          error: null,
-        })
-      )
-      .catch((err) => {
-        setLogCheckStatus({
-          failed: true,
-          error: err,
-        })
-      })
-  }, 30000)
-
-  useEffect(() => {
-    updateLoginStatus()
-  }, [updateLoginStatus])
+  // TODO: The 'disconnected' modal behaviour needs rethinking now with the move
+  //       to SWR. Essentially we need to keep track that we did have a session
+  //       but either are disconnected or got signed out.
   return (
     <Router>
-      {session.loaded && (
+      { !isLoading && (
         <div>
-          {logCheckStatus.failed && (
-            <Modal
-              title={"Disconnected!"}
-              content={logCheckStatus.error?.message || ""}
-              show={logCheckStatus.failed}
-            >
-              <div>
-                You have been disconnected from the server. Please wait and
-                we'll automatically reconnect.
-              </div>
-              <div className="mt-2 text-danger">
-                Error: {logCheckStatus.error?.message}
-              </div>
-            </Modal>
-          )}
           <NavigationBar
-            session={session}
             handleSuccessfulLogout={handleSuccessfulLogout}
           />
           <div className="container">
             <Switch>
               <Route path="/" exact>
-                {session.id ? <Index session={session} /> : <LandingPage />}
+                {session ? <Index /> : <LandingPage />}
               </Route>
               <Route path="/login/">
                 <Login
-                  session={session}
                   handleSuccessfulLogin={handleSuccessfulLogin}
                 />
               </Route>
-              <PrivateRoute session={session}>
+              <PrivateRoute>
                 <Route path="/" exact></Route>
                 <Route path="/workouts">
-                  <Workouts session={session} />
+                  <Workouts/>
                 </Route>
               </PrivateRoute>
             </Switch>

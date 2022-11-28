@@ -1,5 +1,5 @@
 export interface Session {
-  id: number | null
+  id: number
   email?: string
   loaded: boolean
 }

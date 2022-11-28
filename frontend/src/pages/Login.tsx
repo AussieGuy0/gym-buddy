@@ -3,20 +3,20 @@ import { Api } from "../services/Api"
 import { ErrorDetails } from "../services/Http"
 import { Session } from "../Session"
 import { useHistory } from "react-router"
+import { useUser } from "../hooks/User"
 
 interface LoginProps {
-  session: Session
-
   handleSuccessfulLogin(session: Session): void
 }
 
-const Login: React.FC<LoginProps> = ({ session, handleSuccessfulLogin }) => {
+const Login: React.FC<LoginProps> = ({ handleSuccessfulLogin }) => {
   const history = useHistory()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ErrorDetails | null>(null)
-  const isLoggedIn = session.loaded && session.id !== null
+  const { session, isLoading } = useUser()
+  const isLoggedIn: boolean = !isLoading && session != undefined;
 
   async function handleLogin(evt: FormEvent) {
     evt.preventDefault()

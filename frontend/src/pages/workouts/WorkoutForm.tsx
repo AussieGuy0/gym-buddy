@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from "react"
 import { Api, Exercise, Workout } from "../../services/Api"
 import { arrayToMap, removeElement } from "../../utils/utils"
-import { Session } from "../../Session"
 import { ErrorDetails } from "../../services/Http"
 import { PencilSquare, X } from "react-bootstrap-icons"
 import { Icon } from "../../components/Icon"
+import { useUser } from "../../hooks/User"
+import useSWR from "swr"
 
 export interface WorkoutFormProps {
-  session: Session
   workoutAdded(workout: Workout): void
 }
 
 const defaultExercise = { id: -1, sets: 3, reps: 12 }
 
+function useExercises() {
+  const key = "/exercise";
+  const {data, error, mutate} = useSWR<Exercise[], ErrorDetails>(key, (key) => Api.getExercises())
+  return {
+    mutate: mutate,
+    workouts: data,
+    isLoading: !data && !error,
+    error: error
+  }
+}
+
 export const WorkoutForm: React.FC<WorkoutFormProps> = ({
-  session,
   workoutAdded,
 }) => {
   const [title, setTitle] = useState("")
@@ -33,6 +43,7 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({
     setEditingExercise,
   ] = useState<WorkoutExercise | null>(null)
 
+  const { session } = useUser()
   //FIXME: This is going to run on every render?
   const exerciseCache = arrayToMap(allExercises, (exercise) => exercise.id)
 
@@ -88,7 +99,7 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({
   }
 
   async function submitWorkout() {
-    const id = session.id || -1
+    const id = session ? session.id : -1
     setLoading(true)
     setError(null)
     try {
