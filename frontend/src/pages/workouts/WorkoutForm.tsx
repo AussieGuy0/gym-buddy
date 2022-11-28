@@ -8,70 +8,68 @@ import { useUser } from "../../hooks/User"
 import useSWR from "swr"
 
 export interface WorkoutFormProps {
-  workoutAdded(workout: Workout): void
+  workoutAdded(workout: Workout): void;
 }
 
-const defaultExercise = { id: -1, sets: 3, reps: 12 }
+const defaultExercise = { id: -1, sets: 3, reps: 12 };
 
 function useExercises() {
-  const key = "/exercise";
-  const {data, error, mutate} = useSWR<Exercise[], ErrorDetails>(key, (key) => Api.getExercises())
+  const key = '/exercise';
+  const { data, error, mutate } = useSWR<Exercise[], ErrorDetails>(key, (key) =>
+    Api.getExercises()
+  );
   return {
     mutate: mutate,
     workouts: data,
     isLoading: !data && !error,
-    error: error
-  }
+    error: error,
+  };
 }
 
-export const WorkoutForm: React.FC<WorkoutFormProps> = ({
-  workoutAdded,
-}) => {
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
+export const WorkoutForm: React.FC<WorkoutFormProps> = ({ workoutAdded }) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [workoutExercises, setAllWorkoutExercises] = useState<
     Array<WorkoutExercise>
-  >([])
-  const [allExercises, setAllExercises] = useState<Array<Exercise>>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<ErrorDetails | null>(null)
+  >([]);
+  const [allExercises, setAllExercises] = useState<Array<Exercise>>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<ErrorDetails | null>(null);
   const [editingExerciseIndex, setEditingExerciseIndex] = useState<
     number | null
-  >(null)
-  const [
-    editingExercise,
-    setEditingExercise,
-  ] = useState<WorkoutExercise | null>(null)
+  >(null);
+  const [editingExercise, setEditingExercise] =
+    useState<WorkoutExercise | null>(null);
 
-  const { session } = useUser()
+  const { session } = useUser();
   //FIXME: This is going to run on every render?
-  const exerciseCache = arrayToMap(allExercises, (exercise) => exercise.id)
+  const exerciseCache = arrayToMap(allExercises, (exercise) => exercise.id);
 
   useEffect(() => {
     //TODO: Handle error
     Api.getExercises().then((exercises) => {
-      setAllExercises(exercises)
-    })
-  }, [])
+      setAllExercises(exercises);
+    });
+  }, []);
 
   function clear() {
-    setTitle("")
-    setDescription("")
-    setAllWorkoutExercises([defaultExercise])
+    setTitle('');
+    setDescription('');
+    setAllWorkoutExercises([defaultExercise]);
   }
 
   function startAddingExercise() {
-    editExercise(-1, defaultExercise)
+    editExercise(-1, defaultExercise);
   }
 
   function editExercise(idx: number, workoutExercise: WorkoutExercise) {
-    setEditingExercise(workoutExercise)
-    setEditingExerciseIndex(idx)
+    setEditingExercise(workoutExercise);
+    setEditingExerciseIndex(idx);
   }
 
   function cancelEditingExercise() {
-    setEditingExercise(null)
-    setEditingExerciseIndex(null)
+    setEditingExercise(null);
+    setEditingExerciseIndex(null);
   }
 
   function upsertExercise(
@@ -81,41 +79,41 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({
     if (idx === -1) {
       setAllWorkoutExercises((current) =>
         current.concat(updatedWorkoutExercise)
-      )
+      );
     } else {
       setAllWorkoutExercises((currentExercises) => {
-        const updatedWorkoutExercises = [...currentExercises]
-        updatedWorkoutExercises[idx] = updatedWorkoutExercise
-        return updatedWorkoutExercises
-      })
+        const updatedWorkoutExercises = [...currentExercises];
+        updatedWorkoutExercises[idx] = updatedWorkoutExercise;
+        return updatedWorkoutExercises;
+      });
     }
-    cancelEditingExercise()
+    cancelEditingExercise();
   }
 
   function removeExercise(idx: number) {
     setAllWorkoutExercises((currentExercises) => {
-      return removeElement(currentExercises, idx)
-    })
+      return removeElement(currentExercises, idx);
+    });
   }
 
   async function submitWorkout() {
-    const id = session ? session.id : -1
-    setLoading(true)
-    setError(null)
+    const id = session ? session.id : -1;
+    setLoading(true);
+    setError(null);
     try {
       const savedWorkout = await Api.addWorkout(
         id,
         title,
         description,
         workoutExercises
-      )
-      workoutAdded(savedWorkout)
-      clear()
+      );
+      workoutAdded(savedWorkout);
+      clear();
     } catch (err) {
       // FIXME: unsafe cast.
-      setError(err as ErrorDetails)
+      setError(err as ErrorDetails);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -146,7 +144,7 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({
           <h4>Exercises</h4>
           {workoutExercises.length === 0 && !editingExercise && (
             <div className="text-secondary">
-              No exercises have been added to the workout :({" "}
+              No exercises have been added to the workout :({' '}
             </div>
           )}
           {workoutExercises.map((exercise, index) => (
@@ -192,23 +190,23 @@ export const WorkoutForm: React.FC<WorkoutFormProps> = ({
         {error && <span className="ms-2 text-danger">{error.message}</span>}
       </form>
     </div>
-  )
-}
+  );
+};
 
 interface ExerciseFormItemProps {
-  exercises: Array<Exercise>
-  initialWorkoutExercise: WorkoutExercise
+  exercises: Array<Exercise>;
+  initialWorkoutExercise: WorkoutExercise;
 
-  upsertExercise(workoutExercise: WorkoutExercise): void
+  upsertExercise(workoutExercise: WorkoutExercise): void;
 
-  cancel(): void
+  cancel(): void;
 }
 
 interface WorkoutExercise {
-  id: number
-  sets: number
-  reps: number
-  weight?: number
+  id: number;
+  sets: number;
+  reps: number;
+  weight?: number;
 }
 
 const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({
@@ -219,13 +217,13 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({
 }) => {
   const [workoutExercise, setWorkoutExercise] = useState<WorkoutExercise>({
     ...initialWorkoutExercise,
-  })
+  });
 
   function updateExerciseValue(
     key: keyof WorkoutExercise,
     evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ): void {
-    setWorkoutExercise({ ...workoutExercise, [key]: Number(evt.target.value) })
+    setWorkoutExercise({ ...workoutExercise, [key]: Number(evt.target.value) });
   }
 
   function isValid(): boolean {
@@ -233,10 +231,10 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({
       workoutExercise.id >= 0 &&
       workoutExercise.sets >= 0 &&
       workoutExercise.reps >= 0
-    )
+    );
   }
 
-  const exerciseId = workoutExercise.id === -1 ? "" : workoutExercise.id
+  const exerciseId = workoutExercise.id === -1 ? '' : workoutExercise.id;
   return (
     <>
       <div className="row mb-1">
@@ -247,7 +245,7 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({
           <select
             className="form-control"
             value={exerciseId}
-            onChange={(evt) => updateExerciseValue("id", evt)}
+            onChange={(evt) => updateExerciseValue('id', evt)}
           >
             <option value="" disabled hidden>
               Select...
@@ -269,8 +267,8 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({
             className="form-control"
             type="number"
             min="0"
-            value={workoutExercise.sets + ""}
-            onChange={(evt) => updateExerciseValue("sets", evt)}
+            value={workoutExercise.sets + ''}
+            onChange={(evt) => updateExerciseValue('sets', evt)}
           />
         </div>
         <div className="col-4">
@@ -278,8 +276,8 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({
             className="form-control"
             type="number"
             min="0"
-            value={workoutExercise.reps + ""}
-            onChange={(evt) => updateExerciseValue("reps", evt)}
+            value={workoutExercise.reps + ''}
+            onChange={(evt) => updateExerciseValue('reps', evt)}
           />
         </div>
       </div>
@@ -292,8 +290,8 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({
             className="form-control"
             type="number"
             min="0"
-            value={workoutExercise.weight + ""}
-            onChange={(evt) => updateExerciseValue("weight", evt)}
+            value={workoutExercise.weight + ''}
+            onChange={(evt) => updateExerciseValue('weight', evt)}
           />
         </div>
       </div>
@@ -313,16 +311,16 @@ const ExerciseFormItem: React.FC<ExerciseFormItemProps> = ({
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 interface ExerciseItemProps {
-  workoutExercise: WorkoutExercise
-  exerciseCache: Map<number, Exercise>
+  workoutExercise: WorkoutExercise;
+  exerciseCache: Map<number, Exercise>;
 
-  removeExercise(): void
+  removeExercise(): void;
 
-  editExercise(workoutExercise: WorkoutExercise): void
+  editExercise(workoutExercise: WorkoutExercise): void;
 }
 
 const ExerciseItem: React.FC<ExerciseItemProps> = ({
@@ -335,8 +333,8 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
     <div className="row mb-1">
       <div className="col-5">{exerciseCache.get(workoutExercise.id)?.name}</div>
       <div className="col-3">
-        {workoutExercise.sets}x{workoutExercise.reps}{" "}
-        {workoutExercise.weight && workoutExercise.weight + "kg"}
+        {workoutExercise.sets}x{workoutExercise.reps}{' '}
+        {workoutExercise.weight && workoutExercise.weight + 'kg'}
       </div>
       <div className="col-4">
         <button
@@ -359,5 +357,5 @@ const ExerciseItem: React.FC<ExerciseItemProps> = ({
         </button>
       </div>
     </div>
-  )
-}
+  );
+};

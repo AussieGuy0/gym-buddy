@@ -7,19 +7,19 @@ import svgrPlugin from "vite-plugin-svgr"
 export default defineConfig({
   plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
   build: {
-    outDir: 'build'
+    outDir: 'build',
   },
   server: {
     open: true,
     proxy: {
       '/api': {
-        target: "http://localhost:8000",
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/auth': {
-        target: "http://localhost:8000",
+        target: 'http://localhost:8000',
         changeOrigin: true,
-      }
-    }
-  }
+      },
+    },
+  },
 });

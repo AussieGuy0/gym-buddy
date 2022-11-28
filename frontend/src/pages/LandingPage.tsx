@@ -11,14 +11,14 @@ export const LandingPage: React.FC = () => {
             <div className="col">
               <h1 className="display-1 text-center fw-bold">
                 <RewritingText
-                  template={"The best way to track $REPLACE"}
+                  template={'The best way to track $REPLACE'}
                   replacements={[
-                    "gainz.",
-                    "lifting.",
-                    "workouts.",
-                    "exercises.",
-                    "your goals.",
-                    "fitness.",
+                    'gainz.',
+                    'lifting.',
+                    'workouts.',
+                    'exercises.',
+                    'your goals.',
+                    'fitness.',
                   ]}
                 />
               </h1>
@@ -36,5 +36,5 @@ export const LandingPage: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

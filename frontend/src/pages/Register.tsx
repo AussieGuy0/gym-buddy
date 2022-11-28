@@ -6,7 +6,7 @@ const Register: React.FC = () => {
       <h1>Register</h1>
       <h2>Not Implemented</h2>
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

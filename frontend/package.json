@@ -25,7 +25,11 @@
   "scripts": {
     "start": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "format": "prettier --write ."
+  },
+  "prettier": {
+    "singleQuote": true
   },
   "eslintConfig": {
     "extends": "react-app"

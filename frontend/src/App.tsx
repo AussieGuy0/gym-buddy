@@ -11,7 +11,7 @@ import { LandingPage } from "./pages/LandingPage"
 import { useUser } from "./hooks/User"
 
 interface NavigationBarProps {
-  handleSuccessfulLogout(): void
+  handleSuccessfulLogout(): void;
 }
 
 const NavigationBar: React.FC<NavigationBarProps> = ({
@@ -20,21 +20,21 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
   const { session } = useUser();
   async function logout() {
     try {
-      await Api.logout()
-      handleSuccessfulLogout()
+      await Api.logout();
+      handleSuccessfulLogout();
     } catch (err) {
       // TODO: Handle
-      console.warn(err)
+      console.warn(err);
     }
   }
 
-  const signedIn = session !== undefined
+  const signedIn = session !== undefined;
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
         <Link className="navbar-brand" to="/">
-          <img src="favicon.ico" height="32" width="32" alt="Gym buddy icon" />{" "}
+          <img src="favicon.ico" height="32" width="32" alt="Gym buddy icon" />{' '}
           <span className="d-none d-sm-inline">Gym Buddy</span>
         </Link>
         <ul className="navbar-nav ms-auto">
@@ -62,31 +62,27 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
         </ul>
       </div>
     </nav>
-  )
-}
+  );
+};
 
 interface PrivateRouteProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
-const PrivateRoute: React.FC<PrivateRouteProps> = ({  children }) => {
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
   const { session } = useUser();
-  return (
-    <Fragment>
-      { session ? children : <Redirect to="/login" />}
-    </Fragment>
-  )
-}
+  return <Fragment>{session ? children : <Redirect to="/login" />}</Fragment>;
+};
 
 const App: React.FC = () => {
-  const {session, error, isLoading, mutate} = useUser()
+  const { session, error, isLoading, mutate } = useUser();
 
   function handleSuccessfulLogin(session: Session): void {
-    mutate(session)
+    mutate(session);
   }
 
   function handleSuccessfulLogout(): void {
-    mutate(undefined)
+    mutate(undefined);
   }
 
   // TODO: The 'disconnected' modal behaviour needs rethinking now with the move
@@ -94,25 +90,21 @@ const App: React.FC = () => {
   //       but either are disconnected or got signed out.
   return (
     <Router>
-      { !isLoading && (
+      {!isLoading && (
         <div>
-          <NavigationBar
-            handleSuccessfulLogout={handleSuccessfulLogout}
-          />
+          <NavigationBar handleSuccessfulLogout={handleSuccessfulLogout} />
           <div className="container">
             <Switch>
               <Route path="/" exact>
                 {session ? <Index /> : <LandingPage />}
               </Route>
               <Route path="/login/">
-                <Login
-                  handleSuccessfulLogin={handleSuccessfulLogin}
-                />
+                <Login handleSuccessfulLogin={handleSuccessfulLogin} />
               </Route>
               <PrivateRoute>
                 <Route path="/" exact></Route>
                 <Route path="/workouts">
-                  <Workouts/>
+                  <Workouts />
                 </Route>
               </PrivateRoute>
             </Switch>
@@ -120,7 +112,7 @@ const App: React.FC = () => {
         </div>
       )}
     </Router>
-  )
-}
+  );
+};
 
-export default App
+export default App;

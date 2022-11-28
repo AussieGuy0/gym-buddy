@@ -2,9 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "plotly.js-basic-dist": [
-        "node_modules/@types/plotly.js"
-      ]
+      "plotly.js-basic-dist": ["node_modules/@types/plotly.js"]
     }
   }
 }

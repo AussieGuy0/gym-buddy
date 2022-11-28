@@ -9,29 +9,31 @@ import { ErrorDetails } from "../../services/Http"
 import { useUser } from "../../hooks/User"
 
 function useWorkouts(session?: Session) {
-  const key = session ? "/workouts" : null
-  const {data, error, mutate} = useSWR<Workout[], ErrorDetails>(key, (key) => Api.getWorkouts(session!.id))
+  const key = session ? '/workouts' : null;
+  const { data, error, mutate } = useSWR<Workout[], ErrorDetails>(key, (key) =>
+    Api.getWorkouts(session!.id)
+  );
   return {
     mutate: mutate,
     workouts: data,
     isLoading: !data && !error,
-    error: error
-  }
+    error: error,
+  };
 }
 
-interface WorkoutProps { }
+interface WorkoutProps {}
 
 const Workouts: React.FC<WorkoutProps> = () => {
-  const { session } = useUser()
+  const { session } = useUser();
   // TODO: use error.
-  const {workouts, error, mutate} = useWorkouts(session)
+  const { workouts, error, mutate } = useWorkouts(session);
 
   function workoutAdded(workout: Workout) {
     if (!workouts) {
-      return
+      return;
     }
-    const newWorkouts = [ ...workouts, workout]
-    mutate(newWorkouts)
+    const newWorkouts = [...workouts, workout];
+    mutate(newWorkouts);
   }
 
   return (
@@ -51,14 +53,12 @@ const Workouts: React.FC<WorkoutProps> = () => {
       <div className="row">
         <div className="col">
           <Card title="Past Workouts">
-            { workouts != undefined &&
-              (<AllWorkoutsTable workouts={workouts} />)
-            }
+            {workouts != undefined && <AllWorkoutsTable workouts={workouts} />}
           </Card>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Workouts
+export default Workouts;

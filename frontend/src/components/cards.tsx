@@ -1,8 +1,8 @@
 import React from "react"
 
 export interface CardProps {
-  title: string
-  children: React.ReactNode
+  title: string;
+  children: React.ReactNode;
 }
 
 export const Card: React.FC<CardProps> = ({ title, children }) => {
@@ -11,5 +11,5 @@ export const Card: React.FC<CardProps> = ({ title, children }) => {
       <h4 className="card-header">{title}</h4>
       <div className="card-body">{children}</div>
     </div>
-  )
-}
+  );
+};
