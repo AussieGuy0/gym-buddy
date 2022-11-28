@@ -1,15 +1,15 @@
 export interface ErrorDetails {
-  statusCode: number;
-  message: string;
-  originalResponse: Response;
+  statusCode: number
+  message: string
+  originalResponse: Response
 }
 
 export function get(url: string): Promise<Response> {
-  return makeRequest(url, 'GET');
+  return makeRequest(url, 'GET')
 }
 
 export function post(url: string, data?: object): Promise<Response> {
-  return makeRequest(url, 'POST', data);
+  return makeRequest(url, 'POST', data)
 }
 
 export async function makeRequest(
@@ -20,37 +20,37 @@ export async function makeRequest(
   const requestOptions: RequestInit = {
     method: method,
     credentials: 'include',
-  };
+  }
   if (data !== undefined) {
-    requestOptions.body = JSON.stringify(data);
+    requestOptions.body = JSON.stringify(data)
     requestOptions.headers = new Headers({
       'Content-Type': 'application/json',
-    });
+    })
   }
 
   //TODO: Need to try/catch the fetch
-  const res = await fetch(url, requestOptions);
+  const res = await fetch(url, requestOptions)
   if (res.ok) {
-    return res;
+    return res
   }
 
-  let json;
+  let json
   try {
-    json = await res.json();
+    json = await res.json()
   } catch (err) {
-    throw defaultError(res);
+    throw defaultError(res)
   }
-  let error: ErrorDetails;
+  let error: ErrorDetails
   if (json.hasOwnProperty('message')) {
     error = {
       statusCode: json.statusCode,
       message: json.message,
       originalResponse: res,
-    };
+    }
   } else {
-    error = defaultError(res);
+    error = defaultError(res)
   }
-  throw error;
+  throw error
 }
 
 function defaultError(res: Response): ErrorDetails {
@@ -58,5 +58,5 @@ function defaultError(res: Response): ErrorDetails {
     statusCode: res.status,
     message: 'Server Error',
     originalResponse: res,
-  };
+  }
 }

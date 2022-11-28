@@ -1,38 +1,38 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as bootstrap from 'bootstrap';
+import React, { useEffect, useRef, useState } from 'react'
+import * as bootstrap from 'bootstrap'
 
 export interface ModalFooterProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export const ModalFooter: React.FC<ModalFooterProps> = ({ children }) => {
-  return <div className="modal-footer">{children}</div>;
-};
+  return <div className="modal-footer">{children}</div>
+}
 
 export interface ModalProps {
-  title: string;
-  content: string;
-  show: boolean;
-  children: React.ReactNode;
+  title: string
+  content: string
+  show: boolean
+  children: React.ReactNode
 }
 
 export const Modal: React.FC<ModalProps> = (props) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [modal, setModal] = useState<bootstrap.Modal>();
+  const ref = useRef<HTMLDivElement>(null)
+  const [modal, setModal] = useState<bootstrap.Modal>()
   useEffect(() => {
     if (ref.current != null && modal == null) {
-      const newModal = new bootstrap.Modal(ref.current);
-      setModal(newModal);
-      newModal.show();
+      const newModal = new bootstrap.Modal(ref.current)
+      setModal(newModal)
+      newModal.show()
     }
-    return () => modal?.hide();
-  }, [ref, modal]);
+    return () => modal?.hide()
+  }, [ref, modal])
 
   useEffect(() => {
     if (!props.show) {
-      modal?.hide();
+      modal?.hide()
     }
-  }, [modal, props.show]);
+  }, [modal, props.show])
   return (
     <div
       className="modal fade"
@@ -59,5 +59,5 @@ export const Modal: React.FC<ModalProps> = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

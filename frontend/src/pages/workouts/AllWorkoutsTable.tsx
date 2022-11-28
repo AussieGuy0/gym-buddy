@@ -1,10 +1,10 @@
-import { Workout } from '../../services/Api';
-import React, { useState } from 'react';
-import { format } from 'date-fns';
-import { Button } from '../../components/buttons/buttons';
+import { Workout } from '../../services/Api'
+import React, { useState } from 'react'
+import { format } from 'date-fns'
+import { Button } from '../../components/buttons/buttons'
 
 interface AllWorkoutsTableProps {
-  workouts: Array<Workout>;
+  workouts: Array<Workout>
 }
 
 export const AllWorkoutsTable: React.FC<AllWorkoutsTableProps> = ({
@@ -26,16 +26,16 @@ export const AllWorkoutsTable: React.FC<AllWorkoutsTableProps> = ({
         ))}
       </tbody>
     </table>
-  );
-};
+  )
+}
 
 interface WorkoutsRowProps {
-  workout: Workout;
+  workout: Workout
 }
 
 const WorkoutsRow: React.FC<WorkoutsRowProps> = ({ workout }) => {
-  const [opened, setOpened] = useState(false);
-  const buttonLabel = opened ? '-' : '+';
+  const [opened, setOpened] = useState(false)
+  const buttonLabel = opened ? '-' : '+'
   return (
     <>
       <tr>
@@ -64,12 +64,12 @@ const WorkoutsRow: React.FC<WorkoutsRowProps> = ({ workout }) => {
                     {exercise.name}{' '}
                     {`${exercise.sets}x${exercise.reps} ${exercise.weight}kg`}
                   </li>
-                );
+                )
               })}
             </ul>
           </td>
         </tr>
       )}
     </>
-  );
-};
+  )
+}

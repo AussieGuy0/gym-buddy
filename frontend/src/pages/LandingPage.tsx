@@ -1,5 +1,5 @@
-import React from 'react';
-import { RewritingText } from '../components/RewritingText';
+import React from 'react'
+import { RewritingText } from '../components/RewritingText'
 
 // TODO: Proper hero image!
 export const LandingPage: React.FC = () => {
@@ -36,5 +36,5 @@ export const LandingPage: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

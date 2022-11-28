@@ -1,5 +1,5 @@
 export interface Session {
-  id: number;
-  email?: string;
-  loaded: boolean;
+  id: number
+  email?: string
+  loaded: boolean
 }
